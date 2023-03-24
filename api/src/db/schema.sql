@@ -55,7 +55,7 @@ CREATE TABLE consultas.exams (
 	date DATE NOT NULL,
 	CONSTRAINT exams_pk PRIMARY KEY (id),
 	CONSTRAINT exams_patient_FK FOREIGN KEY (ref_patient) REFERENCES consultas.patients(id)
-)
+);
 
 -- --------------------------------------------------------
 -- Table structure for table 'HOSPITALS'
