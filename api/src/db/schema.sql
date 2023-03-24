@@ -46,6 +46,18 @@ CREATE TABLE consultas.patients (
 );
 
 -- --------------------------------------------------------
+-- Table structure for table 'EXAMS'
+-- --------------------------------------------------------
+CREATE TABLE consultas.exams (
+	id INT auto_increment NOT NULL,
+	ref_patient INT NOT NULL,
+	name varchar(100) NOT NULL,
+	date DATE NOT NULL,
+	CONSTRAINT exams_pk PRIMARY KEY (id),
+	CONSTRAINT exams_patient_FK FOREIGN KEY (ref_patient) REFERENCES consultas.patients(id)
+)
+
+-- --------------------------------------------------------
 -- Table structure for table 'HOSPITALS'
 -- --------------------------------------------------------
 CREATE TABLE consultas.hospitals (
