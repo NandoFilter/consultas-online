@@ -1,11 +1,15 @@
+import dotenv from 'dotenv'
 import express from 'express'
 import cors from 'cors'
 import routes from './routes'
+import database from './database'
 
 class App {
   public express: express.Application
 
   constructor() {
+    dotenv.config()
+    database.createConnection()
     this.express = express()
     this.routes()
   }
