@@ -22,10 +22,10 @@ class UserController {
    * @param res Response
    */
   public fetchById(req: Request, res: Response) {
-    const { id } = req.body as User
+    const { id } = req.params
 
     if (id) {
-      UserSchema.getById(id, (result: User) => {
+      UserSchema.getById(Number(id), (result: User) => {
         res.json(result)
       })
     }
