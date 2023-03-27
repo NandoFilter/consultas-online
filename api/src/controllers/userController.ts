@@ -24,9 +24,11 @@ class UserController {
   public fetchById(req: Request, res: Response) {
     const { id } = req.body as User
 
-    UserSchema.getById(id, (result: User) => {
-      res.json(result)
-    })
+    if (id) {
+      UserSchema.getById(id, (result: User) => {
+        res.json(result)
+      })
+    }
   }
 
   /**
@@ -36,9 +38,9 @@ class UserController {
    * @param res Response
    */
   public add(req: Request, res: Response) {
-    const { id, name, email, password } = req.body as User
+    const { name, email, password } = req.body as User
 
-    const user = { id, name, email, password }
+    const user: User = { name, email, password }
 
     UserSchema.add(user)
 
@@ -55,7 +57,7 @@ class UserController {
     const id = Number(req.params.id)
     const { name, email, password } = req.body
 
-    const user = { id, name, email, password }
+    const user: User = { id, name, email, password }
 
     UserSchema.update(user, (result: User) => {
       res.json(result)

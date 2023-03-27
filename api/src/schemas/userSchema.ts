@@ -82,7 +82,9 @@ class UserSchema {
         `UPDATE ${table} SET name = '${name}', email = '${email}', password = '${password}' where id = ${id}`
       )
 
-      this.getById(id, callback)
+      if (id) {
+        this.getById(id, callback)
+      }
 
       conn.end()
     }
