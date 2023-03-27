@@ -69,9 +69,9 @@ CREATE TABLE consultas.hospitals (
 );
 
 -- --------------------------------------------------------
--- Table structure for table 'OCCUPATION'
+-- Table structure for table 'OCCUPATIONS'
 -- --------------------------------------------------------
-CREATE TABLE consultas.occupation (
+CREATE TABLE consultas.occupations (
 	id INT auto_increment NOT NULL,
 	name varchar(50) NOT NULL,
 	CONSTRAINT occupation_pk PRIMARY KEY (id)
