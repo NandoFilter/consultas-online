@@ -42,6 +42,8 @@ class UserSchema {
           callback(result)
         }
       )
+
+      conn.end()
     }
   }
 

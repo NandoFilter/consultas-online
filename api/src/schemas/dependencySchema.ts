@@ -44,6 +44,8 @@ class DependencySchema {
           callback(result)
         }
       )
+
+      conn.end()
     }
   }
 }

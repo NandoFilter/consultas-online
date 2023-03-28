@@ -44,6 +44,8 @@ class DeficiencySchema {
           callback(result)
         }
       )
+
+      conn.end()
     }
   }
 }

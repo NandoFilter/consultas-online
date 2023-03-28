@@ -44,6 +44,8 @@ class OccupationSchema {
           callback(result)
         }
       )
+
+      conn.end()
     }
   }
 }
