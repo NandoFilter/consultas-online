@@ -3,7 +3,7 @@ import Occupation from './occupation'
 import User from './user'
 
 interface Doctor {
-  id: number
+  id?: number | undefined
   user: User
   acadEducation: string
   occupation: Occupation
