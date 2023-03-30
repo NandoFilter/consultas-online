@@ -1,13 +1,9 @@
-import Hospital from './hospital'
-import Occupation from './occupation'
-import User from './user'
-
 interface Doctor {
   id?: number | undefined
-  user: User
-  acadEducation: string
-  occupation: Occupation
-  hospital: Hospital
+  ref_user: number
+  acad_education: string
+  ref_occupation: number
+  ref_hospital: number
 }
 
 export default Doctor

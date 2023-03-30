@@ -1,9 +1,7 @@
 import { Request, Response } from 'express'
-import { Doctor, Occupation, User } from '../models'
+import { Doctor } from '../models'
 import DoctorSchema from '../schemas/doctorSchema'
-import OccupationSchema from '../schemas/occupationSchema'
 import UserSchema from '../schemas/userSchema'
-import UserController from './userController'
 
 class DoctorController {
   /**
@@ -34,34 +32,65 @@ class DoctorController {
     }
   }
 
+  /**
+   * add
+   *
+   * @param req Request
+   * @param res Response
+   */
   public add(req: Request, res: Response) {
-    // const { userId, acadEducation, occupationId, hospitalId } = req.body
+    const { ref_user, acad_education, ref_occupation, ref_hospital } =
+      req.body as Doctor
 
-    // let user = null
-    // let occupation = null
-    // let hospital = null
+    const doctor: Doctor = {
+      ref_user,
+      acad_education,
+      ref_occupation,
+      ref_hospital
+    }
 
-    // if (userId) {
-    //   UserSchema.getById(Number(userId), (result: User) => {
-    //     user = result
-    //   })
-    // }
+    DoctorSchema.add(doctor)
 
-    // if (occupationId) {
-    //   OccupationSchema.getById(Number(occupationId), (result: Occupation) => {
-    //     occupation = result
-    //   })
-    // }
+    return res.json(doctor)
+  }
 
-    // if (user && occupation && hospital) {
-    //   const doctor = { user, acadEducation, occupation, hospital }
+  /**
+   * update
+   *
+   * @param req Request
+   * @param res Response
+   */
+  public update(req: Request, res: Response) {
+    const id = Number(req.params.id)
 
-    //   DoctorSchema.add(doctor)
+    const { ref_user, acad_education, ref_occupation, ref_hospital } =
+      req.body as Doctor
 
-    //   return res.json(doctor)
-    // }
+    const doctor: Doctor = {
+      id,
+      ref_user,
+      acad_education,
+      ref_occupation,
+      ref_hospital
+    }
 
-    // return res.send(505).end()
+    DoctorSchema.update(doctor, (result: Doctor) => {
+      res.json(result)
+    })
+  }
+
+  /**
+   * delete
+   *
+   * @param req Request
+   * @param res Response
+   */
+  public delete(req: Request, res: Response) {
+    const id = Number(req.params.id)
+
+    UserSchema.delete(id)
+
+    return res.json('Success')
   }
 }
 

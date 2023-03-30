@@ -77,11 +77,12 @@ class DoctorSchema {
   public update(doctor: Doctor, callback: Function) {
     const conn = database.getConnection()
 
-    const { id, user, acadEducation, occupation, hospital } = doctor
+    const { id, ref_user, acad_education, ref_occupation, ref_hospital } =
+      doctor
 
     if (conn) {
       conn.query(
-        `UPDATE ${table} SET ref_user = '${user}', acad_education = '${acadEducation}', ref_occupation = '${occupation}', ref_hospital = '${hospital}' where id = ${id}`
+        `UPDATE ${table} SET ref_user = ${ref_user}, acad_education = '${acad_education}', ref_occupation = ${ref_occupation}, ref_hospital = ${ref_hospital} where id = ${id}`
       )
 
       if (id) {
