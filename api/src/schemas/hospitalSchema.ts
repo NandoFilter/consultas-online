@@ -36,8 +36,6 @@ class HospitalSchema {
   public getById(id: number, callback: Function) {
     const conn = database.getConnection()
 
-    // Tratamento de erro: 505 (Sem conexão), 404 (Sem ID)
-
     if (conn) {
       conn.query(
         `SELECT * FROM ${table} WHERE id = ${id}`,

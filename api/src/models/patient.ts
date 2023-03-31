@@ -1,14 +1,10 @@
-import Deficiency from './deficiency'
-import Dependency from './dependency'
-import User from './user'
-
 interface Patient {
-  id: number
-  user: User
-  hasDeficiency: boolean
-  deficiency: Deficiency
-  hasDependency: boolean
-  dependency: Dependency
+  id?: number
+  ref_user: number
+  has_deficiency: boolean
+  ref_deficiency: number
+  has_dependency: boolean
+  ref_dependency: number
 }
 
 export default Patient
