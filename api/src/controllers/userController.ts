@@ -38,13 +38,15 @@ class UserController {
    * @param res Response
    */
   public add(req: Request, res: Response) {
-    const { name, email, password } = req.body as User
+    const user: User = req.body as User
 
-    const user: User = { name, email, password }
+    if (user.name && user.email && user.password) {
+      UserSchema.add(user)
 
-    UserSchema.add(user)
+      return res.json(user)
+    }
 
-    return res.json(user)
+    return res.send(400).end()
   }
 
   /**

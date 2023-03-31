@@ -1,5 +1,5 @@
 interface Hospital {
-  id?: number
+  id?: number | undefined
   name: string
   state: string
   city: string

@@ -79,14 +79,12 @@ class UserSchema {
 
     const { id, name, email, password } = user
 
-    if (conn) {
+    if (conn && id) {
       conn.query(
         `UPDATE ${table} SET name = '${name}', email = '${email}', password = '${password}' where id = ${id}`
       )
 
-      if (id) {
-        this.getById(id, callback)
-      }
+      this.getById(id, callback)
 
       conn.end()
     }

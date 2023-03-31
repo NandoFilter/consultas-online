@@ -1,5 +1,5 @@
 interface Patient {
-  id?: number
+  id?: number | undefined
   ref_user: number
   has_deficiency: boolean
   ref_deficiency: number
