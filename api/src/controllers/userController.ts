@@ -22,13 +22,15 @@ class UserController {
    * @param res Response
    */
   public fetchById(req: Request, res: Response) {
-    const { id } = req.params
+    const id = Number(req.params.id)
 
-    if (id) {
-      UserSchema.getById(Number(id), (result: User) => {
-        res.json(result)
-      })
+    if (!id) {
+      return res.send(500).end()
     }
+
+    UserSchema.getById(id, (result: User) => {
+      Object.keys(result).length ? res.json(result) : res.send(404).end()
+    })
   }
 
   /**
