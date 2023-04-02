@@ -1,13 +1,13 @@
 <template>
   <div>
-    <v-card class="mx-auto px-6 py-8" max-width="344">
-      <v-form @submit.prevent="onSubmit">
+    <v-card class="mx-auto mt-15 px-6 py-8" max-width="344">
+      <v-form @submit.prevent="onLogin">
         <v-text-field
           v-model="email"
           :readonly="loading"
           variant="underlined"
           label="E-mail"
-        ></v-text-field>
+        />
 
         <v-text-field
           v-model="password"
@@ -15,12 +15,12 @@
           variant="underlined"
           label="Senha"
           type="password"
-        ></v-text-field>
+        />
 
         <br>
 
         <v-btn
-          class="sign"
+          class="button"
           block
           :loading="loading"
           type="submit"
@@ -29,12 +29,11 @@
         </v-btn>
 
         <div class="register">
-          <a class="register_link" href="">
-            <p class=register_label>Não possui uma conta? Cadastre-se</p>
-          </a>
+          <router-link class="register_link" to="/register">Não possui uma conta? Cadastre-se</router-link>
         </div>
       </v-form>
     </v-card>
+    <router-link class="register_link" to="/">Voltar para Home</router-link>
   </div>
 </template>
 
@@ -48,7 +47,7 @@ export default defineComponent({
     loading: false
   }),
   methods: {
-    onSubmit() {
+    onLogin() {
       this.loading = true
 
       setTimeout(() => (this.loading = false), 2000)
@@ -58,7 +57,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.sign {
+.button {
   background: $primary-color;
   color: white
 }
@@ -68,15 +67,12 @@ export default defineComponent({
 
   &_link{
     text-decoration: none;
-  
+    color: black;
+    font-size: 14px;
+
     &:hover {
       text-decoration: underline;
     }
-  }
-
-  &_label {
-    color: black;
-    font-size: 14px;
   }
 }
 </style>
