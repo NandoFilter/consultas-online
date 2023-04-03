@@ -1,39 +1,41 @@
 <template>
-  <div>
-    <v-card class="mx-auto mt-15 px-6 py-8" max-width="344">
-      <v-form @submit.prevent="onLogin">
-        <v-text-field
-          v-model="email"
-          :readonly="loading"
-          variant="underlined"
-          label="E-mail"
-        />
+  <div class="login">
+    <v-container class="login_container fill-height">
+      <v-card class="ma-auto px-6 py-8" min-width="400" max-width="500">
+        <v-form @submit.prevent="onLogin">
+          <v-text-field
+            v-model="email"
+            :readonly="loading"
+            variant="underlined"
+            label="E-mail"
+          />
+        
+          <v-text-field
+            v-model="password"
+            :readonly="loading"
+            variant="underlined"
+            label="Senha"
+            type="password"
+          />
 
-        <v-text-field
-          v-model="password"
-          :readonly="loading"
-          variant="underlined"
-          label="Senha"
-          type="password"
-        />
+          <br>
+          
+          <v-btn
+            class="button"
+            block
+            :loading="loading"
+            type="submit"
+          >
+            Entrar
+          </v-btn>
 
-        <br>
-
-        <v-btn
-          class="button"
-          block
-          :loading="loading"
-          type="submit"
-        >
-          Entrar
-        </v-btn>
-
-        <div class="register">
-          <router-link class="register_link" to="/register">Não possui uma conta? Cadastre-se</router-link>
-        </div>
-      </v-form>
-    </v-card>
-    <router-link class="register_link" to="/">Voltar para Home</router-link>
+          <div class="register">
+            <router-link class="register_link" to="/register">Não possui uma conta? Cadastre-se</router-link>
+          </div>
+        </v-form>
+      </v-card>
+      <router-link class="register_link" to="/">Voltar para Home</router-link>
+    </v-container>
   </div>
 </template>
 
@@ -57,6 +59,15 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+.login {
+  height: 100vh;
+
+  &_container {
+    display: flex;
+    flex-direction: column;
+  }
+}
+
 .button {
   background: $primary-color;
   color: white
