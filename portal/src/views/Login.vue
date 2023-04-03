@@ -6,16 +6,22 @@
           <v-text-field
             v-model="email"
             :readonly="loading"
+            :rules="emailRule"
             variant="underlined"
             label="E-mail"
+            validate-on="blur"
+            required
           />
         
           <v-text-field
             v-model="password"
             :readonly="loading"
+            :rules="passwordRule"
             variant="underlined"
             label="Senha"
             type="password"
+            validate-on="blur"
+            required
           />
 
           <br>
@@ -46,7 +52,15 @@ export default defineComponent({
   data: () => ({
     email: null,
     password: null,
-    loading: false
+    loading: false,
+
+    emailRule: [
+      (v: string) => !!v || 'Informe seu e-mail'
+    ],
+
+    passwordRule: [
+      (v: string) => !!v || 'Informe sua senha'
+    ],
   }),
   methods: {
     onLogin() {

@@ -6,23 +6,32 @@
           <v-text-field
             v-model="name"
             :readonly="loading"
+            :rules="nameRule"
             variant="underlined"
             label="Nome"
+            validate-on="blur"
+            required
           />
 
           <v-text-field
             v-model="email"
             :readonly="loading"
+            :rules="emailRules"
             variant="underlined"
             label="E-mail"
+            validate-on="blur"
+            required
           />
 
           <v-text-field
             v-model="password"
             :readonly="loading"
+            :rules="passwordRules"
             variant="underlined"
             label="Senha"
             type="password"
+            validate-on="blur"
+            required
           />
 
           <v-btn
@@ -46,17 +55,40 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
+import { User } from '../models';
+import userService from '../services/userService';
 
 export default defineComponent({
   data: () => ({
-    name: null,
-    email: null,
-    password: null,
-    loading: false
+    name: '',
+    email: '',
+    password: '',
+    loading: false,
+
+    nameRule: [
+      (v: string) => !!v || 'Informe seu nome',
+    ],
+
+    emailRules: [
+        (v: string) => !!v || 'Informe seu e-mail',
+    ],
+
+    passwordRules: [
+      (v: string) => !!v || 'Digite uma senha',
+      (v: string) => v.length >= 8 || 'A senha precisa possuir 8 ou mais caractéres',
+    ]
   }),
   methods: {
     onRegister() {
       this.loading = true
+
+      const user: User = {
+        name: this.name,
+        email: this.email,
+        password: this.password
+      }
+
+      userService.add(user)
 
       setTimeout(() => (this.loading = false), 2000)
     }
@@ -76,7 +108,9 @@ export default defineComponent({
 
 .button {
   background: $primary-color;
-  color: white
+  color: white;
+
+  margin-top: 10px;
 }
 
 .login {
@@ -93,3 +127,7 @@ export default defineComponent({
   }
 }
 </style>
+
+function validateEmail(): any {
+  throw new Error('Function not implemented.')
+}
