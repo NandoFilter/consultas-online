@@ -1,4 +1,4 @@
-import database from '../database'
+import database from '../helper/database'
 import { Deficiency } from '../models'
 
 const table = 'deficiencies'

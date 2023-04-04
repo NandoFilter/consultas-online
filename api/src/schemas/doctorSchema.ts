@@ -1,5 +1,5 @@
 import { QueryError } from 'mysql2'
-import database from '../database'
+import database from '../helper/database'
 import { Doctor } from '../models'
 
 const table = 'doctors'
