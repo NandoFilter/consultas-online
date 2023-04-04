@@ -2,7 +2,7 @@
   <div class="register">
     <v-container class="register_container fill-height">
       <v-card class="ma-auto px-6 py-8" min-width="400" max-width="500">
-        <v-form @submit.prevent="onRegister">
+        <v-form fast-fail @submit.prevent="onRegister">
           <v-text-field
             v-model="name"
             :readonly="loading"
@@ -88,7 +88,9 @@ export default defineComponent({
         password: this.password
       }
 
-      userService.add(user)
+      userService.add(user).then(() => {
+        this.$router.push('/')
+      })
 
       setTimeout(() => (this.loading = false), 2000)
     }
