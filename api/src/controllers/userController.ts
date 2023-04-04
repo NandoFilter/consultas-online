@@ -45,7 +45,7 @@ class UserController {
     if (user.name && user.email && user.password) {
       UserSchema.add(user)
 
-      return res.json(user)
+      return res.json(user).send(201)
     }
 
     return res.send(400).end()
@@ -79,7 +79,7 @@ class UserController {
 
     UserSchema.delete(id)
 
-    return res.json('Success')
+    return res.send(200).end()
   }
 }
 

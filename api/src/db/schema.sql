@@ -117,3 +117,15 @@ CREATE TABLE consultas.medical_clearances (
 	CONSTRAINT medical_clearances_pk PRIMARY KEY (id),
 	CONSTRAINT query_FK FOREIGN KEY (ref_query) REFERENCES consultas.queries(id)
 );
+
+-- --------------------------------------------------------
+-- Table structure for table 'SESSIONS'
+-- --------------------------------------------------------
+CREATE TABLE consultas.sessions (
+	id INT auto_increment NOT NULL,
+	ref_user INT NOT NULL,
+	token varchar(255) NOT NULL,
+	`date` TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+	CONSTRAINT session_pk PRIMARY KEY (id),
+	CONSTRAINT user_FK FOREIGN KEY (ref_user) REFERENCES consultas.users(id)
+);
