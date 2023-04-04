@@ -1,6 +1,6 @@
 import Connection from 'mysql2/typings/mysql/lib/Connection'
 
-const mysql = require('mysql2')
+import mysql from 'mysql2'
 
 class Database {
   conn: Connection | undefined

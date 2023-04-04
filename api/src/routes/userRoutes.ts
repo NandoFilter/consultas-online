@@ -1,5 +1,6 @@
 import { Router } from 'express'
 import UserController from '../controllers/userController'
+import { checkToken } from '../helper/routes'
 
 class UserRoutes {
   /**
@@ -10,7 +11,7 @@ class UserRoutes {
   constructor(routes: Router) {
     routes.get('/user', UserController.fetchAll)
     routes.get('/user/:id', UserController.fetchById)
-    routes.post('/user', UserController.add)
+    routes.post('/user', checkToken, UserController.add)
     routes.put('/user/:id', UserController.update)
     routes.delete('/user/:id', UserController.delete)
   }
