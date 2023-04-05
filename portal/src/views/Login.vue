@@ -27,9 +27,9 @@
           <br>
           
           <v-btn
-            class="button"
             block
             :loading="loading"
+            color="primary"
             type="submit"
           >
             Entrar
@@ -80,11 +80,6 @@ export default defineComponent({
     display: flex;
     flex-direction: column;
   }
-}
-
-.button {
-  background: $primary-color;
-  color: white
 }
 
 .register {

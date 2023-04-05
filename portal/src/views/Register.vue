@@ -35,9 +35,10 @@
           />
 
           <v-btn
-            class="button"
             block
             :loading="loading"
+            class="mt-5"
+            color="primary"
             type="submit"
           >
             Cadastrar
@@ -106,13 +107,6 @@ export default defineComponent({
     display: flex;
     flex-direction: column;
   }
-}
-
-.button {
-  background: $primary-color;
-  color: white;
-
-  margin-top: 10px;
 }
 
 .login {
