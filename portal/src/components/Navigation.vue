@@ -1,5 +1,5 @@
 <template>
-    <v-card>
+  <v-card>
     <v-layout>
       <v-navigation-drawer
         expand-on-hover
@@ -17,7 +17,7 @@
         <v-divider></v-divider>
 
         <v-list density="compact" nav>
-          <v-list-item v-for="item in items" :key="item.title" :prepend-icon="item.icon" :title="item.title"></v-list-item>
+          <v-list-item v-for="item in items" :key="item.title" :prepend-icon="item.icon" :title="item.title" value="myfiles"></v-list-item>
         </v-list>
       </v-navigation-drawer>
     </v-layout>
@@ -30,9 +30,11 @@ import { defineComponent } from 'vue'
 export default defineComponent({
   data: () => ({
     items: [
-      { title: 'Home', icon: 'mdi-home-city' },
-      { title: 'My Account', icon: 'mdi-account' },
-      { title: 'Users', icon: 'mdi-account-group-outline' },
+      { title: 'Início', icon: 'mdi-home', value: '/' },
+      { title: 'Pesquisar', icon: 'mdi-magnify' },
+      { title: 'Relatórios', icon: 'mdi-file-document-outline'},
+      { title: 'Administração', icon: 'mdi-security'},
+      { title: 'Sair', icon: 'mdi-logout' },
     ]
   })
 })
