@@ -48,7 +48,7 @@
           </div>
         </v-form>
       </v-card>
-      <router-link class="login_link" to="/">Voltar para Home</router-link>
+      <router-link class="login_link" to="/">Voltar ao Início</router-link>
     </v-container>
   </div>
 </template>
