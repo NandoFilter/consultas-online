@@ -2,6 +2,7 @@ import { QueryError } from 'mysql2'
 import database from '../helper/database'
 import { User, Session } from '../models'
 import * as jwt from 'jsonwebtoken'
+import { log } from 'console'
 
 const table = 'sessions'
 
@@ -14,6 +15,11 @@ class SessionSchema {
         `SELECT * FROM users WHERE email = '${email}' LIMIT 1`,
         (err: Error, result: User[]) => {
           if (err) throw err
+
+          if (result.length == 0) {
+            // Usuário inexistente
+            console.log('Usuário inexistente')
+          }
 
           if (result) {
             const user = result[0]
@@ -33,9 +39,6 @@ class SessionSchema {
               // Senha inválida
               console.log('Senha inválida')
             }
-          } else {
-            // Usuário inexistente
-            console.log('Usuário inexistente')
           }
         }
       )

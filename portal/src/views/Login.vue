@@ -40,6 +40,17 @@
           </div>
         </v-form>
       </v-card>
+
+      <v-alert
+        class="alert"
+        icon="$error"
+        color="error"
+        title="Erro ao efetuar login"
+        text="Reveja os valores preenchidos nos campos e tente novamente"
+        v-model="showError"
+        closable
+      />
+
       <router-link class="register_link" to="/">Voltar ao Início</router-link>
     </v-container>
   </div>
@@ -47,12 +58,15 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
+import { User } from '../models'
+import SessionService from '../services/sessionService'
 
 export default defineComponent({
   data: () => ({
     email: null,
     password: null,
     loading: false,
+    showError: false,
 
     emailRule: [
       (v: string) => !!v || 'Informe seu e-mail'
@@ -65,8 +79,26 @@ export default defineComponent({
   methods: {
     onLogin() {
       this.loading = true
+      this.showError = false
 
-      setTimeout(() => (this.loading = false), 2000)
+      if (this.email && this.password) {
+        setTimeout(() => (this.loading = false), 2000)
+
+        const user = {
+          email: this.email,
+          password: this.password
+        } as User
+
+        SessionService.login(user).then(() => {
+          this.$router.push('/home')
+        }).catch((err) => {
+          this.showError = true
+
+          throw err
+        })
+      } else {
+        this.loading = false
+      }
     }
   }
 })
@@ -94,5 +126,9 @@ export default defineComponent({
       text-decoration: underline;
     }
   }
+}
+
+.alert {
+  position: absolute;
 }
 </style>
