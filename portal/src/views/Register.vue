@@ -111,6 +111,7 @@ export default defineComponent({
 
 .login {
   margin-top: 10px;
+  text-align: center;
 
   &_link{
     text-decoration: none;

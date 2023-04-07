@@ -1,5 +1,5 @@
 import { createRouter, createWebHashHistory, RouteRecordRaw } from 'vue-router'
-import { LandingPage, Login, Register, Home } from '@/views'
+import { LandingPage, Login, Register, Home, Search } from '@/views'
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -22,14 +22,11 @@ const routes: Array<RouteRecordRaw> = [
     name: 'home',
     component: Home,
   },
-  // {
-  //   path: '/register',
-  //   name: 'register',
-  //   // route level code-splitting
-  //   // this generates a separate chunk (about.[hash].js) for this route
-  //   // which is lazy-loaded when the route is visited.
-  //   component: () => import('../views/Register.vue'),
-  // },
+  {
+    path: '/search',
+    name: 'search',
+    component: Search,
+  },
 ]
 
 const router = createRouter({

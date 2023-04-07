@@ -13,7 +13,7 @@
           <v-list-item
             prepend-icon="mdi-home"
             title="Início"
-            value="/home"
+            to="/home"
           />
         </v-list>
 
@@ -25,7 +25,7 @@
             :key="topItem.title"
             :prepend-icon="topItem.icon"
             :title="topItem.title"
-            :value="topItem.value"
+            :to="topItem.value"
           />
         </v-list>
 
@@ -36,14 +36,15 @@
               :key="botItem.title"
               :prepend-icon="botItem.icon"
               :title="botItem.title"
-              :value="botItem.value"
+              :to="botItem.value"
             />
           </v-list>
         </template>
 
         <v-btn
           class="resize_btn"
-          variant="text"
+          variant="plain"
+          :ripple="false"
           :icon="btnIcon"
           @click.stop="setRail()"
         ></v-btn>
@@ -63,7 +64,7 @@ export default defineComponent({
     topItems: [
       { title: 'Pesquisar', icon: 'mdi-magnify', value: '/search' },
       { title: 'Médicos', icon: 'mdi-heart-pulse', value: '/doctors' },
-      { title: 'Relatórios', icon: 'mdi-file-document-outline', value: '/queries' },
+      { title: 'Relatórios', icon: 'mdi-file-document', value: '/reports' },
     ],
     botItems: [
       { title: 'Administração', icon: 'mdi-security', value: '/admin' },
