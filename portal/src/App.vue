@@ -11,8 +11,6 @@
 #app {
   margin: 0;
 
-  text-align: center;
-
   font-family: "Inter";
 }
 </style>
