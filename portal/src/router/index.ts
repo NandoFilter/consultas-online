@@ -1,31 +1,41 @@
 import { createRouter, createWebHashHistory, RouteRecordRaw } from 'vue-router'
-import { LandingPage, Login, Register, Home, Search } from '@/views'
+import { LandingPage, Login, Register, Home, Search, Doctors, Patients } from '@/views'
 
 const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
-    name: 'landing_page',
+    name: 'Consultas Médicas Online',
     component: LandingPage,
   },
   {
     path: '/login',
-    name: 'login',
+    name: 'Login',
     component: Login,
   },
   {
     path: '/register',
-    name: 'register',
+    name: 'Registro',
     component: Register,
   },
   {
     path: '/home',
-    name: 'home',
-    component: Home,
+    name: 'Início',
+    component: Home
   },
   {
     path: '/search',
-    name: 'search',
+    name: 'Pesquisa',
     component: Search,
+  },
+  {
+    path: '/doctors',
+    name: 'Doutores',
+    component: Doctors,
+  },
+  {
+    path: '/patients',
+    name: 'Pacientes',
+    component: Patients,
   },
 ]
 
@@ -33,5 +43,10 @@ const router = createRouter({
   history: createWebHashHistory(),
   routes,
 })
+
+router.beforeEach((to, from, next) => {
+  document.title = to.name as string;
+  next();
+});
 
 export default router

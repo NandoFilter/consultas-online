@@ -1,6 +1,9 @@
 <template>
   <div>
     <Navigation />
+    <div class="main">
+      <h1>Home</h1>
+    </div>
   </div>
 </template>
 
@@ -16,5 +19,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-
+.main {
+  margin-left: 75px;
+}
 </style>

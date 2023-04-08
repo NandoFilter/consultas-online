@@ -1,15 +1,12 @@
 <template>
   <div>
     <Navigation />
-    <div class="main">
-      <h1>Search</h1>
-    </div>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import { Navigation } from '@/components';
+import Navigation from '@/components/Navigation.vue';
 
 export default defineComponent({
   components: {
@@ -19,7 +16,5 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.main {
-  margin-left: 75px;
-}
+
 </style>
