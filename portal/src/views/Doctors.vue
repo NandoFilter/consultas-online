@@ -18,10 +18,11 @@ export default defineComponent({
   },
   data: () => ({
     headers: [
-      { title: 'Nome', sortable: false, align: 'start', key: 'name' },
+      { title: 'Nome', align: 'start', key: 'name', sortable: false },
       { title: 'Área de Atuação', align: 'start', key: 'occupation' },
       { title: 'Hospital', align: 'start', key: 'hospital' },
       { title: 'Formação', align: 'start', key: 'academy' },
+      { title: 'Ações', key: 'actions', sortable: false },
     ],
     items: [
       {
@@ -49,6 +50,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .main {
+  margin-top: 75px;
   margin-left: 75px;
 
   display: flex;
