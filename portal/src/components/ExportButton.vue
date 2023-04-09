@@ -33,7 +33,7 @@ export default defineComponent({
       let month = today.getMonth() + 1
       let year = today.getFullYear()
 
-      return `${year}-${month}-${day}`
+      return `${year}_${month}_${day}`
     },
     generateHeader(): Array<any> {
       let titles: string[] = []
@@ -59,6 +59,8 @@ export default defineComponent({
 
       // Document
       const doc = new jsPDF({ putOnlyUsedFonts: true, orientation: "landscape" })
+
+      doc.text('Médicos cadastrados', 15, 10)
 
       autoTable(doc, {
         head: [ this.generateHeader() ],

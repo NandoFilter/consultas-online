@@ -2,21 +2,72 @@
   <div>
     <Navigation />
     <div class="main">
-      <DataTable :headers="headers" :items="items" />
+      <div class="header">
+        <ExportButton :headers="headers" :items="items" class="header_btn" />
+
+        <!-- Criar componente -->
+        <v-dialog v-model="dialog" max-width="700px">
+          <!-- eslint-disable-next-line vue/valid-v-slot -->
+          <template v-slot:activator="{ props }">
+            <v-btn class="header_btn" prepend-icon="mdi-plus" v-bind="props"
+              >Adicionar</v-btn
+            >
+          </template>
+        </v-dialog>
+
+        <div class="header_txt">
+          <v-text-field
+            v-model="search"
+            prepend-icon="mdi-magnify"
+            variant="underlined"
+            label="Pesquisar"
+            single-line
+            hide-details
+            clearable
+          />
+        </div>
+      </div>
+
+      <v-data-table
+        :headers="headers"
+        :items="items"
+        :search="search"
+        item-value="name"
+        class="table elevation-1"
+      >
+        <!-- Delete Dialog -->
+        <template v-slot:top>
+          <DeleteDialog v-model="dialogDelete" />
+        </template>
+
+        <!-- eslint-disable-next-line vue/valid-v-slot -->
+        <template v-slot:item.actions="{ item }">
+          <v-icon size="small" class="me-2" @click="editItem(item)">
+            mdi-pencil
+          </v-icon>
+          <v-icon size="small" @click="deleteItem(item)"> mdi-delete </v-icon>
+        </template>
+      </v-data-table>
     </div>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import { Navigation, DataTable } from '@/components';
+import { Navigation, ExportButton } from '@/components'
+import DeleteDialog from '@/components/dialogs/DeleteDialog.vue'
 
 export default defineComponent({
   components: {
     Navigation,
-    DataTable,
+    ExportButton,
+    DeleteDialog
   },
   data: () => ({
+    search: '',
+    dialog: false,
+    dialogDelete: false,
+
     headers: [
       { title: 'Nome', align: 'start', key: 'name', sortable: false },
       { title: 'Área de Atuação', align: 'start', key: 'occupation' },
@@ -44,7 +95,15 @@ export default defineComponent({
         academy: 'UFRGS',
       },
     ],
-  })
+  }),
+  methods: {
+    editItem (item: any) {
+      this.dialog = true
+    },
+    deleteItem(item: any) {
+      this.dialogDelete = true
+    }
+  }
 })
 </script>
 
