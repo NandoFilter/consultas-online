@@ -1,8 +1,12 @@
 <template>
   <div>
     <div class="header">
-      <v-btn class="header_btn" prepend-icon="mdi-export-variant">Exportar</v-btn>
-      
+      <ExportButton
+        :headers="headers"
+        :items="items"
+        class="header_btn"
+      />
+
       <!-- Criar componente -->
       <v-dialog v-model="dialog" max-width="700px">
         <!-- eslint-disable-next-line vue/valid-v-slot -->
@@ -113,6 +117,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
+import ExportButton from './ExportButton.vue'
 
 export default defineComponent({
   props: {
@@ -124,6 +129,9 @@ export default defineComponent({
       type: Array,
       required: true
     },
+  },
+  components: {
+    ExportButton
   },
   data: () => ({
     search: '',

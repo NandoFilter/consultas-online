@@ -10,6 +10,8 @@
   "dependencies": {
     "@mdi/font": "5.9.55",
     "axios": "^1.3.4",
+    "jspdf": "^2.5.1",
+    "jspdf-autotable": "^3.5.28",
     "roboto-fontface": "*",
     "vue": "^3.2.13",
     "vue-router": "^4.0.3",
