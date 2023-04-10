@@ -6,14 +6,88 @@
         <div class="header">
           <ExportButton :headers="headers" :items="doctors" class="header_btn" />
   
-          <!-- Criar componente -->
           <v-dialog v-model="dialog" max-width="700px">
             <!-- eslint-disable-next-line vue/valid-v-slot -->
             <template v-slot:activator="{ props }">
-              <v-btn class="header_btn" prepend-icon="mdi-plus" v-bind="props"
-                >Adicionar</v-btn
-              >
+              <v-btn class="header_btn" prepend-icon="mdi-plus" v-bind="props">
+                Adicionar
+              </v-btn>
             </template>
+
+            <!-- Adicionar / Editar  -->
+            <v-card>
+              <v-card-title>
+                <span class="text-h5">{{ formTitle }}</span>
+              </v-card-title>
+
+              <v-card-text>
+                <v-container>
+                  <v-row>
+                    <v-col cols="12" sm="6" md="6">
+                      <v-text-field
+                        variant="underlined"
+                        v-model="editedItem.name"
+                        label="Nome"
+                      />
+                    </v-col>
+                    <v-col cols="12" sm="6" md="6">
+                      <v-text-field
+                        variant="underlined"
+                        v-model="editedItem.email"
+                        label="E-mail"
+                      />
+                    </v-col>
+                  </v-row>
+                  <v-row>
+                    <v-col cols="12" sm="6" md="6">
+                      <v-text-field
+                        variant="underlined"
+                        type="password"
+                        v-model="editedItem.password"
+                        label="Senha"
+                      />
+                    </v-col>
+                    <v-col cols="12" sm="6" md="6">
+                      <v-text-field
+                        variant="underlined"
+                        v-model="editedItem.academy"
+                        label="Formação"
+                      />
+                    </v-col>
+                  </v-row>
+                  <v-row>
+                    <v-col cols="12" sm="6" md="6">
+                      <v-select
+                        variant="underlined"
+                        :items="getOccupationNames()"
+                        v-model="editedItem.occupation"
+                        label="Ocupação"
+                      />
+                    </v-col>
+                    <v-col cols="12" sm="6" md="6">
+                      <v-select
+                        variant="underlined"
+                        :items="getHospitalNames()"
+                        v-model="editedItem.hospital"
+                        label="Hospital"
+                      />
+                    </v-col>
+                  </v-row>
+                </v-container>
+              </v-card-text>
+
+              <v-card-actions>
+                <v-spacer />
+
+                <v-btn color="primary" variant="text" @click="save">
+                  Salvar
+                </v-btn>
+                
+                <v-btn color="primary" variant="text" @click="close">
+                  Cancelar
+                </v-btn>
+              </v-card-actions>
+            </v-card>
           </v-dialog>
   
           <div class="header_txt">
@@ -44,14 +118,13 @@
                 >Deseja excluir este médico?
               </v-card-title>
               <v-card-actions>
-                <v-spacer></v-spacer>
-                <v-btn color="primary" text @click="deleteItemConfirm"
-                  >Confirmar</v-btn
-                >
-                <v-btn color="primary" text @click="closeDelete"
-                  >Cancelar</v-btn
-                >
-                <v-spacer></v-spacer>
+                <v-btn color="primary" text @click="deleteItemConfirm">
+                  Confirmar
+                </v-btn>
+
+                <v-btn color="primary" text @click="closeDelete">
+                  Cancelar
+                </v-btn>
               </v-card-actions>
             </v-card>
           </v-dialog>
@@ -83,6 +156,8 @@ import { DoctorService, UserService, HospitalService, OccupationService } from '
 type DoctorTable = {
   id: number
   name?: string
+  email?: string,
+  password?: string,
   hospital?: string
   occupation?: string
   academy?: string
@@ -123,15 +198,19 @@ export default defineComponent({
       const item: DoctorTable = {
         id: doctor.id as number,
         name: user.name,
+        email: user.email,
         occupation: occupation.name,
         hospital: hospital.name,
         academy: doctor.acad_education,
+        password: user.password,
       }
 
       items.push(item)
     })
 
     this.doctors = items
+    this.hospitals = hospitals
+    this.occupations = occupations
   },
   data: () => ({
     search: '',
@@ -142,16 +221,106 @@ export default defineComponent({
     headers: [
       { title: 'ID', align: 'start', key: 'id', sortable: false },
       { title: 'Nome', align: 'start', key: 'name' },
-      { title: 'Área de Atuação', align: 'start', key: 'occupation' },
+      { title: 'E-mail', align: 'start', key: 'email', sortable: false },
+      { title: 'Ocupação', align: 'start', key: 'occupation' },
       { title: 'Hospital', align: 'start', key: 'hospital' },
       { title: 'Formação', align: 'start', key: 'academy' },
       { title: 'Ações', key: 'actions', sortable: false },
     ],
-    doctors: [] as DoctorTable[]
+    doctors: [] as DoctorTable[],
+    occupations: [] as Occupation[],
+    hospitals: [] as Hospital[],
+
+    editedItem: {
+      id: -1,
+      name: '',
+      email: '',
+      password: '',
+      hospital: '',
+      occupation: '',
+      academy: ''
+    } as DoctorTable,
   }),
+  computed: {
+    formTitle () {
+      return this.doctorId === -1 ? 'Novo Médico' : 'Editar Médico'
+    },
+  },
   methods: {
-    editItem (item: any) {
+    getOccupationNames() {
+      const names: string[] = []
+
+      this.occupations.forEach((occupation) => {
+        names.push(occupation.name)
+      })
+
+      return names
+    },
+    getHospitalNames() {
+      const names: string[] = []
+
+      this.hospitals.forEach((hospital) => {
+        names.push(hospital.name)
+      })
+
+      return names
+    },
+    async createDoctorFromTable(item: DoctorTable) {
+      const newUser = {
+        name: item.name,
+        email: item.email,
+        password: item.password
+      } as User
+
+      // Need get User ID
+      const user = await UserService.add(newUser)
+
+      const hospital = this.hospitals.find((hospital) => {
+        if (item.hospital == hospital.name) {
+          return hospital
+        }
+      }) as Hospital
+
+      const occupation = this.occupations.find((occupation) => {
+        if (item.occupation == occupation.name) {
+          return occupation
+        }
+      }) as Occupation
+
+      // console.log(user);
+      // console.log(occupation);
+      // console.log(hospital);
+
+      // const newDoctor = {
+      //   ref_user: user.id,
+      //   acad_education: item.academy,
+      //   ref_occupation: occupation?.id,
+      //   ref_hospital: hospital.id
+      // } as Doctor
+
+      // await DoctorService.add(newDoctor)
+    },
+
+    // Dialog Methods -------------------------
+    editItem (doctor: DoctorTable) {
+      this.doctorId = this.doctors.indexOf(doctor)
+
+      this.editedItem = Object.assign({}, doctor)
       this.dialog = true
+    },
+    save () {
+      if (this.doctorId > -1) {
+        // Object.assign(this.doctors[this.doctorId], this.editedItem)
+      } else {
+        this.createDoctorFromTable(this.editedItem)
+        // this.doctors.push(this.editedItem)
+      }
+      this.close()
+    },
+    close () {
+      this.dialog = false
+
+      this.clearFields()
     },
     deleteItem(doctor: DoctorTable) {
       this.doctorId = doctor.id
@@ -168,7 +337,17 @@ export default defineComponent({
     closeDelete() {
       this.dialogDelete = false
       this.doctorId = -1
-    }
+    },
+    clearFields() {
+      this.editedItem = {
+        id: -1,
+        name: '',
+        hospital: '',
+        occupation: '',
+        academy: ''
+      } as DoctorTable
+    },
+    // -----------------------------------------
   }
 })
 </script>

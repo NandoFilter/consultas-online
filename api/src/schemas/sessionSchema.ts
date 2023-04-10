@@ -2,7 +2,6 @@ import { QueryError } from 'mysql2'
 import database from '../helper/database'
 import { User, Session } from '../models'
 import * as jwt from 'jsonwebtoken'
-import { log } from 'console'
 
 const table = 'sessions'
 
