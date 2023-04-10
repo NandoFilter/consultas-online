@@ -2,31 +2,32 @@
   <div>
     <Navigation />
     <div class="main">
-      <div class="header">
-        <ExportButton :headers="headers" :items="items" class="header_btn" />
-
-        <!-- Criar componente -->
-        <v-dialog v-model="dialog" max-width="700px">
-          <!-- eslint-disable-next-line vue/valid-v-slot -->
-          <template v-slot:activator="{ props }">
-            <v-btn class="header_btn" prepend-icon="mdi-plus" v-bind="props"
-              >Adicionar</v-btn
-            >
-          </template>
-        </v-dialog>
-
-        <div class="header_txt">
-          <v-text-field
-            v-model="search"
-            prepend-icon="mdi-magnify"
-            variant="underlined"
-            label="Pesquisar"
-            single-line
-            hide-details
-            clearable
-          />
+      <div class="content">
+        <div class="header">
+          <ExportButton :headers="headers" :items="items" class="header_btn" />
+  
+          <!-- Criar componente -->
+          <v-dialog v-model="dialog" max-width="700px">
+            <!-- eslint-disable-next-line vue/valid-v-slot -->
+            <template v-slot:activator="{ props }">
+              <v-btn class="header_btn" prepend-icon="mdi-plus" v-bind="props"
+                >Adicionar</v-btn
+              >
+            </template>
+          </v-dialog>
+  
+          <div class="header_txt">
+            <v-text-field
+              v-model="search"
+              prepend-icon="mdi-magnify"
+              variant="underlined"
+              label="Pesquisar"
+              single-line
+              hide-details
+              clearable
+            />
+          </div>
         </div>
-      </div>
 
       <v-data-table
         :headers="headers"
@@ -37,7 +38,7 @@
       >
         <!-- Delete Dialog -->
         <template v-slot:top>
-          <DeleteDialog v-model="dialogDelete" />
+          <!-- <DeleteDialog v-model="dialogDelete" /> -->
         </template>
 
         <!-- eslint-disable-next-line vue/valid-v-slot -->
@@ -50,18 +51,66 @@
       </v-data-table>
     </div>
   </div>
+
+  </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
 import { Navigation, ExportButton } from '@/components'
-import DeleteDialog from '@/components/dialogs/DeleteDialog.vue'
+import { Doctor, Hospital, Occupation, User } from '@/models'
+import { DoctorService, UserService, HospitalService, OccupationService } from '@/services'
+
+type DoctorTable = {
+  name?: string
+  hospital?: string
+  occupation?: string
+  academy?: string
+}
 
 export default defineComponent({
   components: {
     Navigation,
     ExportButton,
-    DeleteDialog
+  },
+  async created() {
+    const doctors = await DoctorService.getAll()
+    const users = await UserService.getAll()
+    const hospitals = await HospitalService.getAll()
+    const occupations = await OccupationService.getAll()
+
+    const items: Array<DoctorTable> = []
+
+    doctors.forEach(async (doctor: Doctor) => {
+      const user = users.find((user: User) => {
+        if (doctor.ref_user == user.id) {
+          return user
+        }
+      }) as User
+
+      const hospital = hospitals.find((hospital: Hospital) => {
+        if (doctor.ref_hospital == hospital.id) {
+          return hospital
+        }
+      }) as Hospital
+
+      const occupation = occupations.find((occupation: Occupation) => {
+        if (doctor.ref_occupation == occupation.id) {
+          return occupation
+        }
+      }) as Occupation
+
+      const item: DoctorTable = {
+        name: user.name,
+        occupation: occupation.name,
+        hospital: hospital.name,
+        academy: doctor.acad_education,
+      }
+
+      items.push(item)
+    })
+
+    this.items = items
   },
   data: () => ({
     search: '',
@@ -75,26 +124,7 @@ export default defineComponent({
       { title: 'Formação', align: 'start', key: 'academy' },
       { title: 'Ações', key: 'actions', sortable: false },
     ],
-    items: [
-      {
-        name: 'Fernando Filter',
-        occupation: 'Psicólogo',
-        hospital: 'Hospital Bruno Born',
-        academy: 'Univates',
-      },
-      {
-        name: 'Jorge da Silva',
-        occupation: 'Nutricionista',
-        hospital: 'Hospital Albert Einstein',
-        academy: 'USP',
-      },
-      {
-        name: 'Mariana Cunha',
-        occupation: 'Dermatologista',
-        hospital: 'Hospital Nove de Julho',
-        academy: 'UFRGS',
-      },
-    ],
+    items: [] as DoctorTable[]
   }),
   methods: {
     editItem (item: any) {
@@ -114,6 +144,40 @@ export default defineComponent({
 
   display: flex;
   justify-content: center;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  display: flex;
+  justify-content: end;
+
+  margin-right: 30px;
+  margin-bottom: 15px;
+
+  &_btn {
+    text-transform: unset !important;
+    margin: 10px 5px;
+  }
+
+  &_txt {
+    width: 25vw;
+    margin-left: 10px;
+  }
+}
+
+.table {
+  width: 75vw;
+  padding: 5px;
+  border-radius: 10px;
+}
+
+.deleteDialog {
+  display: flex;
   align-items: center;
+  padding: 5px 0;
 }
 </style>
