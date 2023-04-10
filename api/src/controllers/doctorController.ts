@@ -1,7 +1,6 @@
 import { Request, Response } from 'express'
 import { Doctor } from '../models'
 import DoctorSchema from '../schemas/doctorSchema'
-import UserSchema from '../schemas/userSchema'
 
 class DoctorController {
   /**
@@ -88,9 +87,9 @@ class DoctorController {
   public delete(req: Request, res: Response) {
     const id = Number(req.params.id)
 
-    UserSchema.delete(id)
+    DoctorSchema.delete(id)
 
-    return res.json('Success')
+    return res.status(200)
   }
 }
 

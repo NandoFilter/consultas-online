@@ -4,7 +4,7 @@
     <div class="main">
       <div class="content">
         <div class="header">
-          <ExportButton :headers="headers" :items="items" class="header_btn" />
+          <ExportButton :headers="headers" :items="doctors" class="header_btn" />
   
           <!-- Criar componente -->
           <v-dialog v-model="dialog" max-width="700px">
@@ -31,22 +31,41 @@
 
       <v-data-table
         :headers="headers"
-        :items="items"
+        :items="doctors"
         :search="search"
         item-value="name"
         class="table elevation-1"
       >
         <!-- Delete Dialog -->
         <template v-slot:top>
-          <!-- <DeleteDialog v-model="dialogDelete" /> -->
+          <v-dialog v-model="dialogDelete" max-width="379px">
+            <v-card class="dialog_delete">
+              <v-card-title class="text-h5"
+                >Deseja excluir este médico?
+              </v-card-title>
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn color="primary" text @click="deleteItemConfirm"
+                  >Confirmar</v-btn
+                >
+                <v-btn color="primary" text @click="closeDelete"
+                  >Cancelar</v-btn
+                >
+                <v-spacer></v-spacer>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
         </template>
 
         <!-- eslint-disable-next-line vue/valid-v-slot -->
         <template v-slot:item.actions="{ item }">
-          <v-icon size="small" class="me-2" @click="editItem(item)">
+          <v-icon size="small" class="me-2" @click="editItem(item.raw)">
             mdi-pencil
           </v-icon>
-          <v-icon size="small" @click="deleteItem(item)"> mdi-delete </v-icon>
+
+          <v-icon size="small" @click="deleteItem(item.raw)">
+            mdi-delete
+          </v-icon>
         </template>
       </v-data-table>
     </div>
@@ -62,6 +81,7 @@ import { Doctor, Hospital, Occupation, User } from '@/models'
 import { DoctorService, UserService, HospitalService, OccupationService } from '@/services'
 
 type DoctorTable = {
+  id: number
   name?: string
   hospital?: string
   occupation?: string
@@ -101,6 +121,7 @@ export default defineComponent({
       }) as Occupation
 
       const item: DoctorTable = {
+        id: doctor.id as number,
         name: user.name,
         occupation: occupation.name,
         hospital: hospital.name,
@@ -110,28 +131,43 @@ export default defineComponent({
       items.push(item)
     })
 
-    this.items = items
+    this.doctors = items
   },
   data: () => ({
     search: '',
     dialog: false,
     dialogDelete: false,
+    doctorId: -1,
 
     headers: [
-      { title: 'Nome', align: 'start', key: 'name', sortable: false },
+      { title: 'ID', align: 'start', key: 'id', sortable: false },
+      { title: 'Nome', align: 'start', key: 'name' },
       { title: 'Área de Atuação', align: 'start', key: 'occupation' },
       { title: 'Hospital', align: 'start', key: 'hospital' },
       { title: 'Formação', align: 'start', key: 'academy' },
       { title: 'Ações', key: 'actions', sortable: false },
     ],
-    items: [] as DoctorTable[]
+    doctors: [] as DoctorTable[]
   }),
   methods: {
     editItem (item: any) {
       this.dialog = true
     },
-    deleteItem(item: any) {
+    deleteItem(doctor: DoctorTable) {
+      this.doctorId = doctor.id
+
       this.dialogDelete = true
+    },
+    deleteItemConfirm() {
+      this.doctors.splice(this.doctorId, 1)
+
+      DoctorService.delete(this.doctorId)
+
+      this.closeDelete()
+    },
+    closeDelete() {
+      this.dialogDelete = false
+      this.doctorId = -1
     }
   }
 })
@@ -175,7 +211,7 @@ export default defineComponent({
   border-radius: 10px;
 }
 
-.deleteDialog {
+.dialog_delete {
   display: flex;
   align-items: center;
   padding: 5px 0;
