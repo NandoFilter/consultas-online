@@ -7,7 +7,9 @@ export default {
   },
 
   async getById(id: number): Promise<Doctor> {
-    return service.get(`/doctor/${id}`)
+    const doctor = await service.get(`/doctor/${id}`)
+
+    return doctor[0]
   },
 
   async add(doctor: Doctor): Promise<Doctor> {
@@ -15,7 +17,9 @@ export default {
   },
 
   async update(doctor: Doctor): Promise<Doctor> {
-    return service.put(`/doctor/${doctor.id}`, doctor)
+    const selectedDoctor = await service.put(`/doctor/${doctor.id}`, doctor)
+
+    return selectedDoctor[0]
   },
 
   async delete(id: number) {

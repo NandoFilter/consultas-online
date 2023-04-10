@@ -7,7 +7,9 @@ export default {
   },
 
   async getById(id: number): Promise<User> {
-    return service.get(`/user/${id}`)
+    const user = await service.get(`/user/${id}`)
+
+    return user[0]
   },
 
   async add(user: User): Promise<User> {
@@ -15,7 +17,9 @@ export default {
   },
 
   async update(user: User): Promise<User> {
-    return service.put(`/user/${user.id}`, user)
+    const updatedUser = await service.put(`/user/${user.id}`, user)
+
+    return updatedUser[0]
   },
 
   async delete(id: number) {

@@ -85,10 +85,20 @@ class UserSchema {
 
     if (conn && id) {
       conn.query(
-        `UPDATE ${table} SET name = '${name}', email = '${email}', password = '${password}' where id = ${id}`
+        `UPDATE ${table} SET name = '${name}', email = '${email}', password = '${password}' where id = ${id}`,
+        (err: Error) => {
+          if (err) throw err
+        }
       )
 
-      this.getById(id, callback)
+      conn.query(
+        `SELECT * FROM ${table} WHERE id = ${id}`,
+        (err: Error, result: User) => {
+          if (err) throw err
+
+          callback(result)
+        }
+      )
 
       conn.end()
     }

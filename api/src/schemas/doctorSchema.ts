@@ -86,12 +86,20 @@ class DoctorSchema {
 
     if (conn) {
       conn.query(
-        `UPDATE ${table} SET ref_user = ${ref_user}, acad_education = '${acad_education}', ref_occupation = ${ref_occupation}, ref_hospital = ${ref_hospital} where id = ${id}`
+        `UPDATE ${table} SET ref_user = ${ref_user}, acad_education = '${acad_education}', ref_occupation = ${ref_occupation}, ref_hospital = ${ref_hospital} where id = ${id}`,
+        (err: Error) => {
+          if (err) throw err
+        }
       )
 
-      if (id) {
-        this.getById(id, callback)
-      }
+      conn.query(
+        `SELECT * FROM ${table} WHERE id = ${id}`,
+        (err: Error, result: Doctor) => {
+          if (err) throw err
+
+          callback(result)
+        }
+      )
 
       conn.end()
     }
