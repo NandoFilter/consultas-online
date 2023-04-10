@@ -60,7 +60,7 @@ export default defineComponent({
     rail: true,
     btnIcon: 'mdi-chevron-right',
     topItems: [
-      { title: 'Pesquisar', icon: 'mdi-magnify', value: '/search' },
+      { title: 'Nova Consulta', icon: 'mdi-heart-pulse', value: '/newQuery' },
       { title: 'Médicos', icon: 'mdi-stethoscope', value: '/doctors' },
       { title: 'Pacientes', icon: 'mdi-account-group', value: '/patients' },
     ],

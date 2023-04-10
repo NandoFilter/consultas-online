@@ -152,6 +152,7 @@ import { defineComponent } from 'vue'
 import { Navigation, ExportButton } from '@/components'
 import { Doctor, Hospital, Occupation, User } from '@/models'
 import { DoctorService, UserService, HospitalService, OccupationService } from '@/services'
+import DataTableUtils from '@/utils/DataTable'
 
 type DoctorTable = {
   id: number
@@ -272,7 +273,6 @@ export default defineComponent({
         password: item.password
       } as User
 
-      // Need get User ID
       const user = await UserService.add(newUser)
 
       const hospital = this.hospitals.find((hospital) => {
@@ -287,18 +287,31 @@ export default defineComponent({
         }
       }) as Occupation
 
-      // console.log(user);
-      // console.log(occupation);
-      // console.log(hospital);
+      const doctor = {
+        ref_user: user.id,
+        acad_education: item.academy,
+        ref_occupation: occupation?.id,
+        ref_hospital: hospital.id
+      } as Doctor
 
-      // const newDoctor = {
-      //   ref_user: user.id,
-      //   acad_education: item.academy,
-      //   ref_occupation: occupation?.id,
-      //   ref_hospital: hospital.id
-      // } as Doctor
+      const newDoctor = await DoctorService.add(doctor)
 
-      // await DoctorService.add(newDoctor)
+      const doctorTable = {
+        id: newDoctor.id,
+        name: user.name,
+        email: user.email,
+        hospital: hospital.name,
+        occupation: occupation.name,
+        academy: item.academy,
+        password: user.password
+      } as DoctorTable
+
+      return doctorTable
+    },
+    async updateDoctorFromTable(item: DoctorTable) {
+
+      const doctor = await DoctorService.getById(item.id)
+
     },
 
     // Dialog Methods -------------------------
@@ -308,12 +321,16 @@ export default defineComponent({
       this.editedItem = Object.assign({}, doctor)
       this.dialog = true
     },
-    save () {
+    async save () {
       if (this.doctorId > -1) {
-        // Object.assign(this.doctors[this.doctorId], this.editedItem)
+        // const doctorTable: DoctorTable = await this.updateDoctorFromTable(this.editedItem)
+        await this.updateDoctorFromTable(this.editedItem)
+
+        // Object.assign(this.doctors[this.doctorId], doctorTable)
       } else {
-        this.createDoctorFromTable(this.editedItem)
-        // this.doctors.push(this.editedItem)
+        const doctorTable: DoctorTable = await this.createDoctorFromTable(this.editedItem)
+
+        this.doctors.push(doctorTable)
       }
       this.close()
     },
@@ -328,9 +345,9 @@ export default defineComponent({
       this.dialogDelete = true
     },
     deleteItemConfirm() {
-      this.doctors.splice(this.doctorId, 1)
-
       DoctorService.delete(this.doctorId)
+
+      this.doctors.splice(this.doctorId, 1)
 
       this.closeDelete()
     },

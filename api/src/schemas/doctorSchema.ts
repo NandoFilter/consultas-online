@@ -1,4 +1,4 @@
-import { QueryError } from 'mysql2'
+import { QueryError, ResultSetHeader } from 'mysql2'
 import database from '../helper/database'
 import { Doctor } from '../models'
 
@@ -52,15 +52,19 @@ class DoctorSchema {
    *
    * @param doctor Doctor
    */
-  public add(doctor: Doctor) {
+  public add(doctor: Doctor, callback: Function) {
     const conn = database.getConnection()
 
     if (conn) {
       conn.query(
         `INSERT INTO ${table} SET ?`,
         doctor,
-        (err: QueryError | null) => {
+        (err: QueryError | null, result: ResultSetHeader) => {
           if (err) throw err
+
+          doctor.id = result.insertId
+
+          callback(doctor)
         }
       )
 

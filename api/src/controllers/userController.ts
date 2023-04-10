@@ -43,12 +43,12 @@ class UserController {
     let user: User = req.body as User
 
     if (!user.name || !user.email || !user.password) {
-      return res.send(400).end()
+      return res.status(400).end()
     }
 
-    UserSchema.add(user)
-
-    return res.json(user).send(201)
+    UserSchema.add(user, (result: User) => {
+      return res.status(201).json(result)
+    })
   }
 
   /**

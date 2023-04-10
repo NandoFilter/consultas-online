@@ -1,5 +1,13 @@
 import { createRouter, createWebHashHistory, RouteRecordRaw } from 'vue-router'
-import { LandingPage, Login, Register, Home, Search, Doctors, Patients } from '@/views'
+import {
+  LandingPage,
+  Login,
+  Register,
+  Home,
+  NewQuery,
+  Doctors,
+  Patients,
+} from '@/views'
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -20,12 +28,12 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/home',
     name: 'Início',
-    component: Home
+    component: Home,
   },
   {
-    path: '/search',
-    name: 'Pesquisa',
-    component: Search,
+    path: '/newQuery',
+    name: 'Nova Consulta',
+    component: NewQuery,
   },
   {
     path: '/doctors',
@@ -45,8 +53,8 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from, next) => {
-  document.title = to.name as string;
-  next();
-});
+  document.title = to.name as string
+  next()
+})
 
 export default router

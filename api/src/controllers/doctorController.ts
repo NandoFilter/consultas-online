@@ -48,9 +48,9 @@ class DoctorController {
       ref_hospital
     }
 
-    DoctorSchema.add(doctor)
-
-    return res.json(doctor)
+    DoctorSchema.add(doctor, (result: Doctor) => {
+      return res.status(201).json(result)
+    })
   }
 
   /**

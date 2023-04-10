@@ -10,7 +10,7 @@ export default {
     return service.get(`/user/${id}`)
   },
 
-  async add(user: User) {
+  async add(user: User): Promise<User> {
     return service.post('/user', user)
   },
 
