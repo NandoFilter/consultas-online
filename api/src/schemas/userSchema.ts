@@ -1,6 +1,7 @@
 import { QueryError, ResultSetHeader } from 'mysql2'
 import database from '../helper/database'
 import { User } from '../models'
+import bcrypt from 'bcrypt'
 
 const table = 'users'
 
@@ -52,8 +53,12 @@ class UserSchema {
    *
    * @param user User
    */
-  public add(user: User, callback: Function) {
+  public async add(user: User, callback: Function) {
     const conn = database.getConnection()
+
+    await bcrypt.hash(user.password, 10).then((hash: string) => {
+      user.password = hash
+    })
 
     if (conn) {
       conn.query(
@@ -78,8 +83,12 @@ class UserSchema {
    * @param user User
    * @param callback Function
    */
-  public update(user: User, callback: Function) {
+  public async update(user: User, callback: Function) {
     const conn = database.getConnection()
+
+    await bcrypt.hash(user.password, 10).then((hash: string) => {
+      user.password = hash
+    })
 
     const { id, name, email, password } = user
 

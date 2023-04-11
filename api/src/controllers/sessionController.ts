@@ -7,7 +7,7 @@ class SessionController {
     const { email, password } = req.body
 
     if (!email || !password) {
-      return res.status(400).end()
+      return res.status(401).end()
     }
 
     SessionSchema.login(email, password, (result: Session) => {

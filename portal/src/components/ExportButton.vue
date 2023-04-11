@@ -21,7 +21,7 @@ export default defineComponent({
       required: true
     },
     items: {
-      type: Array as PropType<string[]>,
+      type: Array as PropType<any[]>,
       required: true
     }
   },

@@ -7,7 +7,7 @@ CREATE TABLE consultas.users (
 	id INT auto_increment NOT NULL,
 	name varchar(150) NOT NULL,
 	email varchar(200) NOT NULL,
-	password varchar(50) NOT NULL,
+	password varchar(300) NOT NULL,
 	CONSTRAINT users_pk PRIMARY KEY (id)
 );
 

@@ -60,6 +60,8 @@
 import { defineComponent } from 'vue'
 import { User } from '../models'
 import SessionService from '../services/sessionService'
+import { mapActions } from 'pinia'
+import { useSessionStore } from '@/stores'
 
 export default defineComponent({
   data: () => ({
@@ -77,6 +79,7 @@ export default defineComponent({
     ],
   }),
   methods: {
+    ...mapActions(useSessionStore, ['setToken']),
     onLogin() {
       this.loading = true
       this.showError = false
@@ -89,7 +92,9 @@ export default defineComponent({
           password: this.password
         } as User
 
-        SessionService.login(user).then(() => {
+        SessionService.login(user).then((result) => {
+          this.setToken(result.token)
+
           this.$router.push('/home')
         }).catch((err) => {
           this.showError = true

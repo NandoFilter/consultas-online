@@ -43,7 +43,7 @@
                       <v-text-field
                         variant="underlined"
                         type="password"
-                        v-model="editedItem.password"
+                        v-model="password"
                         label="Senha"
                       />
                     </v-col>
@@ -157,7 +157,6 @@ type DoctorTable = {
   id: number
   name?: string
   email?: string,
-  password?: string,
   hospital?: string
   occupation?: string
   academy?: string
@@ -202,7 +201,6 @@ export default defineComponent({
         occupation: occupation.name,
         hospital: hospital.name,
         academy: doctor.acad_education,
-        password: user.password,
       }
 
       items.push(item)
@@ -218,6 +216,7 @@ export default defineComponent({
     dialogDelete: false,
     doctorId: -1,
     doctorTableId: -1,
+    password: '',
 
     headers: [
       { title: 'ID', align: 'start', key: 'id', sortable: false },
@@ -228,6 +227,7 @@ export default defineComponent({
       { title: 'Formação', align: 'start', key: 'academy' },
       { title: 'Ações', key: 'actions', sortable: false },
     ],
+
     doctors: [] as DoctorTable[],
     occupations: [] as Occupation[],
     hospitals: [] as Hospital[],
@@ -236,7 +236,6 @@ export default defineComponent({
       id: -1,
       name: '',
       email: '',
-      password: '',
       hospital: '',
       occupation: '',
       academy: ''
@@ -269,8 +268,7 @@ export default defineComponent({
     async createDoctorFromTable(item: DoctorTable) {
       const newUser = {
         name: item.name,
-        email: item.email,
-        password: item.password
+        email: item.email
       } as User
 
       const user = await UserService.add(newUser)
@@ -303,7 +301,6 @@ export default defineComponent({
         hospital: hospital.name,
         occupation: occupation.name,
         academy: item.academy,
-        password: user.password
       } as DoctorTable
 
       return doctorTable
@@ -327,9 +324,12 @@ export default defineComponent({
       selectedUser = {
         id: selectedUser.id,
         name: item.name,
-        email: item.email,
-        password: item.password
+        email: item.email
       } as User
+
+      if (this.password) {
+        selectedUser.password = this.password
+      }
 
       selectedDoctor = {
         id: selectedDoctor.id,
@@ -349,7 +349,6 @@ export default defineComponent({
         hospital: hospital.name,
         occupation: occupation.name,
         academy: item.academy,
-        password: updatedUser.password
       } as DoctorTable
 
       return doctorTable
@@ -416,6 +415,8 @@ export default defineComponent({
         occupation: '',
         academy: ''
       } as DoctorTable
+
+      this.password = ''
     },
     // -----------------------------------------
   }

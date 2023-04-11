@@ -42,7 +42,7 @@ class UserController {
   public add(req: Request, res: Response) {
     let user: User = req.body as User
 
-    if (!user.name || !user.email || !user.password) {
+    if (!user.name || !user.email) {
       return res.status(400).end()
     }
 
