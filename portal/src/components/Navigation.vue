@@ -36,6 +36,7 @@
             :prepend-icon="botItem.icon"
             :title="botItem.title"
             :to="botItem.value"
+            @click="actionClick(botItem.action)"
           />
         </v-list>
       </template>
@@ -53,6 +54,8 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
+import { mapActions } from 'pinia'
+import { useSessionStore } from '@/stores'
 
 export default defineComponent({
   data: () => ({
@@ -67,15 +70,21 @@ export default defineComponent({
     botItems: [
       { title: 'Perfil', icon: 'mdi-account', value: '/profile' },
       { title: 'Administração', icon: 'mdi-security', value: '/admin' },
-      { title: 'Sair', icon: 'mdi-logout', value: '/logout' },
+      { title: 'Sair', icon: 'mdi-logout', value: '/', action: 'logout' },
     ]
   }),
   methods: {
+    ...mapActions(useSessionStore, ['clearSession']),
     setRail() {
       this.rail = !this.rail
 
       this.btnIcon = this.rail ? 'mdi-chevron-right' : 'mdi-chevron-left'
-    }
+    },
+    actionClick(action?: string) {
+      if (action && action === 'logout') {
+        this.clearSession()
+      }
+    } 
   }
 })
 </script>

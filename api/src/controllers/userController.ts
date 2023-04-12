@@ -29,7 +29,7 @@ class UserController {
     }
 
     UserSchema.getById(id, (result: User) => {
-      Object.keys(result).length ? res.json(result) : res.send(404).end()
+      Object.keys(result).length ? res.json(result) : res.sendStatus(404).end()
     })
   }
 
@@ -50,7 +50,7 @@ class UserController {
       return res.status(201).json(result)
     }).catch((err: Error) => {
       if (err) {
-        res.status(422).json({ message: 'Não foi possível adicionar o usuário' }).end()
+        res.sendStatus(422).json({ message: 'Não foi possível adicionar o usuário' }).end()
       }
     })
   }
@@ -83,7 +83,7 @@ class UserController {
 
     UserSchema.delete(id)
 
-    return res.send(200).end()
+    return res.sendStatus(200).end()
   }
 }
 

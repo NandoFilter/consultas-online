@@ -14,33 +14,30 @@ class SessionSchema {
       conn.query(`SELECT * FROM users WHERE email = '${email}' LIMIT 1`, async (err: Error, result: User[]) => {
         if (err) throw err
 
-        if (result.length == 0) {
-          // Usuário inexistente
-          console.log('Usuário inexistente')
-        }
-
         if (result) {
           const user = result[0]
 
-          if (user.password && (await bcrypt.compare(password, user.password))) {
-            const newToken = generateToken(user)
+          if (user) {
+            if (user.password && (await bcrypt.compare(password, user.password))) {
+              const newToken = generateToken(user)
 
-            console.log(newToken)
+              if (newToken) {
+                const session: Session = {
+                  ref_user: user.id as number,
+                  token: newToken.token,
+                  exp: newToken.exp
+                }
 
-            if (newToken) {
-              const session: Session = {
-                ref_user: user.id as number,
-                token: newToken.token,
-                exp: newToken.exp
+                this.add(session)
+
+                callback(session)
               }
-
-              this.add(session)
-
-              callback(session)
+            } else {
+              // Senha inválida
+              console.log('Senha inválida')
             }
           } else {
-            // Senha inválida
-            console.log('Senha inválida')
+            console.log('Usuário inexistente')
           }
         }
       })

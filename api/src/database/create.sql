@@ -88,7 +88,7 @@ CREATE TABLE consultas.doctors (
 	ref_hospital INT NOT NULL,
 	CONSTRAINT doctors_pk PRIMARY KEY (id),
 	CONSTRAINT doctor_user_FK FOREIGN KEY (ref_user) REFERENCES consultas.users(id),
-	CONSTRAINT occupation_FK FOREIGN KEY (ref_occupation) REFERENCES consultas.occupation(id),
+	CONSTRAINT occupation_FK FOREIGN KEY (ref_occupation) REFERENCES consultas.occupations(id),
 	CONSTRAINT hospital_FK FOREIGN KEY (ref_hospital) REFERENCES consultas.hospitals(id)
 );
 
@@ -125,7 +125,7 @@ CREATE TABLE consultas.sessions (
 	id INT auto_increment NOT NULL,
 	ref_user INT NOT NULL,
 	token varchar(255) NOT NULL,
-	`date` TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+	exp TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
 	CONSTRAINT session_pk PRIMARY KEY (id),
 	CONSTRAINT user_FK FOREIGN KEY (ref_user) REFERENCES consultas.users(id)
 );

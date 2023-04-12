@@ -28,8 +28,6 @@ export function generateToken(user: User) {
       exp: new Date(Date.now() + 1 * 60 * 60 * 1000) // 1 hour
     }
 
-    console.log(result.exp.getTime())
-
     if (secret) {
       result.token = jwt.sign(
         {
