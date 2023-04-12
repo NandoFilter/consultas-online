@@ -6,7 +6,7 @@
           <v-text-field
             v-model="email"
             :readonly="loading"
-            :rules="emailRule"
+            :rules="rules.email"
             variant="underlined"
             label="E-mail"
             validate-on="blur"
@@ -16,7 +16,7 @@
           <v-text-field
             v-model="password"
             :readonly="loading"
-            :rules="passwordRule"
+            :rules="rules.password"
             variant="underlined"
             label="Senha"
             type="password"
@@ -62,6 +62,7 @@ import { User } from '../models'
 import SessionService from '../services/sessionService'
 import { mapActions } from 'pinia'
 import { useSessionStore } from '@/stores'
+import rules from '@/utils/rules'
 
 export default defineComponent({
   data: () => ({
@@ -69,14 +70,7 @@ export default defineComponent({
     password: null,
     loading: false,
     showError: false,
-
-    emailRule: [
-      (v: string) => !!v || 'Informe seu e-mail'
-    ],
-
-    passwordRule: [
-      (v: string) => !!v || 'Informe sua senha'
-    ],
+    rules
   }),
   methods: {
     ...mapActions(useSessionStore, ['setToken']),

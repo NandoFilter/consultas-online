@@ -28,6 +28,9 @@
                         variant="underlined"
                         v-model="editedItem.name"
                         label="Nome"
+                        :rules="rules.name"
+                        validate-on="blur"
+                        required
                       />
                     </v-col>
                     <v-col cols="12" sm="6" md="6">
@@ -35,6 +38,9 @@
                         variant="underlined"
                         v-model="editedItem.email"
                         label="E-mail"
+                        :rules="rules.email"
+                        validate-on="blur"
+                        required
                       />
                     </v-col>
                   </v-row>
@@ -45,6 +51,9 @@
                         type="password"
                         v-model="password"
                         label="Senha"
+                        :rules="rules.password"
+                        validate-on="blur"
+                        required
                       />
                     </v-col>
                     <v-col cols="12" sm="6" md="6">
@@ -52,6 +61,9 @@
                         variant="underlined"
                         v-model="editedItem.academy"
                         label="Formação"
+                        :rules="rules.academy"
+                        validate-on="blur"
+                        required
                       />
                     </v-col>
                   </v-row>
@@ -62,6 +74,9 @@
                         :items="getOccupationNames()"
                         v-model="editedItem.occupation"
                         label="Ocupação"
+                        :rules="rules.occupation"
+                        validate-on="blur"
+                        required
                       />
                     </v-col>
                     <v-col cols="12" sm="6" md="6">
@@ -70,6 +85,9 @@
                         :items="getHospitalNames()"
                         v-model="editedItem.hospital"
                         label="Hospital"
+                        :rules="rules.hospital"
+                        validate-on="blur"
+                        required
                       />
                     </v-col>
                   </v-row>
@@ -152,6 +170,7 @@ import { defineComponent } from 'vue'
 import { Navigation, ExportButton } from '@/components'
 import { Doctor, Hospital, Occupation, User } from '@/models'
 import { DoctorService, UserService, HospitalService, OccupationService } from '@/services'
+import rules from '@/utils/rules'
 
 type DoctorTable = {
   id: number
@@ -217,6 +236,7 @@ export default defineComponent({
     doctorId: -1,
     doctorTableId: -1,
     password: '',
+    rules,
 
     headers: [
       { title: 'ID', align: 'start', key: 'id', sortable: false },

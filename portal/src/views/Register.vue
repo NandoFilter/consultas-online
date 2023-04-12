@@ -6,7 +6,7 @@
           <v-text-field
             v-model="name"
             :readonly="loading"
-            :rules="nameRule"
+            :rules="rules.name"
             variant="underlined"
             label="Nome"
             validate-on="blur"
@@ -16,7 +16,7 @@
           <v-text-field
             v-model="email"
             :readonly="loading"
-            :rules="emailRules"
+            :rules="rules.email"
             variant="underlined"
             label="E-mail"
             validate-on="blur"
@@ -26,7 +26,7 @@
           <v-text-field
             v-model="password"
             :readonly="loading"
-            :rules="passwordRules"
+            :rules="rules.password"
             variant="underlined"
             label="Senha"
             type="password"
@@ -58,6 +58,7 @@
 import { defineComponent } from 'vue'
 import { User } from '../models';
 import userService from '../services/userService';
+import rules from '@/utils/rules'
 
 export default defineComponent({
   data: () => ({
@@ -65,19 +66,7 @@ export default defineComponent({
     email: '',
     password: '',
     loading: false,
-
-    nameRule: [
-      (v: string) => !!v || 'Informe seu nome',
-    ],
-
-    emailRules: [
-        (v: string) => !!v || 'Informe seu e-mail',
-    ],
-
-    passwordRules: [
-      (v: string) => !!v || 'Digite uma senha',
-      (v: string) => v.length >= 8 || 'A senha precisa possuir 8 ou mais caractéres',
-    ]
+    rules
   }),
   methods: {
     onRegister() {
