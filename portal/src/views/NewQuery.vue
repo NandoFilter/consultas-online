@@ -2,7 +2,6 @@
   <div>
     <Navigation />
     <div class="main">
-      <h1>New Query</h1>
     </div>
   </div>
 </template>

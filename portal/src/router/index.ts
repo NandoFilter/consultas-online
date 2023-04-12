@@ -1,4 +1,5 @@
 import { createRouter, createWebHashHistory, RouteRecordRaw } from 'vue-router'
+
 import {
   LandingPage,
   Login,
@@ -7,6 +8,8 @@ import {
   NewQuery,
   Doctors,
   Patients,
+  Profile,
+  Admin,
 } from '@/views'
 
 const routes: Array<RouteRecordRaw> = [
@@ -44,6 +47,16 @@ const routes: Array<RouteRecordRaw> = [
     path: '/patients',
     name: 'Pacientes',
     component: Patients,
+  },
+  {
+    path: '/profile',
+    name: 'Perfil',
+    component: Profile,
+  },
+  {
+    path: '/admin',
+    name: 'Administração',
+    component: Admin,
   },
 ]
 
