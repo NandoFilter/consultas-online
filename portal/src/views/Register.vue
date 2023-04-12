@@ -79,7 +79,7 @@ export default defineComponent({
       }
 
       userService.add(user).then(() => {
-        this.$router.push('/')
+        this.$router.push('/login')
       })
 
       setTimeout(() => (this.loading = false), 2000)
@@ -113,7 +113,3 @@ export default defineComponent({
   }
 }
 </style>
-
-function validateEmail(): any {
-  throw new Error('Function not implemented.')
-}

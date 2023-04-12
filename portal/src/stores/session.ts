@@ -15,5 +15,10 @@ export const useSessionStore = defineStore('session', {
 
       this.token = token
     },
+    clearSession() {
+      localStorage.removeItem('token')
+
+      this.token = ''
+    },
   },
 })

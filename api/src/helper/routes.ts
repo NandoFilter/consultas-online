@@ -19,26 +19,30 @@ export function checkToken(req: Request, res: Response, next: NextFunction) {
   }
 }
 
-export function generateToken(res: Response, user: User) {
+export function generateToken(user: User) {
   try {
     const secret = process.env.SECRET_KEY
 
-    let token
+    let result = {
+      token: '',
+      exp: new Date(Date.now() + 1 * 60 * 60 * 1000) // 1 hour
+    }
+
+    console.log(result.exp.getTime())
 
     if (secret) {
-      token = jwt.sign(
+      result.token = jwt.sign(
         {
-          id: user.id
+          id: user.id,
+          exp: result.exp.getTime()
         },
         secret
       )
     }
 
-    return token
+    return result
   } catch (err) {
-    res.status(400).json({
-      message: 'Erro ao gerar token'
-    })
+    throw err
   }
 }
 

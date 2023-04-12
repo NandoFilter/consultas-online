@@ -67,7 +67,7 @@ export default defineComponent({
     botItems: [
       { title: 'Perfil', icon: 'mdi-account', value: '/profile' },
       { title: 'Administração', icon: 'mdi-security', value: '/admin' },
-      { title: 'Sair', icon: 'mdi-logout', value: '/' },
+      { title: 'Sair', icon: 'mdi-logout', value: '/logout' },
     ]
   }),
   methods: {

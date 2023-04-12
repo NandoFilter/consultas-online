@@ -1,24 +1,31 @@
-const decode = (token) => {
+interface Token {
+  header: object
+  payload: object
+  signature: string
+  expires: number
+}
 
-  if (!token) return undefined
+const decode = (token: string): Token => {
+  if (!token) return {} as Token
 
   const tokenArray = token.split('.')
   const header = JSON.parse(atob(tokenArray[0]))
   const payload = JSON.parse(atob(tokenArray[1]))
 
-  const decodedToken = {
+  const decodedToken: Token = {
     header,
     payload,
+    signature: tokenArray[2],
     expires: payload.exp,
-    signature: tokenArray[2]
   }
 
   return decodedToken
 }
 
-const isTokenValid = (token) => {
-
-  if (!token || !localStorage.getItem('token')) { return false }
+const isTokenValid = (token: string) => {
+  if (!token || !localStorage.getItem('token')) {
+    return false
+  }
 
   const decodedToken = decode(token)
 

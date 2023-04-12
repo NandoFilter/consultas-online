@@ -1,8 +1,8 @@
 import { QueryError } from 'mysql2'
 import database from '../helper/database'
 import { User, Session } from '../models'
-import * as jwt from 'jsonwebtoken'
 import bcrypt from 'bcrypt'
+import { generateToken } from '../helper/routes'
 
 const table = 'sessions'
 
@@ -23,13 +23,21 @@ class SessionSchema {
           const user = result[0]
 
           if (user.password && (await bcrypt.compare(password, user.password))) {
-            const token = jwt.sign({ id: user.id, email: user.email }, process.env.SECRET_KEY as string) as string
+            const newToken = generateToken(user)
 
-            const session: Session = { ref_user: user.id as number, token }
+            console.log(newToken)
 
-            this.add(session)
+            if (newToken) {
+              const session: Session = {
+                ref_user: user.id as number,
+                token: newToken.token,
+                exp: newToken.exp
+              }
 
-            callback(session)
+              this.add(session)
+
+              callback(session)
+            }
           } else {
             // Senha inválida
             console.log('Senha inválida')

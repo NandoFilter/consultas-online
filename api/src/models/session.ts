@@ -2,7 +2,7 @@ interface Session {
   id?: number
   ref_user: number
   token: string
-  date?: Date
+  exp?: Date
 }
 
 export default Session
