@@ -54,6 +54,7 @@
                         :rules="rules.password"
                         validate-on="blur"
                         required
+                        :disabled="doctorId != -1"
                       />
                     </v-col>
                     <v-col cols="12" sm="6" md="6">
@@ -401,6 +402,7 @@ export default defineComponent({
     },
     close () {
       this.dialog = false
+      this.doctorId = -1
 
       this.clearFields()
     },

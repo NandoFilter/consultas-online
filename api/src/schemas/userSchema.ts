@@ -35,14 +35,11 @@ class UserSchema {
     const conn = database.getConnection()
 
     if (conn) {
-      conn.query(
-        `SELECT * FROM ${table} WHERE id = ${id}`,
-        (err: Error, result: User) => {
-          if (err) throw err
+      conn.query(`SELECT * FROM ${table} WHERE id = ${id}`, (err: Error, result: User) => {
+        if (err) throw err
 
-          callback(result)
-        }
-      )
+        callback(result)
+      })
 
       conn.end()
     }
@@ -56,22 +53,25 @@ class UserSchema {
   public async add(user: User, callback: Function) {
     const conn = database.getConnection()
 
-    await bcrypt.hash(user.password, 10).then((hash: string) => {
-      user.password = hash
-    })
+    if (user.password) {
+      await bcrypt
+        .hash(user.password, 10)
+        .then((hash: string) => {
+          user.password = hash
+        })
+        .catch((err: Error) => {
+          throw err
+        })
+    }
 
     if (conn) {
-      conn.query(
-        `INSERT INTO ${table} SET ?`,
-        user,
-        (err: QueryError | null, result: ResultSetHeader) => {
-          if (err) throw err
+      conn.query(`INSERT INTO ${table} SET ?`, user, (err: QueryError | null, result: ResultSetHeader) => {
+        if (err) throw err
 
-          user.id = result.insertId
+        user.id = result.insertId
 
-          callback(user)
-        }
-      )
+        callback(user)
+      })
 
       conn.end()
     }
@@ -86,28 +86,37 @@ class UserSchema {
   public async update(user: User, callback: Function) {
     const conn = database.getConnection()
 
-    await bcrypt.hash(user.password, 10).then((hash: string) => {
-      user.password = hash
-    })
+    if (user.password) {
+      await bcrypt.hash(user.password, 10).then((hash: string) => {
+        user.password = hash
+      })
+    }
 
-    const { id, name, email, password } = user
+    const { id } = user
+
+    delete user.id
+
+    if (!user.password) {
+      delete user.password
+    }
+
+    const columns = Object.keys(user)
+    const values = Object.values(user)
 
     if (conn && id) {
       conn.query(
-        `UPDATE ${table} SET name = '${name}', email = '${email}', password = '${password}' where id = ${id}`,
-        (err: Error) => {
-          if (err) throw err
-        }
+        `UPDATE ${table} SET ${columns
+          .map((column, index) => {
+            return `${column} = '${values[index]}'`
+          })
+          .join(', ')} WHERE id = ${id}`
       )
 
-      conn.query(
-        `SELECT * FROM ${table} WHERE id = ${id}`,
-        (err: Error, result: User) => {
-          if (err) throw err
+      conn.query(`SELECT * FROM ${table} WHERE id = ${id}`, (err: Error, result: User) => {
+        if (err) throw err
 
-          callback(result)
-        }
-      )
+        callback(result)
+      })
 
       conn.end()
     }

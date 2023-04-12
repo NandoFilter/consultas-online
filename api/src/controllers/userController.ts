@@ -48,6 +48,10 @@ class UserController {
 
     UserSchema.add(user, (result: User) => {
       return res.status(201).json(result)
+    }).catch((err: Error) => {
+      if (err) {
+        res.status(422).json({ message: 'Não foi possível adicionar o usuário' }).end()
+      }
     })
   }
 
