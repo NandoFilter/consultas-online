@@ -112,7 +112,6 @@ router.beforeEach((to, from, next) => {
 
   const isTokenValid = jwt.isTokenValid(session.token)
 
-  // TÁ FUNCIONANDO
   if (to.matched.some((record) => record.meta.requiresAuth)) {
     if (!isTokenValid) {
       next({ path: '/login' })

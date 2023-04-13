@@ -49,7 +49,7 @@
                       <v-text-field
                         variant="underlined"
                         type="password"
-                        v-model="password"
+                        v-model="userPassword"
                         label="Senha"
                         :rules="rules.password"
                         validate-on="blur"
@@ -236,7 +236,7 @@ export default defineComponent({
     dialogDelete: false,
     doctorId: -1,
     doctorTableId: -1,
-    password: '',
+    userPassword: '',
     rules,
 
     headers: [
@@ -289,14 +289,11 @@ export default defineComponent({
     async createDoctorFromTable(item: DoctorTable) {
       const newUser = {
         name: item.name,
-        email: item.email
+        email: item.email,
+        password: this.userPassword
       } as User
 
-      const user = await UserService.add(newUser).then((result) => {
-        if (result.password) {
-          return result
-        }
-      })
+      const user = await UserService.add(newUser)
 
       const hospital = this.hospitals.find((hospital) => {
         if (item.hospital == hospital.name) {
@@ -356,8 +353,8 @@ export default defineComponent({
         email: item.email
       } as User
 
-      if (this.password) {
-        selectedUser.password = this.password
+      if (this.userPassword) {
+        selectedUser.password = this.userPassword
       }
 
       selectedDoctor = {
@@ -450,7 +447,7 @@ export default defineComponent({
         academy: ''
       } as DoctorTable
 
-      this.password = ''
+      this.userPassword = ''
     },
     // -----------------------------------------
   }

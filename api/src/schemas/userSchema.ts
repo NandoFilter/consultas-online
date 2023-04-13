@@ -58,22 +58,22 @@ class UserSchema {
         .hash(user.password, 10)
         .then((hash: string) => {
           user.password = hash
-
-          if (conn) {
-            conn.query(`INSERT INTO ${table} SET ?`, user, (err: QueryError | null, result: ResultSetHeader) => {
-              if (err) throw err
-
-              user.id = result.insertId
-
-              callback(user)
-            })
-
-            conn.end()
-          }
         })
         .catch((err: Error) => {
           throw err
         })
+    }
+
+    if (conn && user.password) {
+      conn.query(`INSERT INTO ${table} SET ?`, user, (err: QueryError | null, result: ResultSetHeader) => {
+        if (err) throw err
+
+        user.id = result.insertId
+
+        callback(user)
+      })
+
+      conn.end()
     }
   }
 
