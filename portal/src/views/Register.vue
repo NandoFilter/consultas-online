@@ -54,7 +54,7 @@
         class="alert"
         icon="$error"
         color="error"
-        title="Erro ao efetuar login"
+        title="Erro ao efetuar cadastro"
         text="Reveja os valores preenchidos nos campos e tente novamente"
         v-model="showError"
         closable
