@@ -49,6 +49,17 @@
           </div>
         </v-form>
       </v-card>
+
+      <v-alert
+        class="alert"
+        icon="$error"
+        color="error"
+        title="Erro ao efetuar login"
+        text="Reveja os valores preenchidos nos campos e tente novamente"
+        v-model="showError"
+        closable
+      />
+
       <router-link class="login_link" to="/">Voltar ao Início</router-link>
     </v-container>
   </div>
@@ -66,11 +77,13 @@ export default defineComponent({
     email: '',
     password: '',
     loading: false,
+    showError: false,
     rules
   }),
   methods: {
     onRegister() {
       this.loading = true
+      this.showError = false
 
       const user: User = {
         name: this.name,
@@ -78,9 +91,17 @@ export default defineComponent({
         password: this.password
       }
 
-      userService.add(user).then(() => {
-        this.$router.push('/login')
-      })
+      if (user.password) {
+        userService.add(user).then(() => {
+          this.$router.push('/login')
+        }).catch((err) => {
+          this.showError = true
+  
+          throw err
+        })
+      } else {
+        this.showError = true
+      }
 
       setTimeout(() => (this.loading = false), 2000)
     }
@@ -111,5 +132,9 @@ export default defineComponent({
       text-decoration: underline;
     }
   }
+}
+
+.alert {
+  position: absolute;
 }
 </style>

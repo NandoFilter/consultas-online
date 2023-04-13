@@ -33,11 +33,12 @@ class SessionSchema {
                 callback(session)
               }
             } else {
-              // Senha inválida
               console.log('Senha inválida')
+              callback(null)
             }
           } else {
             console.log('Usuário inexistente')
+            callback(null)
           }
         }
       })
