@@ -29,7 +29,9 @@ const isTokenValid = (token: string) => {
 
   const decodedToken = decode(token)
 
-  return decodedToken.expires * 1000 > Date.now()
+  console.log(decodedToken.expires > Date.now())
+
+  return decodedToken.expires > Date.now()
 }
 
 export default {

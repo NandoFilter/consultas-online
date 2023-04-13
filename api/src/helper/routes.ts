@@ -7,9 +7,11 @@ export function checkToken(req: Request, res: Response, next: NextFunction) {
     const authHeader = req.headers['authorization'] as string
     const token = authHeader.split(' ')[1]
 
-    const secret = process.env.SECRET_KEY as string
+    const secret = process.env.SECRET_KEY
 
-    jwt.verify(token, secret)
+    if (secret) {
+      jwt.verify(token, secret)
+    }
 
     next()
   } catch (err) {

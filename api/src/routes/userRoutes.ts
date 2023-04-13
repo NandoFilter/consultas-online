@@ -1,6 +1,5 @@
 import { Router } from 'express'
 import UserController from '../controllers/userController'
-import { checkToken } from '../helper/routes'
 
 class UserRoutes {
   /**
