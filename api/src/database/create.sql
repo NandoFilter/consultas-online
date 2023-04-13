@@ -1,4 +1,4 @@
-CREATE DATABASE "consultas";
+CREATE DATABASE consultas;
 
 -- --------------------------------------------------------
 -- Table structure for table 'USERS'
