@@ -292,7 +292,11 @@ export default defineComponent({
         email: item.email
       } as User
 
-      const user = await UserService.add(newUser)
+      const user = await UserService.add(newUser).then((result) => {
+        if (result.password) {
+          return result
+        }
+      })
 
       const hospital = this.hospitals.find((hospital) => {
         if (item.hospital == hospital.name) {
@@ -306,25 +310,29 @@ export default defineComponent({
         }
       }) as Occupation
 
-      const doctor = {
-        ref_user: user.id,
-        acad_education: item.academy,
-        ref_occupation: occupation?.id,
-        ref_hospital: hospital.id
-      } as Doctor
+      if (user) {
+        const doctor = {
+          ref_user: user.id,
+          acad_education: item.academy,
+          ref_occupation: occupation?.id,
+          ref_hospital: hospital.id
+        } as Doctor
 
-      const newDoctor = await DoctorService.add(doctor)
+        const newDoctor = await DoctorService.add(doctor)
 
-      const doctorTable = {
-        id: newDoctor.id,
-        name: user.name,
-        email: user.email,
-        hospital: hospital.name,
-        occupation: occupation.name,
-        academy: item.academy,
-      } as DoctorTable
+        const doctorTable = {
+          id: newDoctor.id,
+          name: user.name,
+          email: user.email,
+          hospital: hospital.name,
+          occupation: occupation.name,
+          academy: item.academy,
+        } as DoctorTable
 
-      return doctorTable
+        return doctorTable
+      }
+
+      return null
     },
     async updateDoctorFromTable(item: DoctorTable) {
       let selectedDoctor: Doctor = await DoctorService.getById(item.id)
@@ -393,12 +401,16 @@ export default defineComponent({
         const doctorTable: DoctorTable = await this.updateDoctorFromTable(this.editedItem)
 
         Object.assign(this.doctors[this.doctorTableId], doctorTable)
-      } else {
-        const doctorTable: DoctorTable = await this.createDoctorFromTable(this.editedItem)
 
-        this.doctors.push(doctorTable)
+        this.close()
+      } else {
+        const doctorTable = await this.createDoctorFromTable(this.editedItem)
+
+        if (doctorTable) {
+          this.doctors.push(doctorTable)
+          this.close()
+        }
       }
-      this.close()
     },
     close () {
       this.dialog = false
