@@ -1,15 +1,18 @@
 <template>
   <div class="header">
-    <v-btn variant="text">
-      <router-link to="/">Home</router-link>
+    <v-btn class="header_btn" variant="text">
+      <router-link class="logo" to="/">
+        <v-icon size="x-large">mdi-heart-pulse</v-icon>
+        Consultas
+      </router-link>
     </v-btn>
     <nav>
-      <v-btn variant=text>
+      <v-btn class="header_btn" variant=text>
         <router-link to="/login">Entrar</router-link>
       </v-btn>
 
-      <v-btn variant=text>
-        <router-link to="/register">Cadastre-se</router-link>
+      <v-btn class="header_btn">
+        <router-link class="register" to="/register">Cadastre-se</router-link>
       </v-btn>
     </nav>
   </div>
@@ -23,18 +26,29 @@ export default defineComponent({})
 
 <style lang="scss" scoped>
 .header {
-  background: $primary-color;
   padding: 10px;
 
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
+
+  &_btn {
+    text-transform: unset !important;
+  }
+}
+
+.logo {
+  color: $primary-color;
+  font-weight: bold;
+}
+
+.register {
+  color: #fff;
 }
 
 a {
-  font-weight: bold;
-  color: #fff;
+  color: #000;
   text-decoration: none;
 }
 
