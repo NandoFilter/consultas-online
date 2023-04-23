@@ -1,6 +1,5 @@
 import { createRouter, createWebHashHistory, RouteRecordRaw } from 'vue-router'
 import { useSessionStore } from '@/stores'
-import jwt from '@/plugins/jwt'
 
 import {
   LandingPage,
@@ -106,27 +105,27 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from, next) => {
-  const session = useSessionStore()
+  // const session = useSessionStore()
 
-  document.title = to.name as string
+  // document.title = to.name as string
 
-  const isTokenValid = jwt.isTokenValid(session.token)
+  // const isTokenValid = jwt.isTokenValid(session.token)
 
-  if (to.matched.some((record) => record.meta.requiresAuth)) {
-    if (!isTokenValid) {
-      next({ path: '/login' })
-    } else {
-      next()
-    }
-  } else if (to.matched.some((record) => record.meta.onlyGuests)) {
-    if (isTokenValid) {
-      next({ path: '/home' })
-    } else {
-      next()
-    }
-  } else {
+  // if (to.matched.some((record) => record.meta.requiresAuth)) {
+  //   if (!isTokenValid) {
+  //     next({ path: '/login' })
+  //   } else {
+  //     next()
+  //   }
+  // } else if (to.matched.some((record) => record.meta.onlyGuests)) {
+  //   if (isTokenValid) {
+  //     next({ path: '/home' })
+  //   } else {
+  //     next()
+  //   }
+  // } else {
     next()
-  }
+  // }
 })
 
 export default router

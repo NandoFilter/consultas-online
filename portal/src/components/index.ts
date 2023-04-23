@@ -1,3 +1,5 @@
 export { default as Header } from './Header.vue'
 export { default as Navigation } from './Navigation.vue'
-export { default as ExportButton } from './ExportButton.vue'
+export { default as ExportButton } from './tables/parts/ExportButton.vue'
+export { default as TablesTop } from './tables/parts/TablesTop.vue'
+export { default as DoctorsTable } from './tables/DoctorsTable.vue'
