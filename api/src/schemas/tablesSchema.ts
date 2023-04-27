@@ -1,7 +1,7 @@
 import { Doctor, Hospital, Occupation, User } from '../models'
 import DoctorSchema from './doctorSchema'
-import hospitalSchema from './hospitalSchema'
-import occupationSchema from './occupationSchema'
+import HospitalSchema from './hospitalSchema'
+import OccupationSchema from './occupationSchema'
 import UserSchema from './userSchema'
 
 type DoctorTable = {
@@ -13,9 +13,14 @@ type DoctorTable = {
   academy?: string
 }
 
-// TO-DO: Possibly change to Controller
+// TO-DO: Change to Controller
 class TablesSchema {
-  getDoctorsForTable(callback: Function) {
+  /**
+   * getDoctorsForTable
+   *
+   * @returns DoctorTable[]
+   */
+  getDoctorsForTable(): DoctorTable[] {
     let doctors: Doctor[] = []
     let values: DoctorTable[] = []
 
@@ -32,11 +37,11 @@ class TablesSchema {
         user = result
       })
 
-      hospitalSchema.getById(doctor.ref_hospital, (result: Hospital) => {
+      HospitalSchema.getById(doctor.ref_hospital, (result: Hospital) => {
         hospital = result
       })
 
-      occupationSchema.getById(doctor.ref_occupation, (result: Occupation) => {
+      OccupationSchema.getById(doctor.ref_occupation, (result: Occupation) => {
         occupation = result
       })
 
@@ -51,6 +56,8 @@ class TablesSchema {
 
       values.push(doctorTable)
     })
+
+    return values
   }
 }
 
