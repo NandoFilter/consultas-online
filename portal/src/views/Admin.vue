@@ -12,7 +12,7 @@
             </v-window-item>
           
             <v-window-item value="patients">
-              Pacientes
+              <PatientsTable />
             </v-window-item>
           </v-window>
         </v-card-text>
@@ -23,14 +23,16 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import { Navigation, TablesTop, DoctorsTable } from '@/components';
+import { Navigation } from '@/components';
+import { TablesTop, DoctorsTable, PatientsTable } from '@/components/tables'
 import rules from '@/utils/rules'
 
 export default defineComponent({
   components: {
     Navigation,
     TablesTop,
-    DoctorsTable
+    DoctorsTable,
+    PatientsTable
   },
   computed: {
     formTitle () {

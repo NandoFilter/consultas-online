@@ -137,7 +137,7 @@
 </template>
 
 <script>
-import { ExportButton } from '@/components'
+import { ExportButton } from '@/components/tables'
 
 export default {
   components: {

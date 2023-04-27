@@ -1,174 +1,48 @@
 <template>
-  <div>
-    <Navigation />
-    <div class="main">
-      <div class="content">
-        <div class="header">
-          <ExportButton :headers="headers" :items="doctors" class="header_btn" />
-  
-          <v-dialog v-model="dialog" max-width="700px">
-            <!-- eslint-disable-next-line vue/valid-v-slot -->
-            <template v-slot:activator="{ props }">
-              <v-btn class="header_btn" prepend-icon="mdi-plus" v-bind="props">
-                Adicionar
+  <div class="content">
+    <v-data-table
+      :headers="headers"
+      :items="doctors"
+      :search="search"
+      item-value="name"
+      class="table"
+    >
+      <!-- Delete Dialog -->
+      <template v-slot:top>
+        <v-dialog v-model="dialogDelete" max-width="379px">
+          <v-card class="dialog_delete">
+            <v-card-title class="text-h5"
+              >Deseja excluir este médico?
+            </v-card-title>
+            <v-card-actions>
+              <v-btn color="primary" text @click="deleteItemConfirm">
+                Confirmar
               </v-btn>
-            </template>
 
-            <!-- Adicionar / Editar  -->
-            <v-card>
-              <v-card-title>
-                <span class="text-h5">{{ formTitle }}</span>
-              </v-card-title>
+              <v-btn color="primary" text @click="closeDelete">
+                Cancelar
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+      </template>
 
-              <v-card-text>
-                <v-container>
-                  <v-row>
-                    <v-col cols="12" sm="6" md="6">
-                      <v-text-field
-                        variant="underlined"
-                        v-model="editedItem.name"
-                        label="Nome"
-                        :rules="rules.name"
-                        validate-on="blur"
-                        required
-                      />
-                    </v-col>
-                    <v-col cols="12" sm="6" md="6">
-                      <v-text-field
-                        variant="underlined"
-                        v-model="editedItem.email"
-                        label="E-mail"
-                        :rules="rules.email"
-                        validate-on="blur"
-                        required
-                      />
-                    </v-col>
-                  </v-row>
-                  <v-row>
-                    <v-col cols="12" sm="6" md="6">
-                      <v-text-field
-                        variant="underlined"
-                        type="password"
-                        v-model="userPassword"
-                        label="Senha"
-                        :rules="rules.password"
-                        validate-on="blur"
-                        required
-                        :disabled="doctorId != -1"
-                      />
-                    </v-col>
-                    <v-col cols="12" sm="6" md="6">
-                      <v-text-field
-                        variant="underlined"
-                        v-model="editedItem.academy"
-                        label="Formação"
-                        :rules="rules.academy"
-                        validate-on="blur"
-                        required
-                      />
-                    </v-col>
-                  </v-row>
-                  <v-row>
-                    <v-col cols="12" sm="6" md="6">
-                      <v-select
-                        variant="underlined"
-                        :items="getOccupationNames()"
-                        v-model="editedItem.occupation"
-                        label="Ocupação"
-                        :rules="rules.occupation"
-                        validate-on="blur"
-                        required
-                      />
-                    </v-col>
-                    <v-col cols="12" sm="6" md="6">
-                      <v-select
-                        variant="underlined"
-                        :items="getHospitalNames()"
-                        v-model="editedItem.hospital"
-                        label="Hospital"
-                        :rules="rules.hospital"
-                        validate-on="blur"
-                        required
-                      />
-                    </v-col>
-                  </v-row>
-                </v-container>
-              </v-card-text>
+      <!-- eslint-disable-next-line vue/valid-v-slot -->
+      <template v-slot:item.actions="{ item }">
+        <v-icon size="small" class="me-2" @click="editItem(item.raw)">
+          mdi-pencil
+        </v-icon>
 
-              <v-card-actions>
-                <v-spacer />
-
-                <v-btn color="primary" variant="text" @click="save">
-                  Salvar
-                </v-btn>
-                
-                <v-btn color="primary" variant="text" @click="close">
-                  Cancelar
-                </v-btn>
-              </v-card-actions>
-            </v-card>
-          </v-dialog>
-  
-          <div class="header_txt">
-            <v-text-field
-              v-model="search"
-              prepend-icon="mdi-magnify"
-              variant="underlined"
-              label="Pesquisar"
-              single-line
-              hide-details
-              clearable
-            />
-          </div>
-        </div>
-
-        <v-data-table
-          :headers="headers"
-          :items="doctors"
-          :search="search"
-          item-value="name"
-          class="table elevation-1"
-        >
-          <!-- Delete Dialog -->
-          <template v-slot:top>
-            <v-dialog v-model="dialogDelete" max-width="379px">
-              <v-card class="dialog_delete">
-                <v-card-title class="text-h5"
-                  >Deseja excluir este médico?
-                </v-card-title>
-                <v-card-actions>
-                  <v-btn color="primary" text @click="deleteItemConfirm">
-                    Confirmar
-                  </v-btn>
-
-                  <v-btn color="primary" text @click="closeDelete">
-                    Cancelar
-                  </v-btn>
-                </v-card-actions>
-              </v-card>
-            </v-dialog>
-          </template>
-
-          <!-- eslint-disable-next-line vue/valid-v-slot -->
-          <template v-slot:item.actions="{ item }">
-            <v-icon size="small" class="me-2" @click="editItem(item.raw)">
-              mdi-pencil
-            </v-icon>
-
-            <v-icon size="small" @click="deleteItem(item.raw)">
-              mdi-delete
-            </v-icon>
-          </template>
-        </v-data-table>
-      </div>
-    </div>
+        <v-icon size="small" @click="deleteItem(item.raw)">
+          mdi-delete
+        </v-icon>
+      </template>
+    </v-data-table>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import { Navigation } from '@/components'
-import { ExportButton } from '@/components/tables'
 import { Doctor, Hospital, Occupation, User } from '@/models'
 import { DoctorService, UserService, HospitalService, OccupationService } from '@/services'
 import rules from '@/utils/rules'
@@ -183,10 +57,6 @@ type DoctorTable = {
 }
 
 export default defineComponent({
-  components: {
-    Navigation,
-    ExportButton,
-  },
   async created() {
     const doctors = await DoctorService.getAll()
     const users = await UserService.getAll()
@@ -455,35 +325,9 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.main {
-  margin-top: 75px;
-  margin-left: 75px;
-
-  display: flex;
-  justify-content: center;
-}
-
 .content {
   display: flex;
   flex-direction: column;
-}
-
-.header {
-  display: flex;
-  justify-content: end;
-
-  margin-right: 30px;
-  margin-bottom: 15px;
-
-  &_btn {
-    text-transform: unset !important;
-    margin: 10px 5px;
-  }
-
-  &_txt {
-    width: 25vw;
-    margin-left: 10px;
-  }
 }
 
 .table {
