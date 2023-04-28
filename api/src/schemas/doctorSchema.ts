@@ -34,14 +34,11 @@ class DoctorSchema {
     const conn = database.getConnection()
 
     if (conn) {
-      conn.query(
-        `SELECT * FROM ${table} WHERE id = ${id}`,
-        (err: Error, result: Doctor) => {
-          if (err) throw err
+      conn.query(`SELECT * FROM ${table} WHERE id = ${id}`, (err: Error, result: Doctor) => {
+        if (err) throw err
 
-          callback(result)
-        }
-      )
+        callback(result)
+      })
 
       conn.end()
     }
@@ -56,17 +53,13 @@ class DoctorSchema {
     const conn = database.getConnection()
 
     if (conn) {
-      conn.query(
-        `INSERT INTO ${table} SET ?`,
-        doctor,
-        (err: QueryError | null, result: ResultSetHeader) => {
-          if (err) throw err
+      conn.query(`INSERT INTO ${table} SET ?`, doctor, (err: QueryError | null, result: ResultSetHeader) => {
+        if (err) throw err
 
-          doctor.id = result.insertId
+        doctor.id = result.insertId
 
-          callback(doctor)
-        }
-      )
+        callback(doctor)
+      })
 
       conn.end()
     }
@@ -81,8 +74,7 @@ class DoctorSchema {
   public update(doctor: Doctor, callback: Function) {
     const conn = database.getConnection()
 
-    const { id, ref_user, acad_education, ref_occupation, ref_hospital } =
-      doctor
+    const { id, ref_user, acad_education, ref_occupation, ref_hospital } = doctor
 
     if (conn) {
       conn.query(
@@ -92,14 +84,11 @@ class DoctorSchema {
         }
       )
 
-      conn.query(
-        `SELECT * FROM ${table} WHERE id = ${id}`,
-        (err: Error, result: Doctor) => {
-          if (err) throw err
+      conn.query(`SELECT * FROM ${table} WHERE id = ${id}`, (err: Error, result: Doctor) => {
+        if (err) throw err
 
-          callback(result)
-        }
-      )
+        callback(result)
+      })
 
       conn.end()
     }

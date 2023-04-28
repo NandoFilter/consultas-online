@@ -7,6 +7,7 @@ import OccupationRoutes from './routes/occupationRoutes'
 import PatientRoutes from './routes/patientRoutes'
 import UserRoutes from './routes/userRoutes'
 import SessionRoutes from './routes/sessionRoutes'
+import TableRoutes from './routes/tableRoutes'
 
 const routes = Router()
 
@@ -18,5 +19,6 @@ new HospitalRoutes(routes)
 new DoctorRoutes(routes)
 new PatientRoutes(routes)
 new SessionRoutes(routes)
+new TableRoutes(routes)
 
 export default routes
