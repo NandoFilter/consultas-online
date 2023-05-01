@@ -4,49 +4,34 @@ import { Dependency } from '../models'
 const table = 'dependencies'
 
 class DependencySchema {
-  /**
-   * getAll
-   *
-   * @param callback Function
-   */
-  public getAll(callback: Function) {
-    const conn = database.getConnection()
+  public async getAll(): Promise<Dependency[]> {
+    const conn = await database.getConnection()
+
+    let dependencies: Dependency[] = []
 
     if (conn) {
-      conn.query(
-        `SELECT * FROM ${table}`,
-        (err: Error, results: Dependency[]) => {
-          if (err) throw err
-
-          callback(results)
-        }
-      )
+      ;[dependencies] = await conn.execute(`SELECT * FROM ${table}`)
 
       conn.end()
     }
+
+    return dependencies
   }
 
-  /**
-   * getById
-   *
-   * @param id number
-   * @param callback Function
-   */
-  public getById(id: number, callback: Function) {
-    const conn = database.getConnection()
+  public async getById(id: number): Promise<Dependency | undefined> {
+    const conn = await database.getConnection()
+
+    let dependency: Dependency | undefined = undefined
 
     if (conn) {
-      conn.query(
-        `SELECT * FROM ${table} WHERE id = ${id}`,
-        (err: Error, result: Dependency) => {
-          if (err) throw err
+      let [rows] = await conn.execute(`SELECT * FROM ${table} WHERE id = ${id}`)
 
-          callback(result)
-        }
-      )
+      dependency = rows[0]
 
       conn.end()
     }
+
+    return dependency
   }
 }
 

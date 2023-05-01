@@ -3,31 +3,27 @@ import { Deficiency } from '../models'
 import DeficiencySchema from '../schemas/deficiencySchema'
 
 class DeficiencyController {
-  /**
-   * fetchAll
-   *
-   * @param req Request
-   * @param res Response
-   */
-  public fetchAll(req: Request, res: Response) {
-    DeficiencySchema.getAll((results: Deficiency[]) => {
-      res.json(results)
-    })
+  public async fetchAll(req: Request, res: Response) {
+    let deficiencies: Deficiency[] | undefined = await DeficiencySchema.getAll()
+
+    if (deficiencies.length === 0) {
+      res.sendStatus(204).end()
+    }
+
+    res.json(deficiencies)
   }
 
-  /**
-   * fetchById
-   *
-   * @param req Request
-   * @param res Response
-   */
-  public fetchById(req: Request, res: Response) {
+  public async fetchById(req: Request, res: Response) {
     const { id } = req.params
 
     if (id) {
-      DeficiencySchema.getById(Number(id), (result: Deficiency) => {
-        res.json(result)
-      })
+      const deficiency: Deficiency | undefined = await DeficiencySchema.getById(Number(id))
+
+      if (!deficiency) {
+        res.sendStatus(404).end()
+      }
+
+      res.json(deficiency)
     }
   }
 }

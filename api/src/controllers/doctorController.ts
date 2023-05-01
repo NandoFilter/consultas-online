@@ -3,43 +3,26 @@ import { Doctor } from '../models'
 import DoctorSchema from '../schemas/doctorSchema'
 
 class DoctorController {
-  /**
-   * fetchAll
-   *
-   * @param req Request
-   * @param res Response
-   */
-  public fetchAll(req: Request, res: Response) {
-    DoctorSchema.getAll((results: Doctor[]) => {
-      res.json(results)
-    })
+  public async fetchAll(req: Request, res: Response): Promise<void> {
+    res.json(await DoctorSchema.getAll())
   }
 
-  /**
-   * fetchById
-   *
-   * @param req Request
-   * @param res Response
-   */
-  public fetchById(req: Request, res: Response) {
+  public async fetchById(req: Request, res: Response): Promise<void> {
     const { id } = req.params
 
     if (id) {
-      DoctorSchema.getById(Number(id), (result: Doctor) => {
-        res.json(result)
-      })
+      const doctor: Doctor | undefined = await DoctorSchema.getById(Number(id))
+
+      if (!doctor) {
+        res.sendStatus(404).end()
+      }
+
+      res.json(doctor)
     }
   }
 
-  /**
-   * add
-   *
-   * @param req Request
-   * @param res Response
-   */
-  public add(req: Request, res: Response) {
-    const { ref_user, acad_education, ref_occupation, ref_hospital } =
-      req.body as Doctor
+  public async add(req: Request, res: Response): Promise<void> {
+    const { ref_user, acad_education, ref_occupation, ref_hospital } = req.body as Doctor
 
     const doctor: Doctor = {
       ref_user,
@@ -48,22 +31,13 @@ class DoctorController {
       ref_hospital
     }
 
-    DoctorSchema.add(doctor, (result: Doctor) => {
-      return res.status(201).json(result)
-    })
+    res.json(await DoctorSchema.add(doctor))
   }
 
-  /**
-   * update
-   *
-   * @param req Request
-   * @param res Response
-   */
-  public update(req: Request, res: Response) {
+  public async update(req: Request, res: Response): Promise<void> {
     const id = Number(req.params.id)
 
-    const { ref_user, acad_education, ref_occupation, ref_hospital } =
-      req.body as Doctor
+    const { ref_user, acad_education, ref_occupation, ref_hospital } = req.body as Doctor
 
     const doctor: Doctor = {
       id,
@@ -73,23 +47,15 @@ class DoctorController {
       ref_hospital
     }
 
-    DoctorSchema.update(doctor, (result: Doctor) => {
-      res.json(result)
-    })
+    res.json(await DoctorSchema.update(doctor))
   }
 
-  /**
-   * delete
-   *
-   * @param req Request
-   * @param res Response
-   */
-  public delete(req: Request, res: Response) {
+  public async delete(req: Request, res: Response): Promise<void> {
     const id = Number(req.params.id)
 
-    DoctorSchema.delete(id)
+    await DoctorSchema.delete(id)
 
-    return res.status(200)
+    res.status(200).send(`Doutor nº${id} deletado com sucesso`).end()
   }
 }
 

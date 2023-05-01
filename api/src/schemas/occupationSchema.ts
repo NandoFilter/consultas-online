@@ -4,49 +4,34 @@ import { Occupation } from '../models'
 const table = 'occupations'
 
 class OccupationSchema {
-  /**
-   * getAll
-   *
-   * @param callback Function
-   */
-  public getAll(callback: Function) {
-    const conn = database.getConnection()
+  public async getAll(): Promise<Occupation[]> {
+    const conn = await database.getConnection()
+
+    let occupations: Occupation[] = []
 
     if (conn) {
-      conn.query(
-        `SELECT * FROM ${table}`,
-        (err: Error, results: Occupation[]) => {
-          if (err) throw err
-
-          callback(results)
-        }
-      )
+      ;[occupations] = await conn.execute(`SELECT * FROM ${table}`)
 
       conn.end()
     }
+
+    return occupations
   }
 
-  /**
-   * getById
-   *
-   * @param id number
-   * @param callback Function
-   */
-  public getById(id: number, callback: Function) {
-    const conn = database.getConnection()
+  public async getById(id: number): Promise<Occupation | undefined> {
+    const conn = await database.getConnection()
+
+    let occupation: Occupation | undefined = undefined
 
     if (conn) {
-      conn.query(
-        `SELECT * FROM ${table} WHERE id = ${id}`,
-        (err: Error, result: Occupation) => {
-          if (err) throw err
+      let [rows] = await conn.execute(`SELECT * FROM ${table} WHERE id = ${id}`)
 
-          callback(result)
-        }
-      )
+      occupation = rows[0]
 
       conn.end()
     }
+
+    return occupation
   }
 }
 

@@ -2,11 +2,6 @@ import { Router } from 'express'
 import PatientController from '../controllers/patientController'
 
 class PatientRoutes {
-  /**
-   * PatientRoutes
-   *
-   * @param routes Router
-   */
   constructor(routes: Router) {
     routes.get('/patient', PatientController.fetchAll)
     routes.get('/patient/:id', PatientController.fetchById)

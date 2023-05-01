@@ -4,49 +4,34 @@ import { Deficiency } from '../models'
 const table = 'deficiencies'
 
 class DeficiencySchema {
-  /**
-   * getAll
-   *
-   * @param callback Function
-   */
-  public getAll(callback: Function) {
-    const conn = database.getConnection()
+  public async getAll(): Promise<Deficiency[]> {
+    const conn = await database.getConnection()
+
+    let deficiencies: Deficiency[] = []
 
     if (conn) {
-      conn.query(
-        `SELECT * FROM ${table}`,
-        (err: Error, results: Deficiency[]) => {
-          if (err) throw err
-
-          callback(results)
-        }
-      )
+      ;[deficiencies] = await conn.execute(`SELECT * FROM ${table}`)
 
       conn.end()
     }
+
+    return deficiencies
   }
 
-  /**
-   * getById
-   *
-   * @param id number
-   * @param callback Function
-   */
-  public getById(id: number, callback: Function) {
-    const conn = database.getConnection()
+  public async getById(id: number): Promise<Deficiency | undefined> {
+    const conn = await database.getConnection()
+
+    let deficiency: Deficiency | undefined = undefined
 
     if (conn) {
-      conn.query(
-        `SELECT * FROM ${table} WHERE id = ${id}`,
-        (err: Error, result: Deficiency) => {
-          if (err) throw err
+      let [rows] = await conn.execute(`SELECT * FROM ${table} WHERE id = ${id}`)
 
-          callback(result)
-        }
-      )
+      deficiency = rows[0]
 
       conn.end()
     }
+
+    return deficiency
   }
 }
 

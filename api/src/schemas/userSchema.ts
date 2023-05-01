@@ -1,57 +1,42 @@
-import { QueryError, ResultSetHeader } from 'mysql2'
+import bcrypt from 'bcrypt'
 import database from '../helper/database'
 import { User } from '../models'
-import bcrypt from 'bcrypt'
 
 const table = 'users'
 
 class UserSchema {
-  /**
-   * getAll
-   *
-   * @param callback Function
-   */
-  public getAll(callback: Function) {
-    const conn = database.getConnection()
+  public async getAll(): Promise<User[]> {
+    const conn = await database.getConnection()
+
+    let users: User[] = []
 
     if (conn) {
-      conn.query(`SELECT * FROM ${table}`, (err: Error, results: User[]) => {
-        if (err) throw err
-
-        callback(results)
-      })
+      ;[users] = await conn.execute(`SELECT * FROM ${table}`)
 
       conn.end()
     }
+
+    return users
   }
 
-  /**
-   * getById
-   *
-   * @param id number
-   * @param callback Function
-   */
-  public getById(id: number, callback: Function) {
-    const conn = database.getConnection()
+  public async getById(id: number): Promise<User | undefined> {
+    const conn = await database.getConnection()
+
+    let user: User | undefined = undefined
 
     if (conn) {
-      conn.query(`SELECT * FROM ${table} WHERE id = ${id}`, (err: Error, result: User) => {
-        if (err) throw err
+      let [rows] = await conn.execute(`SELECT * FROM ${table} WHERE id = ${id}`)
 
-        callback(result)
-      })
+      user = rows[0]
 
       conn.end()
     }
+
+    return user
   }
 
-  /**
-   * add
-   *
-   * @param user User
-   */
-  public async add(user: User, callback: Function) {
-    const conn = database.getConnection()
+  public async add(user: User): Promise<User> {
+    const conn = await database.getConnection()
 
     if (user.password) {
       await bcrypt
@@ -64,76 +49,61 @@ class UserSchema {
         })
     }
 
-    if (conn && user.password) {
-      conn.query(`INSERT INTO ${table} SET ?`, user, (err: QueryError | null, result: ResultSetHeader) => {
-        if (err) throw err
-
-        user.id = result.insertId
-
-        callback(user)
-      })
-
-      conn.end()
-    }
-  }
-
-  /**
-   * update
-   *
-   * @param user User
-   * @param callback Function
-   */
-  public async update(user: User, callback: Function) {
-    const conn = database.getConnection()
-
-    if (user.password) {
-      await bcrypt.hash(user.password, 10).then((hash: string) => {
-        user.password = hash
-      })
-    }
-
-    const { id } = user
-
-    delete user.id
-
-    if (!user.password) {
-      delete user.password
-    }
-
-    const columns = Object.keys(user)
-    const values = Object.values(user)
-
-    if (conn && id) {
-      conn.query(
-        `UPDATE ${table} SET ${columns
-          .map((column, index) => {
-            return `${column} = '${values[index]}'`
-          })
-          .join(', ')} WHERE id = ${id}`
+    if (conn) {
+      const addUser = await conn.execute(
+        `INSERT INTO ${table} (
+          name,
+          email,
+          password
+        ) VALUES (?,?,?)`,
+        [user.name, user.email, user.password]
       )
 
-      conn.query(`SELECT * FROM ${table} WHERE id = ${id}`, (err: Error, result: User) => {
-        if (err) throw err
-
-        callback(result)
-      })
+      user.id = addUser[0].insertId
 
       conn.end()
     }
+
+    return user
   }
 
-  /**
-   * delete
-   *
-   * @param id number
-   */
-  public delete(id: number) {
-    const conn = database.getConnection()
+  public async update(user: User): Promise<User | undefined> {
+    const conn = await database.getConnection()
+
+    let { id, name, email, password } = user
+
+    if (password) {
+      await bcrypt.hash(password, 10).then((hash: string) => {
+        password = hash
+      })
+    }
+
+    let newUser: User | undefined = undefined
+
+    if (conn && id) {
+      await conn.execute(
+        `UPDATE ${table} SET
+          name = '${name}',
+          email = '${email}',
+          password = '${password}'
+        WHERE id = ${id}`
+      )
+
+      if (id) {
+        newUser = await this.getById(id)
+      }
+
+      conn.end()
+    }
+
+    return newUser
+  }
+
+  public async delete(id: number): Promise<void> {
+    const conn = await database.getConnection()
 
     if (conn) {
-      conn.query(`DELETE FROM ${table} WHERE id = ${id}`, (err: Error) => {
-        if (err) throw err
-      })
+      await conn.execute(`DELETE FROM ${table} WHERE id = ${id}`)
 
       conn.end()
     }

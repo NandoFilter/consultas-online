@@ -1,32 +1,33 @@
 import Connection from 'mysql2/typings/mysql/lib/Connection'
-
-import mysql from 'mysql2'
+import mysql from 'mysql2/promise'
 
 class Database {
   conn: Connection | undefined
 
   constructor() {
-    this.conn = this.createConnection()
+    this.createConnection().then((conn) => (this.conn = conn))
   }
 
-  public createConnection(): Connection | undefined {
+  public async createConnection(): Promise<any> {
     const host = process.env.DB_HOST
     const user = process.env.DB_USER
     const pass = process.env.DB_PASS
     const name = process.env.DB_NAME
 
     if (host && user && name) {
-      return mysql.createConnection({
+      const conn = await mysql.createConnection({
         host: host,
         user: user,
         password: pass,
         database: name
       })
+
+      return conn
     }
   }
 
-  public getConnection(): Connection | undefined {
-    this.conn = this.createConnection()
+  public async getConnection(): Promise<Connection | undefined> {
+    this.conn = await this.createConnection()
 
     if (this.conn) {
       this.conn.connect()

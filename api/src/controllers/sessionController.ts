@@ -1,22 +1,21 @@
 import { Request, Response } from 'express'
 import SessionSchema from '../schemas/sessionSchema'
-import { Session } from '../models'
 
 class SessionController {
-  public login(req: Request, res: Response) {
+  public async login(req: Request, res: Response): Promise<void> {
     const { email, password } = req.body
 
     if (!email || !password) {
-      return res.status(401).end()
+      res.sendStatus(401).end()
     }
 
-    SessionSchema.login(email, password, (result: Session) => {
-      if (result) {
-        res.json(result)
-      } else {
-        return res.status(400).end()
-      }
-    })
+    const result = await SessionSchema.login(email, password)
+
+    if (!result) {
+      res.sendStatus(400).end()
+    }
+
+    res.json(result)
   }
 }
 

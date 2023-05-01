@@ -3,48 +3,27 @@ import { Patient } from '../models'
 import PatientSchema from '../schemas/patientSchema'
 
 class PatientController {
-  /**
-   * fetchAll
-   *
-   * @param req Request
-   * @param res Response
-   */
-  public fetchAll(req: Request, res: Response) {
-    PatientSchema.getAll((results: Patient[]) => {
-      res.json(results)
-    })
+  public async fetchAll(req: Request, res: Response): Promise<void> {
+    res.json(await PatientSchema.getAll())
   }
 
-  /**
-   * fetchById
-   *
-   * @param req Request
-   * @param res Response
-   */
-  public fetchById(req: Request, res: Response) {
+  public async fetchById(req: Request, res: Response): Promise<void> {
     const { id } = req.params
 
     if (id) {
-      PatientSchema.getById(Number(id), (result: Patient) => {
-        res.json(result)
-      })
+      const patient: Patient | undefined = await PatientSchema.getById(Number(id))
+
+      if (!patient) {
+        res.sendStatus(404).end()
+      }
+
+      res.json(patient)
     }
   }
 
-  /**
-   * add
-   *
-   * @param req Request
-   * @param res Response
-   */
-  public add(req: Request, res: Response) {
-    const {
-      ref_user,
-      has_deficiency,
-      ref_deficiency,
-      has_dependency,
-      ref_dependency
-    } = req.body as Patient
+  public async add(req: Request, res: Response): Promise<void> {
+    const { ref_user, has_deficiency, ref_deficiency, has_dependency, ref_dependency } =
+      req.body as Patient
 
     const patient: Patient = {
       ref_user,
@@ -54,29 +33,15 @@ class PatientController {
       ref_dependency
     }
 
-    PatientSchema.add(patient)
-
-    return res.json(patient)
+    res.json(await PatientSchema.add(patient))
   }
 
-  /**
-   * update
-   *
-   * @param req Request
-   * @param res Response
-   */
-  public update(req: Request, res: Response) {
+  public async update(req: Request, res: Response): Promise<void> {
     const id = Number(req.params.id)
 
-    const {
-      ref_user,
-      has_deficiency,
-      ref_deficiency,
-      has_dependency,
-      ref_dependency
-    } = req.body
+    const { ref_user, has_deficiency, ref_deficiency, has_dependency, ref_dependency } = req.body
 
-    const user: Patient = {
+    const patient: Patient = {
       id,
       ref_user,
       has_deficiency,
@@ -85,23 +50,15 @@ class PatientController {
       ref_dependency
     }
 
-    PatientSchema.update(user, (result: Patient) => {
-      res.json(result)
-    })
+    res.json(await PatientSchema.update(patient))
   }
 
-  /**
-   * delete
-   *
-   * @param req Request
-   * @param res Response
-   */
-  public delete(req: Request, res: Response) {
+  public async delete(req: Request, res: Response): Promise<void> {
     const id = Number(req.params.id)
 
-    PatientSchema.delete(id)
+    await PatientSchema.delete(id)
 
-    return res.json('Success')
+    res.status(200).send(`Paciente nº${id} deletado com sucesso`).end()
   }
 }
 

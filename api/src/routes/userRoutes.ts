@@ -2,11 +2,6 @@ import { Router } from 'express'
 import UserController from '../controllers/userController'
 
 class UserRoutes {
-  /**
-   * UserRoutes
-   *
-   * @param routes Router
-   */
   constructor(routes: Router) {
     routes.get('/user', UserController.fetchAll)
     routes.get('/user/:id', UserController.fetchById)

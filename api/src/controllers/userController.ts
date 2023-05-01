@@ -3,87 +3,57 @@ import { User } from '../models'
 import UserSchema from '../schemas/userSchema'
 
 class UserController {
-  /**
-   * fetchAll
-   *
-   * @param req Request
-   * @param res Response
-   */
-  public fetchAll(req: Request, res: Response) {
-    UserSchema.getAll((results: User[]) => {
-      res.json(results)
-    })
+  public async fetchAll(req: Request, res: Response): Promise<void> {
+    res.json(await UserSchema.getAll())
   }
 
-  /**
-   * fetchById
-   *
-   * @param req Request
-   * @param res Response
-   */
-  public fetchById(req: Request, res: Response) {
+  public async fetchById(req: Request, res: Response): Promise<void> {
     const id = Number(req.params.id)
 
-    if (!id) {
-      return res.send(500).end()
-    }
+    if (id) {
+      const user: User | undefined = await UserSchema.getById(id)
 
-    UserSchema.getById(id, (result: User) => {
-      Object.keys(result).length ? res.json(result) : res.sendStatus(404).end()
-    })
-  }
-
-  /**
-   * add
-   *
-   * @param req Request
-   * @param res Response
-   */
-  public add(req: Request, res: Response) {
-    let user: User = req.body as User
-
-    if (!user.name || !user.email) {
-      return res.status(400).end()
-    }
-
-    UserSchema.add(user, (result: User) => {
-      return res.status(201).json(result)
-    }).catch((err: Error) => {
-      if (err) {
-        res.sendStatus(422).json({ message: 'Não foi possível adicionar o usuário' }).end()
+      if (!user) {
+        res.sendStatus(404).end()
       }
-    })
+
+      res.json(user)
+    }
   }
 
-  /**
-   * update
-   *
-   * @param req Request
-   * @param res Response
-   */
-  public update(req: Request, res: Response) {
-    const id = Number(req.params.id)
-    const { name, email, password } = req.body
+  public async add(req: Request, res: Response): Promise<void> {
+    const { name, email, password } = req.body as User
 
-    const user: User = { id, name, email, password }
+    const user: User = {
+      name,
+      email,
+      password
+    }
 
-    UserSchema.update(user, (result: User) => {
-      res.json(result)
-    })
+    res.json(await UserSchema.add(user))
   }
 
-  /**
-   * delete
-   *
-   * @param req Request
-   * @param res Response
-   */
-  public delete(req: Request, res: Response) {
+  public async update(req: Request, res: Response): Promise<void> {
     const id = Number(req.params.id)
 
-    UserSchema.delete(id)
+    const { name, email, password } = req.body as User
 
-    return res.sendStatus(200).end()
+    const user: User = {
+      id,
+      name,
+      email,
+      password
+    }
+
+    res.json(await UserSchema.update(user))
+  }
+
+  public async delete(req: Request, res: Response): Promise<void> {
+    const id = Number(req.params.id)
+
+    await UserSchema.delete(id)
+
+    res.status(200).send(`Usuário nº${id} deletado com sucesso`).end()
   }
 }
 

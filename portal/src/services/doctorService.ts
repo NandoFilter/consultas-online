@@ -22,7 +22,7 @@ export default {
     return selectedDoctor[0]
   },
 
-  async delete(id: number) {
+  async delete(id: number): Promise<void> {
     return service.delete(`/doctor/${id}`)
   },
 }

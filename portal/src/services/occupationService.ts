@@ -18,7 +18,7 @@ export default {
     return service.put(`/occupation/${occupation.id}`, occupation)
   },
 
-  async delete(id: number) {
+  async delete(id: number): Promise<void> {
     return service.delete(`/occupation/${id}`)
   },
 }

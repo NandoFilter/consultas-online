@@ -1,6 +1,0 @@
-export { default as UserRoutes } from './userRoutes'
-export { default as DependencyRoutes } from './dependencyRoutes'
-export { default as DeficiencyRoutes } from './deficiencyRoutes'
-export { default as OccupationRoutes } from './occupationRoutes'
-export { default as HospitalRoutes } from './hospitalRoutes'
-export { default as SessionRoutes } from './sessionRoutes'

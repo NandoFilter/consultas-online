@@ -5,118 +5,98 @@ import { Patient } from '../models'
 const table = 'patients'
 
 class PatientSchema {
-  /**
-   * getAll
-   *
-   * @param callback Function
-   */
-  public getAll(callback: Function) {
-    const conn = database.getConnection()
+  public async getAll(): Promise<Patient[]> {
+    const conn = await database.getConnection()
+
+    let patients: Patient[] = []
 
     if (conn) {
-      conn.query(`SELECT * FROM ${table}`, (err: Error, results: Patient[]) => {
-        if (err) throw err
-
-        callback(results)
-      })
+      ;[patients] = await conn.execute(`SELECT * FROM ${table}`)
 
       conn.end()
     }
+
+    return patients
   }
 
-  /**
-   * getById
-   *
-   * @param id number
-   * @param callback Function
-   */
-  public getById(id: number, callback: Function) {
-    const conn = database.getConnection()
+  public async getById(id: number): Promise<Patient | undefined> {
+    const conn = await database.getConnection()
+
+    let patient: Patient | undefined = undefined
 
     if (conn) {
-      conn.query(
-        `SELECT * FROM ${table} WHERE id = ${id}`,
-        (err: Error, result: Patient) => {
-          if (err) throw err
+      let [rows] = await conn.execute(`SELECT * FROM ${table} WHERE id = ${id}`)
 
-          callback(result)
-        }
+      patient = rows[0]
+
+      conn.end()
+    }
+
+    return patient
+  }
+
+  public async add(patient: Patient): Promise<Patient> {
+    const conn = await database.getConnection()
+
+    if (conn) {
+      const addPatient = await conn.execute(
+        `INSERT INTO ${table} (
+          ref_user,
+          has_deficiency,
+          ref_deficiency,
+          has_dependency,
+          ref_dependency
+        ) VALUES (?,?,?,?,?)`,
+        [
+          patient.ref_user,
+          patient.has_deficiency,
+          patient.ref_deficiency,
+          patient.has_dependency,
+          patient.ref_dependency
+        ]
       )
 
-      conn.end()
-    }
-  }
-
-  /**
-   * add
-   *
-   * @param patient Patient
-   */
-  public add(patient: Patient) {
-    const conn = database.getConnection()
-
-    if (conn) {
-      conn.query(
-        `INSERT INTO ${table} SET ?`,
-        patient,
-        (err: QueryError | null) => {
-          if (err) throw err
-        }
-      )
+      patient.id = addPatient[0].insertId
 
       conn.end()
     }
+
+    return patient
   }
 
-  /**
-   * update
-   *
-   * @param patient Patient
-   * @param callback Function
-   */
-  public update(patient: Patient, callback: Function) {
-    const conn = database.getConnection()
+  public async update(patient: Patient): Promise<Patient | undefined> {
+    const conn = await database.getConnection()
 
-    const {
-      id,
-      ref_user,
-      has_deficiency,
-      ref_deficiency,
-      has_dependency,
-      ref_dependency
-    } = patient
+    const { id, ref_user, has_deficiency, ref_deficiency, has_dependency, ref_dependency } = patient
+
+    let newPatient: Patient | undefined = undefined
 
     if (conn) {
-      conn.query(
+      await conn.execute(
         `UPDATE ${table} SET
-          ref_user = '${ref_user}',
-          has_deficiency = '${has_deficiency}',
-          ref_deficiency = '${ref_deficiency}',
-          has_dependency = '${has_dependency}',
-          ref_dependency = '${ref_dependency}'
+          ref_user = ${ref_user},
+          has_deficiency = ${has_deficiency},
+          ref_deficiency = ${ref_deficiency},
+          has_dependency = ${has_dependency},
+          ref_dependency = ${ref_dependency}
         where id = ${id}`
       )
 
       if (id) {
-        this.getById(id, callback)
+        newPatient = await this.getById(id)
       }
 
       conn.end()
     }
+
+    return newPatient
   }
 
-  /**
-   * delete
-   *
-   * @param id number
-   */
-  public delete(id: number) {
-    const conn = database.getConnection()
+  public async delete(id: number): Promise<void> {
+    const conn = await database.getConnection()
 
     if (conn) {
-      conn.query(`DELETE FROM ${table} WHERE id = ${id}`, (err: Error) => {
-        if (err) throw err
-      })
+      await conn.execute(`DELETE FROM ${table} WHERE id = ${id}`)
 
       conn.end()
     }

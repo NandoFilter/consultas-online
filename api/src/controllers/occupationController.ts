@@ -3,31 +3,27 @@ import { Occupation } from '../models'
 import OccupationSchema from '../schemas/occupationSchema'
 
 class OccupationController {
-  /**
-   * fetchAll
-   *
-   * @param req Request
-   * @param res Response
-   */
-  public fetchAll(req: Request, res: Response) {
-    OccupationSchema.getAll((results: Occupation[]) => {
-      res.json(results)
-    })
+  public async fetchAll(req: Request, res: Response) {
+    const occupations: Occupation[] = await OccupationSchema.getAll()
+
+    if (occupations.length === 0) {
+      res.sendStatus(204).end()
+    }
+
+    res.json(await OccupationSchema.getAll())
   }
 
-  /**
-   * fetchById
-   *
-   * @param req Request
-   * @param res Response
-   */
-  public fetchById(req: Request, res: Response) {
+  public async fetchById(req: Request, res: Response) {
     const { id } = req.params
 
     if (id) {
-      OccupationSchema.getById(Number(id), (result: Occupation) => {
-        res.json(result)
-      })
+      const occupation: Occupation | undefined = await OccupationSchema.getById(Number(id))
+
+      if (!occupation) {
+        res.sendStatus(404).end()
+      }
+
+      res.json(occupation)
     }
   }
 }

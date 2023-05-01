@@ -3,77 +3,39 @@ import { Hospital } from '../models'
 import HospitalSchema from '../schemas/hospitalSchema'
 
 class HospitalController {
-  /**
-   * fetchAll
-   *
-   * @param req Request Request
-   * @param res Response Response
-   */
-  public fetchAll(req: Request, res: Response) {
-    HospitalSchema.getAll((results: Hospital[]) => {
-      res.json(results)
-    })
+  public async fetchAll(req: Request, res: Response): Promise<void> {
+    res.json(await HospitalSchema.getAll())
   }
 
-  /**
-   * fetchById
-   *
-   * @param req Request
-   * @param res Response
-   */
-  public fetchById(req: Request, res: Response) {
+  public async fetchById(req: Request, res: Response) {
     const { id } = req.params
 
-    HospitalSchema.getById(Number(id), (result: Hospital) => {
-      res.json(result)
-    })
+    res.json(await HospitalSchema.getById(Number(id)))
   }
 
-  /**
-   * add
-   *
-   * @param req Request
-   * @param res Response
-   */
-  public add(req: Request, res: Response) {
+  public async add(req: Request, res: Response): Promise<void> {
     const { name, state, city } = req.body as Hospital
 
     const hospital: Hospital = { name, state, city }
 
-    HospitalSchema.add(hospital)
-
-    return res.json(hospital)
+    res.json(await HospitalSchema.add(hospital))
   }
 
-  /**
-   * update
-   *
-   * @param req Request
-   * @param res Response
-   */
-  public update(req: Request, res: Response) {
+  public async update(req: Request, res: Response): Promise<void> {
     const id = Number(req.params.id)
     const { name, state, city } = req.body
 
     const hospital: Hospital = { id, name, state, city }
 
-    HospitalSchema.update(hospital, (result: Hospital) => {
-      res.json(result)
-    })
+    res.json(await HospitalSchema.update(hospital))
   }
 
-  /**
-   * delete
-   *
-   * @param req Request
-   * @param res Response
-   */
-  public delete(req: Request, res: Response) {
+  public async delete(req: Request, res: Response): Promise<void> {
     const id = Number(req.params.id)
 
-    HospitalSchema.delete(id)
+    await HospitalSchema.delete(id)
 
-    return res.json('Success')
+    res.status(200).send(`Hospital nº${id} deletado com sucesso`).end()
   }
 }
 

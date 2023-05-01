@@ -5,108 +5,88 @@ import { Hospital } from '../models'
 const table = 'hospitals'
 
 class HospitalSchema {
-  /**
-   * getAll
-   *
-   * @param callback Function
-   */
-  public getAll(callback: Function) {
-    const conn = database.getConnection()
+  public async getAll(): Promise<Hospital[]> {
+    const conn = await database.getConnection()
+
+    let hospitals: Hospital[] = []
 
     if (conn) {
-      conn.query(
-        `SELECT * FROM ${table}`,
-        (err: Error, results: Hospital[]) => {
-          if (err) throw err
-
-          callback(results)
-        }
-      )
+      ;[hospitals] = await conn.execute(`SELECT * FROM ${table}`)
 
       conn.end()
     }
+
+    return hospitals
   }
 
-  /**
-   * getById
-   *
-   * @param id number
-   * @param callback Function
-   */
-  public getById(id: number, callback: Function) {
-    const conn = database.getConnection()
+  public async getById(id: number): Promise<Hospital | undefined> {
+    const conn = await database.getConnection()
+
+    let hospital: Hospital | undefined = undefined
 
     if (conn) {
-      conn.query(
-        `SELECT * FROM ${table} WHERE id = ${id}`,
-        (err: Error, result: Hospital) => {
-          if (err) throw err
+      let [rows] = await conn.execute(`SELECT * FROM ${table} WHERE id = ${id}`)
 
-          callback(result)
-        }
-      )
+      hospital = rows[0]
 
       conn.end()
     }
+
+    return hospital
   }
 
-  /**
-   * add
-   *
-   * @param hospital Hospital
-   */
-  public add(hospital: Hospital) {
-    const conn = database.getConnection()
+  public async add(hospital: Hospital): Promise<Hospital> {
+    const conn = await database.getConnection()
 
     if (conn) {
-      conn.query(
-        `INSERT INTO ${table} SET ?`,
-        hospital,
-        (err: QueryError | null) => {
-          if (err) throw err
-        }
+      const addHospital = await conn.execute(
+        `INSERT INTO ${table} (
+          name,
+          state,
+          city
+        ) VALUES (?,?,?)`,
+        [hospital.name, hospital.state, hospital.city]
       )
+
+      hospital.id = addHospital[0].insertId
 
       conn.end()
     }
+
+    return hospital
   }
 
-  /**
-   * update
-   *
-   * @param hospital Hospital
-   * @param callback Function
-   */
-  public update(hospital: Hospital, callback: Function) {
-    const conn = database.getConnection()
+  public async update(hospital: Hospital): Promise<Hospital | undefined> {
+    const conn = await database.getConnection()
 
     const { id, name, state, city } = hospital
 
+    let newHospital: Hospital | undefined = undefined
+
     if (conn) {
-      conn.query(
-        `UPDATE ${table} SET name = '${name}', state = '${state}', city = '${city}' where id = ${id}`
+      await conn.execute(
+        `UPDATE ${table} SET
+          name = '${name}',
+          state = '${state}',
+          city = '${city}'
+        WHERE id = ${id}`
       )
 
       if (id) {
-        this.getById(id, callback)
+        newHospital = await this.getById(id)
       }
 
       conn.end()
     }
+
+    return newHospital
   }
 
-  /**
-   * delete
-   *
-   * @param id number
-   */
-  public delete(id: number) {
-    const conn = database.getConnection()
+  public async delete(id: number): Promise<void> {
+    const conn = await database.getConnection()
 
     if (conn) {
-      conn.query(`DELETE FROM ${table} WHERE id = ${id}`, (err: Error) => {
-        if (err) throw err
-      })
+      await conn.execute(`DELETE FROM ${table} WHERE id = ${id}`)
 
       conn.end()
     }

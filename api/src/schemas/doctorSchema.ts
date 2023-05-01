@@ -1,111 +1,93 @@
-import { QueryError, ResultSetHeader } from 'mysql2'
 import database from '../helper/database'
 import { Doctor } from '../models'
 
 const table = 'doctors'
 
 class DoctorSchema {
-  /**
-   * getAll
-   *
-   * @param callback Function
-   */
-  public getAll(callback: Function) {
-    const conn = database.getConnection()
+  public async getAll(): Promise<Doctor[]> {
+    const conn = await database.getConnection()
+
+    let doctors: Doctor[] = []
 
     if (conn) {
-      conn.query(`SELECT * FROM ${table}`, (err: Error, results: Doctor[]) => {
-        if (err) throw err
-
-        callback(results)
-      })
+      ;[doctors] = await conn.execute(`SELECT * FROM ${table}`)
 
       conn.end()
     }
+
+    return doctors
   }
 
-  /**
-   * getById
-   *
-   * @param id number
-   * @param callback Function
-   */
-  public getById(id: number, callback: Function) {
-    const conn = database.getConnection()
+  public async getById(id: number): Promise<Doctor | undefined> {
+    const conn = await database.getConnection()
+
+    let doctor: Doctor | undefined = undefined
 
     if (conn) {
-      conn.query(`SELECT * FROM ${table} WHERE id = ${id}`, (err: Error, result: Doctor) => {
-        if (err) throw err
+      let [rows] = await conn.execute(`SELECT * FROM ${table} WHERE id = ${id}`)
 
-        callback(result)
-      })
+      doctor = rows[0]
 
       conn.end()
     }
+
+    return doctor
   }
 
-  /**
-   * add
-   *
-   * @param doctor Doctor
-   */
-  public add(doctor: Doctor, callback: Function) {
-    const conn = database.getConnection()
+  public async add(doctor: Doctor): Promise<Doctor> {
+    const conn = await database.getConnection()
 
     if (conn) {
-      conn.query(`INSERT INTO ${table} SET ?`, doctor, (err: QueryError | null, result: ResultSetHeader) => {
-        if (err) throw err
+      const addDoctor = await conn.execute(
+        `INSERT INTO ${table} (
+          ref_user, 
+          acad_education, 
+          ref_occupation, 
+          ref_hospital
+        ) VALUES (?,?,?,?)`,
+        [doctor.ref_user, doctor.acad_education, doctor.ref_occupation, doctor.ref_hospital]
+      )
 
-        doctor.id = result.insertId
-
-        callback(doctor)
-      })
+      doctor.id = addDoctor[0].insertId
 
       conn.end()
     }
+
+    return doctor
   }
 
-  /**
-   * update
-   *
-   * @param doctor Doctor
-   * @param callback Function
-   */
-  public update(doctor: Doctor, callback: Function) {
-    const conn = database.getConnection()
+  public async update(doctor: Doctor): Promise<Doctor | undefined> {
+    const conn = await database.getConnection()
 
     const { id, ref_user, acad_education, ref_occupation, ref_hospital } = doctor
 
+    let newDoctor: Doctor | undefined = undefined
+
     if (conn) {
-      conn.query(
-        `UPDATE ${table} SET ref_user = ${ref_user}, acad_education = '${acad_education}', ref_occupation = ${ref_occupation}, ref_hospital = ${ref_hospital} where id = ${id}`,
-        (err: Error) => {
-          if (err) throw err
-        }
+      await conn.execute(
+        `UPDATE ${table} SET
+          ref_user = ${ref_user},
+          acad_education = '${acad_education}',
+          ref_occupation = ${ref_occupation},
+          ref_hospital = ${ref_hospital}
+        WHERE id = ${id}`
       )
 
-      conn.query(`SELECT * FROM ${table} WHERE id = ${id}`, (err: Error, result: Doctor) => {
-        if (err) throw err
-
-        callback(result)
-      })
+      if (id) {
+        newDoctor = await this.getById(id)
+      }
 
       conn.end()
     }
+
+    return newDoctor
   }
 
-  /**
-   * delete
-   *
-   * @param id number
-   */
-  public delete(id: number) {
-    const conn = database.getConnection()
+  public async delete(id: number): Promise<void> {
+    const conn = await database.getConnection()
 
     if (conn) {
-      conn.query(`DELETE FROM ${table} WHERE id = ${id}`, (err: Error) => {
-        if (err) throw err
-      })
+      await conn.execute(`DELETE FROM ${table} WHERE id = ${id}`)
 
       conn.end()
     }

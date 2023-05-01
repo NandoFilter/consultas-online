@@ -1,5 +1,5 @@
 import { Request, Response } from 'express'
-import { Doctor, Hospital, Occupation, User } from '../models'
+import { Doctor } from '../models'
 import DoctorSchema from '../schemas/doctorSchema'
 import HospitalSchema from '../schemas/hospitalSchema'
 import OccupationSchema from '../schemas/occupationSchema'
@@ -14,55 +14,35 @@ type DoctorTable = {
   academy?: string
 }
 
-// TO-DO: Change to Controller
 class TableController {
-  /**
-   * fetchDoctors
-   *
-   * @returns DoctorTable[]
-   */
-  fetchDoctors(req: Request, res: Response) {
-    // let doctors: Doctor[] = []
+  public async fetchDoctors(req: Request, res: Response): Promise<void> {
     let values: DoctorTable[] = []
+    let doctors: Doctor[] = []
 
-    DoctorSchema.getAll((doctors: Doctor[]) => {
-      if (doctors.length > 0) {
-        doctors.forEach((doctor) => {
-          let user: User | undefined
-          let hospital: Hospital | undefined
-          let occupation: Occupation | undefined
+    doctors = await DoctorSchema.getAll()
 
-          UserSchema.getById(doctor.ref_user, (result: User) => {
-            user = result
-          })
+    for (let i = 0; i < doctors.length; i++) {
+      let doctor = doctors[i]
 
-          HospitalSchema.getById(doctor.ref_hospital, (result: Hospital) => {
-            hospital = result
-          })
+      const [user, hospital, occupation] = await Promise.all([
+        UserSchema.getById(doctor.ref_user),
+        HospitalSchema.getById(doctor.ref_hospital),
+        OccupationSchema.getById(doctor.ref_occupation)
+      ])
 
-          OccupationSchema.getById(doctor.ref_occupation, (result: Occupation) => {
-            occupation = result
-          })
-
-          const doctorTable: DoctorTable = {
-            id: doctor.id as number,
-            name: user?.name,
-            email: user?.email,
-            hospital: hospital?.name,
-            occupation: occupation?.name,
-            academy: doctor.acad_education
-          }
-
-          values.push(doctorTable)
-        })
+      const doctorTable: DoctorTable = {
+        id: doctor.id as number,
+        name: user?.name,
+        email: user?.email,
+        hospital: hospital?.name,
+        occupation: occupation?.name,
+        academy: doctor.acad_education
       }
-    })
 
-    // if (values.length > 0) {
-    //   return res.json(values)
-    // } else {
-    //   return res.sendStatus(400).end()
-    // }
+      values.push(doctorTable)
+    }
+
+    res.json(values).end()
   }
 }
 

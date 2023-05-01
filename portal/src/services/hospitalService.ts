@@ -18,7 +18,7 @@ export default {
     return service.put(`/hospital/${hospital.id}`, hospital)
   },
 
-  async delete(id: number) {
+  async delete(id: number): Promise<void> {
     return service.delete(`/hospital/${id}`)
   },
 }
