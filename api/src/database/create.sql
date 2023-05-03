@@ -35,6 +35,7 @@ CREATE TABLE consultas.deficiencies (
 CREATE TABLE consultas.patients (
 	id INT auto_increment NOT NULL,
 	ref_user INT NOT NULL,
+	city varchar(50) NOT NULL,
 	has_deficiency BOOL NULL,
 	ref_deficiency INT NULL,
 	has_dependency BOOL NULL,

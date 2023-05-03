@@ -1,38 +1,95 @@
 <template>
   <div class="register">
     <v-container class="register_container fill-height">
-      <v-card class="ma-auto px-6 py-8" min-width="400" max-width="500">
+      <v-card class="ma-auto px-6 py-8" min-width="650" max-width="500">
         <v-form fast-fail @submit.prevent="onRegister">
-          <v-text-field
-            v-model="name"
-            :readonly="loading"
-            :rules="rules.name"
-            variant="underlined"
-            label="Nome"
-            validate-on="blur"
-            required
-          />
+          <v-row align="center">
+            <v-col>
+              <v-text-field
+                v-model="name"
+                :readonly="loading"
+                :rules="rules.name"
+                variant="underlined"
+                label="Nome"
+                validate-on="blur"
+                required
+              />
+            </v-col>
+            <v-col>
+              <v-text-field
+                v-model="email"
+                :readonly="loading"
+                :rules="rules.email"
+                variant="underlined"
+                label="E-mail"
+                validate-on="blur"
+                required
+              />
+            </v-col>
+          </v-row>
+          
+          <v-row align="center">
+            <v-col>
+              <v-text-field
+                v-model="city"
+                :readonly="loading"
+                :rules="rules.city"
+                variant="underlined"
+                label="Cidade"
+                type="password"
+                validate-on="blur"
+                required
+              />
+            </v-col>
+            <v-col>
+              <v-text-field
+                v-model="password"
+                :readonly="loading"
+                :rules="rules.password"
+                variant="underlined"
+                label="Senha"
+                type="password"
+                validate-on="blur"
+                required
+              />
+            </v-col>
+          </v-row>
 
-          <v-text-field
-            v-model="email"
-            :readonly="loading"
-            :rules="rules.email"
-            variant="underlined"
-            label="E-mail"
-            validate-on="blur"
-            required
-          />
+          <v-row align="center">
+            <v-col>
+              <v-checkbox
+                label="Possui deficiência?"
+                v-model="hasDeficiency"
+                color="primary"
+                hide-details
+              />
+            </v-col>
+            <v-col>
+              <v-checkbox
+                label="Possui dependência?"
+                v-model="hasDependency"
+                color="primary"
+                hide-details
+              />
+            </v-col>
+          </v-row>
 
-          <v-text-field
-            v-model="password"
-            :readonly="loading"
-            :rules="rules.password"
-            variant="underlined"
-            label="Senha"
-            type="password"
-            validate-on="blur"
-            required
-          />
+          <v-row align="center">
+            <v-col>
+              <v-select
+                label="Tipo de Deficiência"
+                variant="underlined"
+                :disabled="!hasDeficiency"
+              />
+            </v-col>
+            <v-col>
+              <v-select
+                label="Tipo de Dependência"
+                variant="underlined"
+                :disabled="!hasDependency"
+              />
+            </v-col>
+          </v-row>
 
           <v-btn
             block
@@ -42,12 +99,11 @@
             type="submit"
           >
             Cadastrar
-          </v-btn>
-
-          <div class="login">
-            <router-link class="login_link" to="/login">Possui uma conta? Entrar</router-link>
-          </div>
+          </v-btn>  
         </v-form>
+        <div class="login">
+          <router-link class="login_link" to="/login">Possui uma conta? Entrar</router-link>
+        </div>
       </v-card>
 
       <v-alert
@@ -75,7 +131,11 @@ export default defineComponent({
   data: () => ({
     name: '',
     email: '',
+    city: '',
     password: '',
+    hasDeficiency: false,
+    hasDependency: false,
+
     loading: false,
     showError: false,
     rules

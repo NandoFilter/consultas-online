@@ -3,6 +3,8 @@ const rules = {
 
   email: [(v: string) => !!v || 'Informe um e-mail'],
 
+  city: [(v: string) => !!v || 'Informe sua cidade'],
+
   password: [
     (v: string) => !!v || 'Digite uma senha',
     (v: string) =>

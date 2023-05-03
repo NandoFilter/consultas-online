@@ -1,4 +1,3 @@
-import { QueryError } from 'mysql2'
 import database from '../helper/database'
 import { Hospital } from '../models'
 

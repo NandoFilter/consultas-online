@@ -1,4 +1,3 @@
-import { QueryError } from 'mysql2'
 import database from '../helper/database'
 import { Patient } from '../models'
 
@@ -42,6 +41,7 @@ class PatientSchema {
       const addPatient = await conn.execute(
         `INSERT INTO ${table} (
           ref_user,
+          city,
           has_deficiency,
           ref_deficiency,
           has_dependency,
@@ -49,6 +49,7 @@ class PatientSchema {
         ) VALUES (?,?,?,?,?)`,
         [
           patient.ref_user,
+          patient.city,
           patient.has_deficiency,
           patient.ref_deficiency,
           patient.has_dependency,
@@ -67,7 +68,7 @@ class PatientSchema {
   public async update(patient: Patient): Promise<Patient | undefined> {
     const conn = await database.getConnection()
 
-    const { id, ref_user, has_deficiency, ref_deficiency, has_dependency, ref_dependency } = patient
+    const { id, ref_user, city, has_deficiency, ref_deficiency, has_dependency, ref_dependency } = patient
 
     let newPatient: Patient | undefined = undefined
 
@@ -75,6 +76,7 @@ class PatientSchema {
       await conn.execute(
         `UPDATE ${table} SET
           ref_user = ${ref_user},
+          city = ${city},
           has_deficiency = ${has_deficiency},
           ref_deficiency = ${ref_deficiency},
           has_dependency = ${has_dependency},
