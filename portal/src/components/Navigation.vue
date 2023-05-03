@@ -10,7 +10,7 @@
     >
       <v-list density="compact" nav>
         <v-list-item
-          prepend-icon="mdi-home"
+          prepend-icon="mdi-heart-pulse"
           title="Início"
           to="/home"
         />
@@ -63,12 +63,14 @@ export default defineComponent({
     rail: true,
     btnIcon: 'mdi-chevron-right',
     topItems: [
-      { title: 'Nova Consulta', icon: 'mdi-heart-pulse', value: '/newQuery' },
+      { title: 'Histórico', icon: 'mdi-history', value: '/history' },
       { title: 'Médicos', icon: 'mdi-stethoscope', value: '/doctors' },
       { title: 'Pacientes', icon: 'mdi-account-group', value: '/patients' },
     ],
     botItems: [
       { title: 'Perfil', icon: 'mdi-account', value: '/profile' },
+      { title: 'Relatórios', icon: 'mdi-file-document-outline', value:'/reports' },
+      { title: 'Gráficos', icon: 'mdi-chart-box-outline', value: '/charts' },
       { title: 'Administração', icon: 'mdi-security', value: '/admin' },
       { title: 'Sair', icon: 'mdi-logout', value: '/', action: 'logout' },
     ]

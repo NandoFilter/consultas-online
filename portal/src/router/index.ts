@@ -6,10 +6,12 @@ import {
   Login,
   Register,
   Home,
-  NewQuery,
+  History,
   Doctors,
   Patients,
   Profile,
+  Reports,
+  Charts,
   Admin,
 } from '@/views'
 
@@ -47,9 +49,9 @@ const routes: Array<RouteRecordRaw> = [
     },
   },
   {
-    path: '/newQuery',
-    name: 'Nova Consulta',
-    component: NewQuery,
+    path: '/history',
+    name: 'Histórico de Consultas',
+    component: History,
     meta: {
       requiresAuth: true,
     },
@@ -74,6 +76,22 @@ const routes: Array<RouteRecordRaw> = [
     path: '/profile',
     name: 'Perfil',
     component: Profile,
+    meta: {
+      requiresAuth: true,
+    },
+  },
+  {
+    path: '/reports',
+    name: 'Relatórios',
+    component: Reports,
+    meta: {
+      requiresAuth: true,
+    },
+  },
+  {
+    path: '/charts',
+    name: 'Gráficos',
+    component: Charts,
     meta: {
       requiresAuth: true,
     },
