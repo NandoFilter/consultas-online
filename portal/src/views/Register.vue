@@ -36,7 +36,6 @@
                 :rules="rules.city"
                 variant="underlined"
                 label="Cidade"
-                type="password"
                 validate-on="blur"
                 required
               />
@@ -79,6 +78,8 @@
               <v-select
                 label="Tipo de Deficiência"
                 variant="underlined"
+                v-model="deficiency"
+                :items="getDeficiencyNames()"
                 :disabled="!hasDeficiency"
               />
             </v-col>
@@ -86,6 +87,8 @@
               <v-select
                 label="Tipo de Dependência"
                 variant="underlined"
+                v-model="dependency"
+                :items="getDependencyNames()"
                 :disabled="!hasDependency"
               />
             </v-col>
@@ -123,11 +126,17 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import { User } from '../models';
-import userService from '../services/userService';
+import { Deficiency, Dependency, Patient, User } from '../models';
+import { UserService, PatientService, DeficiencyService, DependencyService } from '../services'
 import rules from '@/utils/rules'
 
 export default defineComponent({
+  async created() {
+    [this.deficiencies, this.dependencies] = await Promise.all([
+      DeficiencyService.getAll(),
+      DependencyService.getAll()
+    ])
+  },
   data: () => ({
     name: '',
     email: '',
@@ -135,16 +144,56 @@ export default defineComponent({
     password: '',
     hasDeficiency: false,
     hasDependency: false,
+    deficiency: '',
+    dependency: '',
+
+    deficiencies: [] as Deficiency[],
+    dependencies: [] as Dependency[],
 
     loading: false,
     showError: false,
     rules
   }),
   methods: {
-    onRegister() {
-      this.loading = true
-      this.showError = false
+    getDeficiencyNames() {
+      const names: string[] = []
 
+      this.deficiencies.forEach((deficiency) => {
+        names.push(deficiency.name)
+      })
+
+      return names
+    },
+    getDependencyNames() {
+      const names: string[] = []
+
+      this.dependencies.forEach((dependency) => {
+        names.push(dependency.name)
+      })
+
+      return names
+    },
+    getDeficiencyId(): number {
+      const deficiency = this.deficiencies.find((deficiency) => {
+        if (deficiency.name == this.deficiency) {
+          return deficiency
+        }
+      })
+
+      // TO-DO: Replace the return 'undefined' to 0
+      return deficiency ? deficiency.id : 0
+    },
+    getDependencyId(): number {
+      const dependency = this.dependencies.find((dependency) => {
+        if (dependency.name == this.dependency) {
+          return dependency
+        }
+      })
+
+      // TO-DO: Replace the return 'undefined' to 0
+      return dependency ? dependency.id : 0
+    },
+    async generateUser() {
       const user: User = {
         name: this.name,
         email: this.email,
@@ -152,11 +201,34 @@ export default defineComponent({
       }
 
       if (user.password) {
-        userService.add(user).then(() => {
+        return UserService.add(user);
+      }
+    },
+    async onRegister() {
+      this.loading = true
+      this.showError = false
+
+      const newUser: User | undefined = await this.generateUser();
+
+      if (newUser) {
+        const patient: Patient = {
+          ref_user: newUser.id as number,
+          city: this.city,
+        }
+
+        if (this.getDependencyId()) {
+          patient.ref_dependency = this.getDependencyId() as number
+        }
+
+        if (this.getDeficiencyId()) {
+          patient.ref_deficiency = this.getDeficiencyId() as number
+        }
+
+        PatientService.add(patient).then(() => {
           this.$router.push('/login')
         }).catch((err) => {
           this.showError = true
-  
+
           throw err
         })
       } else {

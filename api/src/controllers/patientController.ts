@@ -22,15 +22,12 @@ class PatientController {
   }
 
   public async add(req: Request, res: Response): Promise<void> {
-    const { ref_user, city, has_deficiency, ref_deficiency, has_dependency, ref_dependency } =
-      req.body as Patient
+    const { ref_user, city, ref_deficiency, ref_dependency } = req.body as Patient
 
     const patient: Patient = {
       ref_user,
       city,
-      has_deficiency,
       ref_deficiency,
-      has_dependency,
       ref_dependency
     }
 
@@ -40,15 +37,13 @@ class PatientController {
   public async update(req: Request, res: Response): Promise<void> {
     const id = Number(req.params.id)
 
-    const { ref_user, city, has_deficiency, ref_deficiency, has_dependency, ref_dependency } = req.body
+    const { ref_user, city, ref_deficiency, ref_dependency } = req.body
 
     const patient: Patient = {
       id,
       ref_user,
       city,
-      has_deficiency,
       ref_deficiency,
-      has_dependency,
       ref_dependency
     }
 

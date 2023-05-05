@@ -42,19 +42,10 @@ class PatientSchema {
         `INSERT INTO ${table} (
           ref_user,
           city,
-          has_deficiency,
           ref_deficiency,
-          has_dependency,
           ref_dependency
-        ) VALUES (?,?,?,?,?)`,
-        [
-          patient.ref_user,
-          patient.city,
-          patient.has_deficiency,
-          patient.ref_deficiency,
-          patient.has_dependency,
-          patient.ref_dependency
-        ]
+        ) VALUES (?,?,?,?)`,
+        [patient.ref_user, patient.city, patient.ref_deficiency, patient.ref_dependency]
       )
 
       patient.id = addPatient[0].insertId
@@ -68,7 +59,7 @@ class PatientSchema {
   public async update(patient: Patient): Promise<Patient | undefined> {
     const conn = await database.getConnection()
 
-    const { id, ref_user, city, has_deficiency, ref_deficiency, has_dependency, ref_dependency } = patient
+    const { id, ref_user, city, ref_deficiency, ref_dependency } = patient
 
     let newPatient: Patient | undefined = undefined
 
@@ -76,10 +67,8 @@ class PatientSchema {
       await conn.execute(
         `UPDATE ${table} SET
           ref_user = ${ref_user},
-          city = ${city},
-          has_deficiency = ${has_deficiency},
+          city = '${city}',
           ref_deficiency = ${ref_deficiency},
-          has_dependency = ${has_dependency},
           ref_dependency = ${ref_dependency}
         where id = ${id}`
       )

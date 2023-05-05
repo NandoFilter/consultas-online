@@ -176,7 +176,7 @@ import rules from '@/utils/rules'
 type DoctorTable = {
   id: number
   name?: string
-  email?: string,
+  email?: string
   hospital?: string
   occupation?: string
   academy?: string
