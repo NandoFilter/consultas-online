@@ -173,25 +173,23 @@ export default defineComponent({
 
       return names
     },
-    getDeficiencyId(): number {
+    getDeficiencyId(): number | null {
       const deficiency = this.deficiencies.find((deficiency) => {
         if (deficiency.name == this.deficiency) {
           return deficiency
         }
       })
 
-      // TO-DO: Replace the return 'undefined' to 0
-      return deficiency ? deficiency.id : 0
+      return deficiency ? deficiency.id : null
     },
-    getDependencyId(): number {
+    getDependencyId(): number | null {
       const dependency = this.dependencies.find((dependency) => {
         if (dependency.name == this.dependency) {
           return dependency
         }
       })
 
-      // TO-DO: Replace the return 'undefined' to 0
-      return dependency ? dependency.id : 0
+      return dependency ? dependency.id : null
     },
     async generateUser() {
       const user: User = {
@@ -214,14 +212,8 @@ export default defineComponent({
         const patient: Patient = {
           ref_user: newUser.id as number,
           city: this.city,
-        }
-
-        if (this.getDependencyId()) {
-          patient.ref_dependency = this.getDependencyId() as number
-        }
-
-        if (this.getDeficiencyId()) {
-          patient.ref_deficiency = this.getDeficiencyId() as number
+          ref_dependency: this.getDependencyId(),
+          ref_deficiency: this.getDeficiencyId()
         }
 
         PatientService.add(patient).then(() => {
