@@ -7,9 +7,7 @@ export default {
   },
 
   async getById(id: number): Promise<Doctor> {
-    const doctor = await service.get(`/doctor/${id}`)
-
-    return doctor[0]
+    return service.get(`/doctor/${id}`)
   },
 
   async add(doctor: Doctor): Promise<Doctor> {

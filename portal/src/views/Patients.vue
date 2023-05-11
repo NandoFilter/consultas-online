@@ -92,26 +92,22 @@
 
                   <v-row align="center">
                     <v-col>
-                      <!-- <v-select
+                      <v-select
+                        label="Tipo de Deficiência"
                         variant="underlined"
-                        :items="getOccupationNames()"
-                        v-model="editedItem.occupation"
-                        label="Deficiência"
-                        :rules="rules.occupation"
-                        validate-on="blur"
-                        required
+                        v-model="editedItem.deficiency"
+                        :items="getDeficiencyNames()"
+                        :disabled="!hasDeficiency"
                       />
                     </v-col>
                     <v-col>
                       <v-select
+                        label="Tipo de Dependência"
                         variant="underlined"
-                        :items="getHospitalNames()"
-                        v-model="editedItem.hospital"
-                        label="Hospital"
-                        :rules="rules.hospital"
-                        validate-on="blur"
-                        required
-                      /> -->
+                        v-model="editedItem.dependency"
+                        :items="getDependencyNames()"
+                        :disabled="!hasDependency"
+                      />
                     </v-col>
                   </v-row>
 
@@ -157,7 +153,7 @@
             <v-dialog v-model="dialogDelete" max-width="379px">
               <v-card class="dialog_delete">
                 <v-card-title class="text-h5"
-                  >Deseja excluir este médico?
+                  >Deseja excluir este paciente?
                 </v-card-title>
                 <v-card-actions>
                   <v-btn color="primary" text @click="deleteItemConfirm">
@@ -192,8 +188,8 @@
 import { defineComponent } from 'vue'
 import { Navigation } from '@/components'
 import { ExportButton } from '@/components/tables'
-import { Doctor, Patient, User } from '@/models'
-import { DoctorService, UserService, DependencyService, DeficiencyService, PatientService, TableService } from '@/services'
+import { Dependency, Deficiency, Patient, User } from '@/models'
+import { UserService, DependencyService, DeficiencyService, PatientService, TableService } from '@/services'
 import rules from '@/utils/rules'
 
 type PatientTable = {
@@ -212,6 +208,8 @@ export default defineComponent({
   },
   async created() {
     this.patients = await TableService.getAllPatients()
+    this.deficiencies = await DeficiencyService.getAll()
+    this.dependencies = await DependencyService.getAll()
   },
   data: () => ({
     search: '',
@@ -233,6 +231,8 @@ export default defineComponent({
     ],
 
     patients: [] as PatientTable[],
+    deficiencies: [] as Deficiency[],
+    dependencies: [] as Dependency[],
 
     editedItem: {
       id: -1,
@@ -252,7 +252,25 @@ export default defineComponent({
     },
   },
   methods: {
-    async createDoctorFromTable(item: PatientTable) {
+    getDeficiencyNames() {
+      const names: string[] = []
+
+      this.deficiencies.forEach((deficiency) => {
+        names.push(deficiency.name)
+      })
+
+      return names
+    },
+    getDependencyNames() {
+      const names: string[] = []
+
+      this.dependencies.forEach((dependency) => {
+        names.push(dependency.name)
+      })
+
+      return names
+    },
+    async createPatient(item: PatientTable) {
       const newUser = {
         name: item.name,
         email: item.email,
@@ -285,7 +303,7 @@ export default defineComponent({
 
       return null
     },
-    async updateDoctorFromTable(item: PatientTable) {
+    async updatePatient(item: PatientTable) {
       let selectedPatient: Patient = await PatientService.getById(item.id)
       let selectedUser: User = await UserService.getById(selectedPatient.ref_user)
       
@@ -327,10 +345,10 @@ export default defineComponent({
 
       return PatientTable
     },
-    async getDoctorUser(patientId: number) {
-      let selectedDoctor: Doctor = await DoctorService.getById(patientId)
+    async getUser(patientId: number) {
+      let selectedPatient: Patient = await PatientService.getById(patientId)
 
-      return UserService.getById(selectedDoctor.ref_user)
+      return UserService.getById(selectedPatient.ref_user)
     },
 
     // Dialog Methods -------------------------
@@ -343,13 +361,13 @@ export default defineComponent({
     },
     async save () {
       if (this.patientId > -1) {
-        const patientTable: PatientTable = await this.updateDoctorFromTable(this.editedItem)
+        const patientTable: PatientTable = await this.updatePatient(this.editedItem)
 
         Object.assign(this.patients[this.patientTableId], patientTable)
 
         this.close()
       } else {
-        const patientTable = await this.createDoctorFromTable(this.editedItem)
+        const patientTable = await this.createPatient(this.editedItem)
 
         if (patientTable) {
           this.patients.push(patientTable)
@@ -372,7 +390,7 @@ export default defineComponent({
     async deleteItemConfirm() {
       await PatientService.delete(this.patientId)
 
-      const user: User = await this.getDoctorUser(this.patientId)
+      const user: User = await this.getUser(this.patientId)
 
       if (user.id) {
         await UserService.delete(user.id)
@@ -380,7 +398,7 @@ export default defineComponent({
 
       this.patients.splice(this.patientTableId, 1)
 
-      // this.closeDelete()
+      this.closeDelete()
     },
     closeDelete() {
       this.dialogDelete = false

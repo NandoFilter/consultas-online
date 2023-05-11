@@ -29,8 +29,6 @@ const isTokenValid = (token: string) => {
 
   const decodedToken = decode(token)
 
-  console.log(decodedToken.expires > Date.now())
-
   return decodedToken.expires > Date.now()
 }
 

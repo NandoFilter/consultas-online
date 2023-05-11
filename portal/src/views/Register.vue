@@ -180,7 +180,7 @@ export default defineComponent({
         }
       })
 
-      return deficiency ? deficiency.id : null
+      return deficiency && this.hasDeficiency ? deficiency.id : null
     },
     getDependencyId(): number | null {
       const dependency = this.dependencies.find((dependency) => {
@@ -189,7 +189,7 @@ export default defineComponent({
         }
       })
 
-      return dependency ? dependency.id : null
+      return dependency && this.hasDependency ? dependency.id : null
     },
     async generateUser() {
       const user: User = {
