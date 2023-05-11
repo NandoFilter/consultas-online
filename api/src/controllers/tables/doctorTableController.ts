@@ -1,9 +1,9 @@
 import { Request, Response } from 'express'
-import { Doctor } from '../models'
-import DoctorSchema from '../schemas/doctorSchema'
-import HospitalSchema from '../schemas/hospitalSchema'
-import OccupationSchema from '../schemas/occupationSchema'
-import UserSchema from '../schemas/userSchema'
+import { Doctor } from '../../models'
+import DoctorSchema from '../../schemas/doctorSchema'
+import HospitalSchema from '../../schemas/hospitalSchema'
+import OccupationSchema from '../../schemas/occupationSchema'
+import UserSchema from '../../schemas/userSchema'
 
 type DoctorTable = {
   id: number
@@ -14,7 +14,7 @@ type DoctorTable = {
   academy?: string
 }
 
-class TableController {
+class DoctorTableController {
   public async fetchDoctors(req: Request, res: Response): Promise<void> {
     let values: DoctorTable[] = []
     let doctors: Doctor[] = []
@@ -46,4 +46,4 @@ class TableController {
   }
 }
 
-export default new TableController()
+export default new DoctorTableController()

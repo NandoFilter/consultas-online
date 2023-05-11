@@ -1,9 +1,11 @@
 import { Router } from 'express'
-import TableController from '../controllers/tableController'
+import DoctorTableController from '../controllers/tables/doctorTableController'
+import PatientTableController from '../controllers/tables/patientTableController'
 
 class TableRoutes {
   constructor(routes: Router) {
-    routes.get('/table/doctors', TableController.fetchDoctors)
+    routes.get('/table/doctors', DoctorTableController.fetchDoctors)
+    routes.get('/table/patients', PatientTableController.fetchDoctors)
   }
 }
 
