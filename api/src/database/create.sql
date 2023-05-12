@@ -125,6 +125,5 @@ CREATE TABLE consultas.sessions (
 	ref_user INT NOT NULL,
 	token varchar(255) NOT NULL,
 	exp TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-	CONSTRAINT session_pk PRIMARY KEY (id),
-	CONSTRAINT user_FK FOREIGN KEY (ref_user) REFERENCES consultas.users(id)
+	CONSTRAINT session_pk PRIMARY KEY (id)
 );

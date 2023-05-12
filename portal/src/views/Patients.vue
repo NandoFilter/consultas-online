@@ -264,6 +264,25 @@ export default defineComponent({
 
       return names
     },
+    getDeficiencyId(name: string): number | null {
+      const deficiency = this.deficiencies.find((deficiency) => {
+        if (deficiency.name == name) {
+          return deficiency
+        }
+      })
+
+      return deficiency && this.hasDeficiency ? deficiency.id : null
+    },
+    getDependencyId(name: string): number | null {
+      const dependency = this.dependencies.find((dependency) => {
+        if (dependency.name == name) {
+          return dependency
+        }
+      })
+
+      return dependency && this.hasDependency ? dependency.id : null
+    },
+
     async createPatient(item: PatientTable) {
       const newUser = {
         name: item.name,
@@ -298,45 +317,40 @@ export default defineComponent({
       return null
     },
     async updatePatient(item: PatientTable) {
-      let selectedPatient: Patient = await PatientService.getById(item.id)
-      let selectedUser: User = await UserService.getById(selectedPatient.ref_user)
+      let selectedPatient: Patient | undefined
+      let selectedUser: User | undefined
+
+      if (item.id) {
+        selectedPatient = await PatientService.getById(item.id)
+      }
+
+      if (selectedPatient && selectedPatient.ref_user) {
+        selectedUser = await UserService.getById(selectedPatient.ref_user)
+
+        if (item.city) {
+          selectedPatient.city = item.city as string
+        }
+
+        if (item.deficiency) {
+          selectedPatient.ref_deficiency = this.getDeficiencyId(item.deficiency)
+        }
+
+        if (item.dependency) {
+          selectedPatient.ref_dependency = this.getDependencyId(item.dependency)
+        }
+
+        await PatientService.update(selectedPatient)
+      }
       
-      selectedUser = {
-        name: item.name,
-        email: item.email
-      } as User
+      if (selectedUser) {
+        selectedUser.name = item.name
+        selectedUser.email = item.email as string
 
-      if (this.userPassword) {
-        selectedUser.password = this.userPassword
+        await UserService.update(selectedUser)
       }
 
-      selectedPatient = {
-        id: selectedPatient.id,
-        ref_user: selectedUser.id,
-        city: selectedPatient.city,
-        ref_deficiency: selectedPatient.ref_deficiency,
-        ref_dependency: selectedPatient.ref_dependency
-      } as Patient
-
-      const updatedUser = await UserService.update(selectedUser)
-      const updatedPatient = await PatientService.update(selectedPatient)
-
-      const patientTable = {
-        id: updatedPatient.id,
-        name: updatedUser.name,
-        email: updatedUser.email,
-        city: updatedPatient.city,
-      } as PatientTable
-
-      if (selectedPatient.ref_deficiency) {
-        patientTable.deficiency = (await DeficiencyService.getById(selectedPatient.ref_deficiency)).name
-      }
-
-      if (selectedPatient.ref_dependency) {
-        patientTable.dependency = (await DependencyService.getById(selectedPatient.ref_dependency)).name
-      }
-
-      return patientTable
+      // return patientTable
+      return undefined
     },
     async getUser(patientId: number) {
       let selectedPatient: Patient = await PatientService.getById(patientId)
@@ -357,7 +371,7 @@ export default defineComponent({
     },
     async save () {
       if (this.patientId > -1) {
-        const patientTable: PatientTable = await this.updatePatient(this.editedItem)
+        const patientTable = await this.updatePatient(this.editedItem)
 
         Object.assign(this.patients[this.patientTableId], patientTable)
 
