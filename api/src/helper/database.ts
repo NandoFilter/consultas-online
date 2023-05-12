@@ -19,7 +19,8 @@ class Database {
         host: host,
         user: user,
         password: pass,
-        database: name
+        database: name,
+        multipleStatements: true
       })
 
       return conn

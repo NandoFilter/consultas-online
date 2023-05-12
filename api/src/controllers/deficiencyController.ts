@@ -1,6 +1,6 @@
 import { Request, Response } from 'express'
 import { Deficiency } from '../models'
-import DeficiencySchema from '../schemas/deficiencySchema'
+import { DeficiencySchema } from '../schemas'
 
 class DeficiencyController {
   public async fetchAll(req: Request, res: Response) {

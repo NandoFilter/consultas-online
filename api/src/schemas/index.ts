@@ -1,0 +1,8 @@
+export { default as UserSchema } from './userSchema'
+export { default as DeficiencySchema } from './deficiencySchema'
+export { default as DependencySchema } from './dependencySchema'
+export { default as OccupationSchema } from './occupationSchema'
+export { default as HospitalSchema } from './hospitalSchema'
+export { default as PatientSchema } from './patientSchema'
+export { default as DoctorSchema } from './doctorSchema'
+export { default as SessionSchema } from './sessionSchema'

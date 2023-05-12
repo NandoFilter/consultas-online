@@ -1,6 +1,6 @@
 import { Request, Response } from 'express'
 import { Dependency } from '../models'
-import DependencySchema from '../schemas/dependencySchema'
+import { DependencySchema } from '../schemas'
 
 class DependencyController {
   public async fetchAll(req: Request, res: Response) {

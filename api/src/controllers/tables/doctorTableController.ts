@@ -1,21 +1,9 @@
 import { Request, Response } from 'express'
-import { Doctor } from '../../models'
-import DoctorSchema from '../../schemas/doctorSchema'
-import HospitalSchema from '../../schemas/hospitalSchema'
-import OccupationSchema from '../../schemas/occupationSchema'
-import UserSchema from '../../schemas/userSchema'
-
-type DoctorTable = {
-  id: number
-  name?: string
-  email?: string
-  hospital?: string
-  occupation?: string
-  academy?: string
-}
+import { Doctor, DoctorTable } from '../../models'
+import { DoctorSchema, HospitalSchema, OccupationSchema, UserSchema } from '../../schemas'
 
 class DoctorTableController {
-  public async fetchDoctors(req: Request, res: Response): Promise<void> {
+  public async fetchAll(req: Request, res: Response): Promise<void> {
     let values: DoctorTable[] = []
     let doctors: Doctor[] = []
 
@@ -43,6 +31,36 @@ class DoctorTableController {
     }
 
     res.json(values).end()
+  }
+
+  public async fetchById(req: Request, res: Response): Promise<void> {
+    const { id } = req.params
+
+    let value: DoctorTable | undefined
+    let doctor: Doctor | undefined
+
+    if (id) {
+      doctor = await DoctorSchema.getById(Number(id))
+
+      if (doctor) {
+        const [user, hospital, occupation] = await Promise.all([
+          UserSchema.getById(doctor.ref_user),
+          HospitalSchema.getById(doctor.ref_hospital),
+          OccupationSchema.getById(doctor.ref_occupation)
+        ])
+
+        value = {
+          id: doctor.id as number,
+          name: user?.name,
+          email: user?.email,
+          hospital: hospital?.name,
+          occupation: occupation?.name,
+          academy: doctor.acad_education
+        }
+      }
+    }
+
+    res.json(value).end()
   }
 }
 

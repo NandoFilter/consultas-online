@@ -1,21 +1,9 @@
 import { Request, Response } from 'express'
-import { Patient } from '../../models'
-import UserSchema from '../../schemas/userSchema'
-import PatientSchema from '../../schemas/patientSchema'
-import DeficiencySchema from '../../schemas/deficiencySchema'
-import DependencySchema from '../../schemas/dependencySchema'
-
-type PatientTable = {
-  id: number
-  name?: string
-  email?: string
-  city?: string
-  deficiency?: string
-  dependency?: string
-}
+import { Patient, PatientTable } from '../../models'
+import { DeficiencySchema, DependencySchema, PatientSchema, UserSchema } from '../../schemas'
 
 class PatientTableController {
-  public async fetchDoctors(req: Request, res: Response): Promise<void> {
+  public async fetchAll(req: Request, res: Response): Promise<void> {
     let values: PatientTable[] = []
     let patients: Patient[] = []
 
@@ -43,6 +31,36 @@ class PatientTableController {
     }
 
     res.json(values).end()
+  }
+
+  public async fetchById(req: Request, res: Response): Promise<void> {
+    const { id } = req.params
+
+    let value: PatientTable | undefined
+    let patient: Patient | undefined
+
+    if (id) {
+      patient = await PatientSchema.getById(Number(id))
+
+      if (patient) {
+        const [user, deficiency, dependency] = await Promise.all([
+          UserSchema.getById(patient.ref_user),
+          DeficiencySchema.getById(patient.ref_deficiency),
+          DependencySchema.getById(patient.ref_dependency)
+        ])
+
+        value = {
+          id: patient.id as number,
+          name: user?.name,
+          email: user?.email,
+          city: patient.city,
+          deficiency: deficiency?.name,
+          dependency: dependency?.name
+        }
+      }
+    }
+
+    res.json(value).end()
   }
 }
 

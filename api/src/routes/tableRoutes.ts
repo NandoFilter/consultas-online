@@ -4,8 +4,11 @@ import PatientTableController from '../controllers/tables/patientTableController
 
 class TableRoutes {
   constructor(routes: Router) {
-    routes.get('/table/doctors', DoctorTableController.fetchDoctors)
-    routes.get('/table/patients', PatientTableController.fetchDoctors)
+    routes.get('/table/doctors', DoctorTableController.fetchAll)
+    routes.get('/table/doctors/:id', DoctorTableController.fetchById)
+
+    routes.get('/table/patients', PatientTableController.fetchAll)
+    routes.get('/table/patients/:id', PatientTableController.fetchById)
   }
 }
 

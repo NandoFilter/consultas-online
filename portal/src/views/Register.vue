@@ -81,6 +81,7 @@
                 v-model="deficiency"
                 :items="getDeficiencyNames()"
                 :disabled="!hasDeficiency"
+                clearable
               />
             </v-col>
             <v-col>
@@ -90,6 +91,7 @@
                 v-model="dependency"
                 :items="getDependencyNames()"
                 :disabled="!hasDependency"
+                clearable
               />
             </v-col>
           </v-row>

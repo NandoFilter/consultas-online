@@ -98,6 +98,7 @@
                         v-model="editedItem.deficiency"
                         :items="getDeficiencyNames()"
                         :disabled="!hasDeficiency"
+                        clearable
                       />
                     </v-col>
                     <v-col>
@@ -107,6 +108,7 @@
                         v-model="editedItem.dependency"
                         :items="getDependencyNames()"
                         :disabled="!hasDependency"
+                        clearable
                       />
                     </v-col>
                   </v-row>
@@ -190,16 +192,8 @@ import { Navigation } from '@/components'
 import { ExportButton } from '@/components/tables'
 import { Dependency, Deficiency, Patient, User } from '@/models'
 import { UserService, DependencyService, DeficiencyService, PatientService, TableService } from '@/services'
+import { PatientTable } from '@/models'
 import rules from '@/utils/rules'
-
-type PatientTable = {
-  id: number
-  name?: string
-  email?: string
-  city?: string
-  deficiency: string
-  dependency: string
-}
 
 export default defineComponent({
   components: {
@@ -308,7 +302,6 @@ export default defineComponent({
       let selectedUser: User = await UserService.getById(selectedPatient.ref_user)
       
       selectedUser = {
-        id: selectedUser.id,
         name: item.name,
         email: item.email
       } as User
@@ -328,7 +321,7 @@ export default defineComponent({
       const updatedUser = await UserService.update(selectedUser)
       const updatedPatient = await PatientService.update(selectedPatient)
 
-      const PatientTable = {
+      const patientTable = {
         id: updatedPatient.id,
         name: updatedUser.name,
         email: updatedUser.email,
@@ -336,14 +329,14 @@ export default defineComponent({
       } as PatientTable
 
       if (selectedPatient.ref_deficiency) {
-        PatientTable.deficiency = (await DeficiencyService.getById(selectedPatient.ref_deficiency)).name
+        patientTable.deficiency = (await DeficiencyService.getById(selectedPatient.ref_deficiency)).name
       }
 
       if (selectedPatient.ref_dependency) {
-        PatientTable.dependency = (await DependencyService.getById(selectedPatient.ref_dependency)).name
+        patientTable.dependency = (await DependencyService.getById(selectedPatient.ref_dependency)).name
       }
 
-      return PatientTable
+      return patientTable
     },
     async getUser(patientId: number) {
       let selectedPatient: Patient = await PatientService.getById(patientId)
@@ -355,6 +348,9 @@ export default defineComponent({
     editItem (patient: PatientTable) {
       this.patientTableId = this.patients.indexOf(patient)
       this.patientId = patient.id
+
+      this.hasDeficiency = !!patient.deficiency
+      this.hasDependency = !!patient.dependency
 
       this.editedItem = Object.assign({}, patient)
       this.dialog = true
@@ -389,12 +385,6 @@ export default defineComponent({
     },
     async deleteItemConfirm() {
       await PatientService.delete(this.patientId)
-
-      const user: User = await this.getUser(this.patientId)
-
-      if (user.id) {
-        await UserService.delete(user.id)
-      }
 
       this.patients.splice(this.patientTableId, 1)
 

@@ -1,6 +1,6 @@
 import { Request, Response } from 'express'
 import { Occupation } from '../models'
-import OccupationSchema from '../schemas/occupationSchema'
+import { OccupationSchema } from '../schemas'
 
 class OccupationController {
   public async fetchAll(req: Request, res: Response) {

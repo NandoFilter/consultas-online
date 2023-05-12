@@ -1,5 +1,5 @@
 import { Request, Response } from 'express'
-import SessionSchema from '../schemas/sessionSchema'
+import { SessionSchema } from '../schemas'
 
 class SessionController {
   public async login(req: Request, res: Response): Promise<void> {

@@ -169,18 +169,9 @@
 import { defineComponent } from 'vue'
 import { Navigation } from '@/components'
 import { ExportButton } from '@/components/tables'
-import { Doctor, Hospital, Occupation, User } from '@/models'
+import { Doctor, DoctorTable, Hospital, Occupation, User } from '@/models'
 import { DoctorService, UserService, HospitalService, OccupationService } from '@/services'
 import rules from '@/utils/rules'
-
-type DoctorTable = {
-  id: number
-  name?: string
-  email?: string
-  hospital?: string
-  occupation?: string
-  academy?: string
-}
 
 export default defineComponent({
   components: {

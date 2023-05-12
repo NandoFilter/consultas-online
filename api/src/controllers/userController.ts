@@ -1,6 +1,6 @@
 import { Request, Response } from 'express'
 import { User } from '../models'
-import UserSchema from '../schemas/userSchema'
+import { UserSchema } from '../schemas'
 
 class UserController {
   public async fetchAll(req: Request, res: Response): Promise<void> {

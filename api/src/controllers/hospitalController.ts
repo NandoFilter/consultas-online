@@ -1,6 +1,6 @@
 import { Request, Response } from 'express'
 import { Hospital } from '../models'
-import HospitalSchema from '../schemas/hospitalSchema'
+import { HospitalSchema } from '../schemas'
 
 class HospitalController {
   public async fetchAll(req: Request, res: Response): Promise<void> {
