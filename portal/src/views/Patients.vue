@@ -349,8 +349,9 @@ export default defineComponent({
         await UserService.update(selectedUser)
       }
 
-      // return patientTable
-      return undefined
+      item = await TableService.getPatientById(item.id)
+
+      return item
     },
     async getUser(patientId: number) {
       let selectedPatient: Patient = await PatientService.getById(patientId)

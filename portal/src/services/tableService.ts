@@ -1,20 +1,20 @@
-import { Doctor, Patient } from '@/models'
+import { DoctorTable, PatientTable } from '@/models'
 import service from './service'
 
 export default {
-  async getAllDoctors(): Promise<any[]> {
+  async getAllDoctors(): Promise<DoctorTable[]> {
     return service.get('/table/doctors')
   },
 
-  async getDoctorById(id: number): Promise<Doctor> {
+  async getDoctorById(id: number): Promise<DoctorTable> {
     return service.get(`/table/doctors/${id}`)
   },
 
-  async getAllPatients(): Promise<any[]> {
+  async getAllPatients(): Promise<PatientTable[]> {
     return service.get('/table/patients')
   },
 
-  async getPatientById(id: number): Promise<Patient> {
+  async getPatientById(id: number): Promise<PatientTable> {
     return service.get(`/table/patients/${id}`)
   },
 }
