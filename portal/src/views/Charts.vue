@@ -2,18 +2,20 @@
   <div>
     <Navigation />
     <div class="main">
+      <PieChart />
     </div>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import { Navigation } from '@/components';
+import { Navigation, PieChart } from '@/components';
 
 export default defineComponent({
   components: {
-    Navigation
-  }
+    Navigation,
+    PieChart,
+  },
 })
 </script>
 
