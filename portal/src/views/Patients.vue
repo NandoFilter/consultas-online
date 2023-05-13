@@ -64,7 +64,7 @@
                         variant="underlined"
                         v-model="editedItem.city"
                         label="Cidade"
-                        :rules="rules.academy"
+                        :rules="rules.city"
                         validate-on="blur"
                         required
                       />
@@ -290,28 +290,31 @@ export default defineComponent({
         password: this.userPassword
       } as User
 
-      const user = await UserService.add(newUser)
+      const user: User = await UserService.add(newUser)
 
       if (user) {
-        // const patient = {
-        //   ref_user: user.id,
-        //   acad_education: item.academy,
-        //   ref_occupation: occupation?.id,
-        //   ref_hospital: hospital.id
-        // } as Patient
+        const newPatient = {
+          ref_user: user.id,
+          city: item.city,
+          ref_deficiency: null,
+          ref_dependency: null
+        } as Patient
 
-        // const newDoctor = await DoctorService.add(doctor)
+        if (item.deficiency) {
+          newPatient.ref_deficiency = this.getDeficiencyId(item.deficiency)
+        }
 
-        // const PatientTable = {
-        //   id: newDoctor.id,
-        //   name: user.name,
-        //   email: user.email,
-        //   hospital: hospital.name,
-        //   occupation: occupation.name,
-        //   academy: item.academy,
-        // } as PatientTable
+        if (item.dependency) {
+          newPatient.ref_dependency = this.getDependencyId(item.dependency)
+        }
 
-        // return PatientTable
+        const patient: Patient = await PatientService.add(newPatient)
+
+        if (patient.id) {
+          item.id = patient.id
+        }
+
+        return item
       }
 
       return null
