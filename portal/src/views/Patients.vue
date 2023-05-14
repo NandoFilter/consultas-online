@@ -130,9 +130,24 @@
             </v-card>
           </v-dialog>
   
+          <!-- Filtro -->
+          <div class="header_filter">
+            <v-select
+              :items="['Nome', 'Cidade', 'Deficiência', 'Dependência']"
+              color="primary"
+              prepend-inner-icon="mdi-filter"
+              variant="underlined"
+              label="Filtro"
+              single-line
+              hide-details
+              clearable
+            />
+          </div>
+
           <div class="header_txt">
             <v-text-field
               v-model="search"
+              color="primary"
               prepend-icon="mdi-magnify"
               variant="underlined"
               label="Pesquisar"
@@ -453,6 +468,10 @@ export default defineComponent({
   &_btn {
     text-transform: unset !important;
     margin: 10px 5px;
+  }
+
+  &_filter {
+    width: 12vw;
   }
 
   &_txt {
