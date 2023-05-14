@@ -1,138 +1,143 @@
 <template>
-  <div class="register">
-    <v-container class="register_container fill-height">
-      <v-card class="ma-auto px-6 py-8" min-width="650" max-width="500">
-        <v-form fast-fail @submit.prevent="onRegister">
-          <v-row align="center">
-            <v-col>
-              <v-text-field
-                v-model="name"
-                :readonly="loading"
-                :rules="rules.name"
-                variant="underlined"
-                label="Nome"
-                validate-on="blur"
-                required
-              />
-            </v-col>
-            <v-col>
-              <v-text-field
-                v-model="email"
-                :readonly="loading"
-                :rules="rules.email"
-                variant="underlined"
-                label="E-mail"
-                validate-on="blur"
-                required
-              />
-            </v-col>
-          </v-row>
-          
-          <v-row align="center">
-            <v-col>
-              <v-text-field
-                v-model="city"
-                :readonly="loading"
-                :rules="rules.city"
-                variant="underlined"
-                label="Cidade"
-                validate-on="blur"
-                required
-              />
-            </v-col>
-            <v-col>
-              <v-text-field
-                v-model="password"
-                :readonly="loading"
-                :rules="rules.password"
-                variant="underlined"
-                label="Senha"
-                type="password"
-                validate-on="blur"
-                required
-              />
-            </v-col>
-          </v-row>
+  <div>
+    <Header class="header" />
+    <div class="register">
+      <v-container class="register_container fill-height">
+        <v-card class="ma-auto px-6 py-8" min-width="650" max-width="500">
+          <v-form fast-fail @submit.prevent="onRegister">
+            <v-row align="center">
+              <v-col>
+                <v-text-field
+                  v-model="name"
+                  :readonly="loading"
+                  :rules="rules.name"
+                  variant="underlined"
+                  label="Nome"
+                  validate-on="blur"
+                  required
+                />
+              </v-col>
+              <v-col>
+                <v-text-field
+                  v-model="email"
+                  :readonly="loading"
+                  :rules="rules.email"
+                  variant="underlined"
+                  label="E-mail"
+                  validate-on="blur"
+                  required
+                />
+              </v-col>
+            </v-row>
+            
+            <v-row align="center">
+              <v-col>
+                <v-text-field
+                  v-model="city"
+                  :readonly="loading"
+                  :rules="rules.city"
+                  variant="underlined"
+                  label="Cidade"
+                  validate-on="blur"
+                  required
+                />
+              </v-col>
+              <v-col>
+                <v-text-field
+                  v-model="password"
+                  :readonly="loading"
+                  :rules="rules.password"
+                  variant="underlined"
+                  label="Senha"
+                  type="password"
+                  validate-on="blur"
+                  required
+                />
+              </v-col>
+            </v-row>
 
-          <v-row align="center">
-            <v-col>
-              <v-checkbox
-                label="Possui deficiência?"
-                v-model="hasDeficiency"
-                color="primary"
-                hide-details
-              />
-            </v-col>
-            <v-col>
-              <v-checkbox
-                label="Possui dependência?"
-                v-model="hasDependency"
-                color="primary"
-                hide-details
-              />
-            </v-col>
-          </v-row>
+            <v-row align="center">
+              <v-col>
+                <v-checkbox
+                  label="Possui deficiência?"
+                  v-model="hasDeficiency"
+                  color="primary"
+                  hide-details
+                />
+              </v-col>
+              <v-col>
+                <v-checkbox
+                  label="Possui dependência?"
+                  v-model="hasDependency"
+                  color="primary"
+                  hide-details
+                />
+              </v-col>
+            </v-row>
 
-          <v-row align="center">
-            <v-col>
-              <v-select
-                label="Tipo de Deficiência"
-                variant="underlined"
-                v-model="deficiency"
-                :items="getDeficiencyNames()"
-                :disabled="!hasDeficiency"
-                clearable
-              />
-            </v-col>
-            <v-col>
-              <v-select
-                label="Tipo de Dependência"
-                variant="underlined"
-                v-model="dependency"
-                :items="getDependencyNames()"
-                :disabled="!hasDependency"
-                clearable
-              />
-            </v-col>
-          </v-row>
+            <v-row align="center">
+              <v-col>
+                <v-select
+                  label="Tipo de Deficiência"
+                  variant="underlined"
+                  v-model="deficiency"
+                  :items="getDeficiencyNames()"
+                  :disabled="!hasDeficiency"
+                  clearable
+                />
+              </v-col>
+              <v-col>
+                <v-select
+                  label="Tipo de Dependência"
+                  variant="underlined"
+                  v-model="dependency"
+                  :items="getDependencyNames()"
+                  :disabled="!hasDependency"
+                  clearable
+                />
+              </v-col>
+            </v-row>
 
-          <v-btn
-            block
-            :loading="loading"
-            class="mt-5"
-            color="primary"
-            type="submit"
-          >
-            Cadastrar
-          </v-btn>  
-        </v-form>
-        <div class="login">
-          <router-link class="login_link" to="/login">Possui uma conta? Entrar</router-link>
-        </div>
-      </v-card>
+            <v-btn
+              block
+              :loading="loading"
+              class="mt-5"
+              color="primary"
+              type="submit"
+            >
+              Cadastrar
+            </v-btn>  
+          </v-form>
+          <div class="login">
+            <router-link class="login_link" to="/login">Possui uma conta? Entrar</router-link>
+          </div>
+        </v-card>
 
-      <v-alert
-        class="alert"
-        icon="$error"
-        color="error"
-        title="Erro ao efetuar cadastro"
-        text="Reveja os valores preenchidos nos campos e tente novamente"
-        v-model="showError"
-        closable
-      />
-
-      <router-link class="login_link" to="/">Voltar ao Início</router-link>
-    </v-container>
+        <v-alert
+          class="alert"
+          icon="$error"
+          color="error"
+          title="Erro ao efetuar cadastro"
+          text="Reveja os valores preenchidos nos campos e tente novamente"
+          v-model="showError"
+          closable
+        />
+      </v-container>
+    </div>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
+import { Header } from '@/components';
 import { Deficiency, Dependency, Patient, User } from '../models';
 import { UserService, PatientService, DeficiencyService, DependencyService } from '../services'
 import rules from '@/utils/rules'
 
 export default defineComponent({
+  components: {
+    Header
+  },
   async created() {
     [this.deficiencies, this.dependencies] = await Promise.all([
       DeficiencyService.getAll(),
@@ -236,8 +241,12 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+.header {
+  box-shadow: 0px 1px 5px rgb(199, 199, 199);
+}
+
 .register {
-  height: 100vh;
+  height: 90vh;
 
   &_container {
     display: flex;

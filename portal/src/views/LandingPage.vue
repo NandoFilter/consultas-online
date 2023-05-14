@@ -3,7 +3,7 @@
     <Header/>
     <div class="presentation">
       <div class="banner">
-        <span class="banner_title banner_items">O lugar ideal para tirar suas dúvidas médicas</span>
+        <span class="banner_title banner_items">O lugar ideal para responder suas dúvidas médicas</span>
         <img class="banner_items" :src="require('../assets/img/banner_img.svg')">
       </div>
 
