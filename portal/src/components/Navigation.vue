@@ -70,7 +70,7 @@ export default defineComponent({
     botItems: [
       { title: 'Perfil', icon: 'mdi-account', value: '/profile' },
       { title: 'Relatórios', icon: 'mdi-file-document-outline', value:'/reports' },
-      { title: 'Gráficos', icon: 'mdi-chart-box-outline', value: '/charts' },
+      { title: 'Gráficos', icon: 'mdi-chart-pie', value: '/charts' },
       { title: 'Administração', icon: 'mdi-security', value: '/admin' },
       { title: 'Sair', icon: 'mdi-logout', value: '/', action: 'logout' },
     ]

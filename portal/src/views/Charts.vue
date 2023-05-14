@@ -2,7 +2,10 @@
   <div>
     <Navigation />
     <div class="main">
-      <PieChart />
+      <h1>Número de Pacientes com deficiências</h1>
+      <div>
+        <PieChart class="chart" />
+      </div>
     </div>
   </div>
 </template>
@@ -22,5 +25,14 @@ export default defineComponent({
 <style lang="scss" scoped>
 .main {
   margin-left: 75px;
+  margin-top: 12vh;
+
+  & h1 {
+    margin-left: 65vh;
+  }
+}
+
+.chart {
+  width: 35%;
 }
 </style>
