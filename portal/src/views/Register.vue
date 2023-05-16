@@ -81,7 +81,7 @@
                   label="Tipo de Deficiência"
                   variant="underlined"
                   v-model="deficiency"
-                  :items="getDeficiencyNames()"
+                  :items="getDeficiencyNames"
                   :disabled="!hasDeficiency"
                   clearable
                 />
@@ -91,7 +91,7 @@
                   label="Tipo de Dependência"
                   variant="underlined"
                   v-model="dependency"
-                  :items="getDependencyNames()"
+                  :items="getDependencyNames"
                   :disabled="!hasDependency"
                   clearable
                 />
@@ -133,10 +133,15 @@ import { Header } from '@/components';
 import { Deficiency, Dependency, Patient, User } from '../models';
 import { UserService, PatientService, DeficiencyService, DependencyService } from '../services'
 import rules from '@/utils/rules'
+import { mapState } from 'pinia';
+import { useFieldStore } from '@/stores';
 
 export default defineComponent({
   components: {
     Header
+  },
+  computed: {
+    ...mapState(useFieldStore, ['getDeficiencyNames', 'getDependencyNames'])
   },
   async created() {
     [this.deficiencies, this.dependencies] = await Promise.all([
@@ -162,24 +167,6 @@ export default defineComponent({
     rules
   }),
   methods: {
-    getDeficiencyNames() {
-      const names: string[] = []
-
-      this.deficiencies.forEach((deficiency) => {
-        names.push(deficiency.name)
-      })
-
-      return names
-    },
-    getDependencyNames() {
-      const names: string[] = []
-
-      this.dependencies.forEach((dependency) => {
-        names.push(dependency.name)
-      })
-
-      return names
-    },
     getDeficiencyId(): number | null {
       const deficiency = this.deficiencies.find((deficiency) => {
         if (deficiency.name == this.deficiency) {

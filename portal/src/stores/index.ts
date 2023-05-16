@@ -1,9 +1,9 @@
 import { useSessionStore } from './session'
-import { useFilterStore } from './filter'
+import { useFieldStore } from './field'
 import { useStatisticStore } from './statistics'
 
 export function initStore() {
-  useSessionStore(), useFilterStore().fetchAll(), useStatisticStore().fetchAll()
+  useSessionStore(), useFieldStore().fetchAll(), useStatisticStore().fetchAll()
 }
 
-export { useSessionStore, useFilterStore, useStatisticStore }
+export { useSessionStore, useFieldStore, useStatisticStore }

@@ -106,7 +106,7 @@
                         label="Tipo de Dependência"
                         variant="underlined"
                         v-model="editedItem.dependency"
-                        :items="getDependencyNames()"
+                        :items="getDependencyNames"
                         :disabled="!hasDependency"
                         clearable
                       />
@@ -207,7 +207,7 @@ import { Navigation } from '@/components'
 import { ExportButton } from '@/components/tables'
 import { Deficiency, Dependency, Patient, PatientTable, User } from '@/models'
 import { DeficiencyService, DependencyService, PatientService, TableService, UserService } from '@/services'
-import { useFilterStore } from '@/stores'
+import { useFieldStore } from '@/stores'
 import rules from '@/utils/rules'
 import { mapState } from 'pinia'
 import { defineComponent } from 'vue'
@@ -218,7 +218,7 @@ export default defineComponent({
     ExportButton,
   },
   computed: {
-    ...mapState(useFilterStore, ['getDeficiencyNames']),
+    ...mapState(useFieldStore, ['getDeficiencyNames', 'getDependencyNames']),
 
     formTitle () {
       return this.patientId === -1 ? 'Novo Paciente' : 'Editar Paciente'
@@ -263,13 +263,13 @@ export default defineComponent({
     rules,
 
     headers: [
-      { title: 'ID', align: 'start', key: 'id', sortable: false },
-      { title: 'Nome', align: 'start', key: 'name' },
-      { title: 'E-mail', align: 'start', key: 'email', sortable: false },
-      { title: 'Cidade', align: 'start', key: 'city' },
-      { title: 'Deficiência', align: 'start', key: 'deficiency' },
-      { title: 'Dependência', align: 'start', key: 'dependency' },
-      { title: 'Ações', key: 'actions', sortable: false },
+      { title: 'ID',          align: 'start', key: 'id',         sortable: false },
+      { title: 'Nome',        align: 'start', key: 'name',       sortable: true },
+      { title: 'E-mail',      align: 'start', key: 'email',      sortable: false },
+      { title: 'Cidade',      align: 'start', key: 'city',       sortable: true },
+      { title: 'Deficiência', align: 'start', key: 'deficiency', sortable: true },
+      { title: 'Dependência', align: 'start', key: 'dependency', sortable: true },
+      { title: 'Ações',       align: 'start', key: 'actions',    sortable: false },
     ],
 
     patients: [] as PatientTable[],
@@ -289,15 +289,6 @@ export default defineComponent({
     hasDependency: false,
   }),
   methods: {
-    getDependencyNames() {
-      const names: string[] = []
-
-      this.dependencies.forEach((dependency) => {
-        names.push(dependency.name)
-      })
-
-      return names
-    },
     getDeficiencyId(name: string): number | null {
       const deficiency = this.deficiencies.find((deficiency) => {
         if (deficiency.name == name) {
