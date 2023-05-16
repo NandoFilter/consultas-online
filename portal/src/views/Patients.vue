@@ -96,7 +96,7 @@
                         label="Tipo de Deficiência"
                         variant="underlined"
                         v-model="editedItem.deficiency"
-                        :items="getDeficiencyNames()"
+                        :items="getDeficiencyNames"
                         :disabled="!hasDeficiency"
                         clearable
                       />
@@ -134,6 +134,7 @@
           <div class="header_filter">
             <v-select
               :items="['Nome', 'Cidade', 'Deficiência', 'Dependência']"
+              v-model="filter"
               color="primary"
               prepend-inner-icon="mdi-filter"
               variant="underlined"
@@ -160,7 +161,7 @@
 
         <v-data-table
           :headers="headers"
-          :items="patients"
+          :items="filteredItems"
           :search="search"
           item-value="name"
           class="table elevation-1"
@@ -209,11 +210,39 @@ import { Dependency, Deficiency, Patient, User } from '@/models'
 import { UserService, DependencyService, DeficiencyService, PatientService, TableService } from '@/services'
 import { PatientTable } from '@/models'
 import rules from '@/utils/rules'
+import { mapState } from 'pinia'
+import { useFilterStore } from '@/stores'
 
 export default defineComponent({
   components: {
     Navigation,
     ExportButton,
+  },
+  computed: {
+    ...mapState(useFilterStore, ['getDeficiencyNames']),
+
+    formTitle () {
+      return this.patientId === -1 ? 'Novo Paciente' : 'Editar Paciente'
+    },
+    filteredItems() {
+      let names: string[] = []
+
+      if (this.filter === 'Nome') {
+        this.patients.filter((p) => {
+          if (p.name) {
+            names.push(p.name)
+          }
+        })
+
+        return names.filter((name) => {
+          return !this.filter || name === this.search
+        })
+      }
+
+      return this.patients.filter((patient) => {
+        return !this.filter || patient.name === this.filter
+      })
+    },
   },
   async created() {
     this.patients = await TableService.getAllPatients()
@@ -222,6 +251,7 @@ export default defineComponent({
   },
   data: () => ({
     search: '',
+    filter: null,
     dialog: false,
     dialogDelete: false,
     patientId: -1,
@@ -255,21 +285,7 @@ export default defineComponent({
     hasDeficiency: false,
     hasDependency: false,
   }),
-  computed: {
-    formTitle () {
-      return this.patientId === -1 ? 'Novo Paciente' : 'Editar Paciente'
-    },
-  },
   methods: {
-    getDeficiencyNames() {
-      const names: string[] = []
-
-      this.deficiencies.forEach((deficiency) => {
-        names.push(deficiency.name)
-      })
-
-      return names
-    },
     getDependencyNames() {
       const names: string[] = []
 
