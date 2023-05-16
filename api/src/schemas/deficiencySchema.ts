@@ -1,5 +1,5 @@
 import database from '../helper/database'
-import { Deficiency } from '../models'
+import { Deficiency, Statistic } from '../models'
 
 const table = 'deficiencies'
 
@@ -32,6 +32,23 @@ class DeficiencySchema {
     }
 
     return deficiency
+  }
+
+  public async getStatistics(): Promise<Statistic[]> {
+    const conn = await database.getConnection()
+
+    let deficiencies: Statistic[] = []
+
+    if (conn) {
+      ;[deficiencies] = await conn.execute(`
+        SELECT d.name, COUNT(p.id) as total
+        FROM ${table} d
+        LEFT JOIN patients p ON d.id = p.ref_deficiency
+        GROUP BY d.name
+      `)
+    }
+
+    return deficiencies
   }
 }
 

@@ -6,9 +6,8 @@
 import { defineComponent } from 'vue'
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js'
 import { Pie } from 'vue-chartjs'
-import { Deficiency } from '../../models'
-import { DeficiencyService } from '@/services'
-import { toRaw } from 'vue'
+import { mapState } from 'pinia'
+import { useStatisticStore } from '@/stores'
 
 ChartJS.register(ArcElement, Tooltip, Legend)
 
@@ -22,30 +21,27 @@ export default defineComponent ({
   components: {
     Pie
   },
-  async created() {
-    this.deficiencies = await DeficiencyService.getAll()
+  computed: {
+    ...mapState(useStatisticStore, ['getStatistics'])
   },
   data: () => ({
     data: {} as Data,
     options: {},
-    deficiencies: [] as Deficiency[]
   }),
   methods: {
-    async getDeficiencyNames() {
-      // let names: string[] = []
-      // const deficiencies: Deficiency[] = toRaw(await DeficiencyService.getAll())
-
-      // deficiencies.forEach((deficiency) => {
-      //   names.push(deficiency.name)
-      // })
-
-      return null
-    },
     async getConfig() {
-      const test = ['Visual', 'Motora', 'Surdez', 'Autismo', 'Síndrome de Down']
+      const statistics = this.getStatistics
+
+      let names: string[] = []
+      let totals: number[] = []
+
+      statistics.forEach((s) => {
+        names.push(s.name)
+        totals.push(s.total)
+      })
 
       this.data = {
-        labels: test,
+        labels: names,
         datasets: [
           {
             backgroundColor: [
@@ -55,7 +51,7 @@ export default defineComponent ({
               '#0FD150',
               '#0EC717',
             ],
-            data: [40, 20, 80, 10, 50],
+            data: totals,
           },
         ],
       }
@@ -66,8 +62,8 @@ export default defineComponent ({
       }
     }
   },
-  async beforeMount() {
-    await this.getConfig()
-  }
+  beforeMount() {
+    this.getConfig()
+  },
 })
 </script>

@@ -1,5 +1,5 @@
 import { Request, Response } from 'express'
-import { Deficiency } from '../models'
+import { Deficiency, Statistic } from '../models'
 import { DeficiencySchema } from '../schemas'
 
 class DeficiencyController {
@@ -25,6 +25,16 @@ class DeficiencyController {
 
       res.json(deficiency)
     }
+  }
+
+  public async fetchStatistics(req: Request, res: Response) {
+    let statistics: Statistic[] | undefined = await DeficiencySchema.getStatistics()
+
+    if (statistics.length === 0) {
+      res.sendStatus(204).end()
+    }
+
+    res.json(statistics)
   }
 }
 
