@@ -203,15 +203,14 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
 import { Navigation } from '@/components'
 import { ExportButton } from '@/components/tables'
-import { Dependency, Deficiency, Patient, User } from '@/models'
-import { UserService, DependencyService, DeficiencyService, PatientService, TableService } from '@/services'
-import { PatientTable } from '@/models'
+import { Deficiency, Dependency, Patient, PatientTable, User } from '@/models'
+import { DeficiencyService, DependencyService, PatientService, TableService, UserService } from '@/services'
+import { useFilterStore } from '@/stores'
 import rules from '@/utils/rules'
 import { mapState } from 'pinia'
-import { useFilterStore } from '@/stores'
+import { defineComponent } from 'vue'
 
 export default defineComponent({
   components: {
@@ -225,22 +224,26 @@ export default defineComponent({
       return this.patientId === -1 ? 'Novo Paciente' : 'Editar Paciente'
     },
     filteredItems() {
-      let names: string[] = []
+      const search = this.search.toLowerCase()
 
-      if (this.filter === 'Nome') {
-        this.patients.filter((p) => {
-          if (p.name) {
-            names.push(p.name)
-          }
-        })
+      return this.patients.filter((p: PatientTable) => {
+        if (this.filter === 'Nome') {
+          return p.name?.toLowerCase().includes(search)
+        }
 
-        return names.filter((name) => {
-          return !this.filter || name === this.search
-        })
-      }
+        if (this.filter === 'Cidade') {
+          return p.city?.toLowerCase().includes(search)
+        }
 
-      return this.patients.filter((patient) => {
-        return !this.filter || patient.name === this.filter
+        if (this.filter === 'Deficiência') {
+          return p.deficiency?.toLowerCase().includes(search)
+        }
+
+        if (this.filter === 'Dependência') {
+          return p.dependency?.toLowerCase().includes(search)
+        }
+
+        return true
       })
     },
   },
