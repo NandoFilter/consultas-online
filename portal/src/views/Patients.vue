@@ -205,8 +205,8 @@
 <script lang="ts">
 import { Navigation } from '@/components'
 import { ExportButton } from '@/components/tables'
-import { Deficiency, Dependency, Patient, PatientTable, User } from '@/models'
-import { DeficiencyService, DependencyService, PatientService, TableService, UserService } from '@/services'
+import { Patient, PatientTable, User } from '@/models'
+import { PatientService, TableService, UserService } from '@/services'
 import { useFieldStore } from '@/stores'
 import rules from '@/utils/rules'
 import { mapState } from 'pinia'
@@ -218,7 +218,7 @@ export default defineComponent({
     ExportButton,
   },
   computed: {
-    ...mapState(useFieldStore, ['getDeficiencyNames', 'getDependencyNames']),
+    ...mapState(useFieldStore, ['getDeficiencies','getDependencies' ,'getDeficiencyNames', 'getDependencyNames']),
 
     formTitle () {
       return this.patientId === -1 ? 'Novo Paciente' : 'Editar Paciente'
@@ -249,8 +249,6 @@ export default defineComponent({
   },
   async created() {
     this.patients = await TableService.getAllPatients()
-    this.deficiencies = await DeficiencyService.getAll()
-    this.dependencies = await DependencyService.getAll()
   },
   data: () => ({
     search: '',
@@ -273,8 +271,6 @@ export default defineComponent({
     ],
 
     patients: [] as PatientTable[],
-    deficiencies: [] as Deficiency[],
-    dependencies: [] as Dependency[],
 
     editedItem: {
       id: -1,
@@ -290,7 +286,7 @@ export default defineComponent({
   }),
   methods: {
     getDeficiencyId(name: string): number | null {
-      const deficiency = this.deficiencies.find((deficiency) => {
+      const deficiency = this.getDeficiencies.find((deficiency) => {
         if (deficiency.name == name) {
           return deficiency
         }
@@ -299,7 +295,7 @@ export default defineComponent({
       return deficiency && this.hasDeficiency ? deficiency.id : null
     },
     getDependencyId(name: string): number | null {
-      const dependency = this.dependencies.find((dependency) => {
+      const dependency = this.getDependencies.find((dependency) => {
         if (dependency.name == name) {
           return dependency
         }
@@ -380,11 +376,6 @@ export default defineComponent({
       item = await TableService.getPatientById(item.id)
 
       return item
-    },
-    async getUser(patientId: number) {
-      let selectedPatient: Patient = await PatientService.getById(patientId)
-
-      return UserService.getById(selectedPatient.ref_user)
     },
 
     // Dialog Methods -------------------------
