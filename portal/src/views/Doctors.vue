@@ -72,7 +72,7 @@
                     <v-col cols="12" sm="6" md="6">
                       <v-select
                         variant="underlined"
-                        :items="getOccupationNames()"
+                        :items="getOccupationNames"
                         v-model="editedItem.occupation"
                         label="Ocupação"
                         :rules="rules.occupation"
@@ -83,7 +83,7 @@
                     <v-col cols="12" sm="6" md="6">
                       <v-select
                         variant="underlined"
-                        :items="getHospitalNames()"
+                        :items="getHospitalNames"
                         v-model="editedItem.hospital"
                         label="Hospital"
                         :rules="rules.hospital"
@@ -113,6 +113,7 @@
           <div class="header_filter">
             <v-select
               :items="['Nome', 'Ocupação', 'Hospital', 'Formação']"
+              v-model="filter"
               color="primary"
               prepend-inner-icon="mdi-filter"
               variant="underlined"
@@ -138,7 +139,7 @@
 
         <v-data-table
           :headers="headers"
-          :items="doctors"
+          :items="filteredItems"
           :search="search"
           item-value="name"
           class="table elevation-1"
@@ -180,63 +181,56 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
 import { Navigation } from '@/components'
 import { ExportButton } from '@/components/tables'
-import { Doctor, DoctorTable, Hospital, Occupation, User } from '@/models'
-import { DoctorService, UserService, HospitalService, OccupationService } from '@/services'
+import { Doctor, DoctorTable, User } from '@/models'
+import { DoctorService, UserService } from '@/services'
+import { useFieldStore } from '@/stores'
 import rules from '@/utils/rules'
+import { mapState } from 'pinia'
+import { defineComponent } from 'vue'
+import { TableService } from '../services'
 
 export default defineComponent({
   components: {
     Navigation,
     ExportButton,
   },
+  computed: {
+    ...mapState(useFieldStore, ['getHospitals', 'getOccupations', 'getHospitalNames', 'getOccupationNames']),
+    formTitle () {
+      return this.doctorId === -1 ? 'Novo Médico' : 'Editar Médico'
+    },
+    filteredItems() {
+      const search = this.search.toLowerCase()
+
+      return this.doctors.filter((d: DoctorTable) => {
+        if (this.filter === 'Nome') {
+          return d.name?.toLowerCase().includes(search)
+        }
+
+        if (this.filter === 'Ocupação') {
+          return d.occupation?.toLowerCase().includes(search)
+        }
+
+        if (this.filter === 'Hospital') {
+          return d.hospital?.toLowerCase().includes(search)
+        }
+
+        if (this.filter === 'Formação') {
+          return d.academy?.toLowerCase().includes(search)
+        }
+
+        return true
+      })
+    },
+  },
   async created() {
-    const doctors = await DoctorService.getAll()
-    const users = await UserService.getAll()
-    const hospitals = await HospitalService.getAll()
-    const occupations = await OccupationService.getAll()
-
-    const items: Array<DoctorTable> = []
-
-    doctors.forEach(async (doctor: Doctor) => {
-      const user = users.find((user: User) => {
-        if (doctor.ref_user == user.id) {
-          return user
-        }
-      }) as User
-
-      const hospital = hospitals.find((hospital: Hospital) => {
-        if (doctor.ref_hospital == hospital.id) {
-          return hospital
-        }
-      }) as Hospital
-
-      const occupation = occupations.find((occupation: Occupation) => {
-        if (doctor.ref_occupation == occupation.id) {
-          return occupation
-        }
-      }) as Occupation
-
-      const item: DoctorTable = {
-        id: doctor.id as number,
-        name: user.name,
-        email: user.email,
-        occupation: occupation.name,
-        hospital: hospital.name,
-        academy: doctor.acad_education,
-      }
-
-      items.push(item)
-    })
-
-    this.doctors = items
-    this.hospitals = hospitals
-    this.occupations = occupations
+    this.doctors = await TableService.getAllDoctors()
   },
   data: () => ({
     search: '',
+    filter: null,
     dialog: false,
     dialogDelete: false,
     doctorId: -1,
@@ -245,18 +239,16 @@ export default defineComponent({
     rules,
 
     headers: [
-      { title: 'ID', align: 'start', key: 'id', sortable: false },
-      { title: 'Nome', align: 'start', key: 'name' },
-      { title: 'E-mail', align: 'start', key: 'email', sortable: false },
-      { title: 'Ocupação', align: 'start', key: 'occupation' },
-      { title: 'Hospital', align: 'start', key: 'hospital' },
-      { title: 'Formação', align: 'start', key: 'academy' },
-      { title: 'Ações', key: 'actions', sortable: false },
+      { title: 'ID',       align: 'start', key: 'id',         sortable: false },
+      { title: 'Nome',     align: 'start', key: 'name',       sortable: true },
+      { title: 'E-mail',   align: 'start', key: 'email',      sortable: false },
+      { title: 'Ocupação', align: 'start', key: 'occupation', sortable: true },
+      { title: 'Hospital', align: 'start', key: 'hospital',   sortable: true },
+      { title: 'Formação', align: 'start', key: 'academy',    sortable: true },
+      { title: 'Ações',    align: 'start', key: 'actions',    sortable: false },
     ],
 
     doctors: [] as DoctorTable[],
-    occupations: [] as Occupation[],
-    hospitals: [] as Hospital[],
 
     editedItem: {
       id: -1,
@@ -267,31 +259,27 @@ export default defineComponent({
       academy: ''
     } as DoctorTable,
   }),
-  computed: {
-    formTitle () {
-      return this.doctorId === -1 ? 'Novo Médico' : 'Editar Médico'
-    },
-  },
   methods: {
-    getOccupationNames() {
-      const names: string[] = []
-
-      this.occupations.forEach((occupation) => {
-        names.push(occupation.name)
+    getOccupationId(name: string): number | null {
+      const occupation = this.getOccupations.find((occupation) => {
+        if (occupation.name == name) {
+          return occupation
+        }
       })
 
-      return names
+      return occupation ? occupation.id : null
     },
-    getHospitalNames() {
-      const names: string[] = []
-
-      this.hospitals.forEach((hospital) => {
-        names.push(hospital.name)
+    getHospitalId(name: string): number | null {
+      const hospital = this.getHospitals.find((hospital) => {
+        if (hospital.name == name) {
+          return hospital
+        }
       })
 
-      return names
+      return hospital && hospital.id ? hospital.id : null
     },
-    async createDoctorFromTable(item: DoctorTable) {
+
+    async createDoctor(item: DoctorTable) {
       const newUser = {
         name: item.name,
         email: item.email,
@@ -300,94 +288,69 @@ export default defineComponent({
 
       const user = await UserService.add(newUser)
 
-      const hospital = this.hospitals.find((hospital) => {
-        if (item.hospital == hospital.name) {
-          return hospital
-        }
-      }) as Hospital
-
-      const occupation = this.occupations.find((occupation) => {
-        if (item.occupation == occupation.name) {
-          return occupation
-        }
-      }) as Occupation
-
       if (user) {
-        const doctor = {
+        const newDoctor = {
           ref_user: user.id,
           acad_education: item.academy,
-          ref_occupation: occupation?.id,
-          ref_hospital: hospital.id
+          ref_occupation: null,
+          ref_hospital: null
         } as Doctor
 
-        const newDoctor = await DoctorService.add(doctor)
+        if (item.occupation) {
+          newDoctor.ref_occupation = this.getOccupationId(item.occupation)
+        }
 
-        const doctorTable = {
-          id: newDoctor.id,
-          name: user.name,
-          email: user.email,
-          hospital: hospital.name,
-          occupation: occupation.name,
-          academy: item.academy,
-        } as DoctorTable
+        if (item.hospital) {
+          newDoctor.ref_hospital = this.getHospitalId(item.hospital)
+        }
 
-        return doctorTable
+        const doctor: Doctor = await DoctorService.add(newDoctor)
+
+        if (doctor.id) {
+          item.id = doctor.id
+        }
+
+        return item
       }
 
       return null
     },
-    async updateDoctorFromTable(item: DoctorTable) {
-      let selectedDoctor: Doctor = await DoctorService.getById(item.id)
-      let selectedUser: User = await UserService.getById(selectedDoctor.ref_user)
+    async updateDoctor(item: DoctorTable) {
+      let selectedDoctor: Doctor | undefined
+      let selectedUser: User | undefined
       
-      const hospital = this.hospitals.find((hospital) => {
-        if (item.hospital == hospital.name) {
-          return hospital
-        }
-      }) as Hospital
-
-      const occupation = this.occupations.find((occupation) => {
-        if (item.occupation == occupation.name) {
-          return occupation
-        }
-      }) as Occupation
-
-      selectedUser = {
-        id: selectedUser.id,
-        name: item.name,
-        email: item.email
-      } as User
-
-      if (this.userPassword) {
-        selectedUser.password = this.userPassword
+      if (item.id) {
+        selectedDoctor = await DoctorService.getById(item.id)
       }
 
-      selectedDoctor = {
-        id: selectedDoctor.id,
-        ref_user: selectedUser.id,
-        acad_education: item.academy,
-        ref_occupation: occupation.id,
-        ref_hospital: hospital.id
-      } as Doctor
+      if (selectedDoctor && selectedDoctor.ref_user) {
+        selectedUser = await UserService.getById(selectedDoctor.ref_user)
 
-      const updatedUser = await UserService.update(selectedUser)
-      const updatedDoctor = await DoctorService.update(selectedDoctor)
+        if (item.academy) {
+          selectedDoctor.acad_education = item.academy
+        }
 
-      const doctorTable = {
-        id: updatedDoctor.id,
-        name: updatedUser.name,
-        email: updatedUser.email,
-        hospital: hospital.name,
-        occupation: occupation.name,
-        academy: item.academy,
-      } as DoctorTable
+        if (item.occupation) {
+          selectedDoctor.ref_occupation = this.getOccupationId(item.occupation)
+        }
 
-      return doctorTable
-    },
-    async getDoctorUser(doctorId: number) {
-      let selectedDoctor: Doctor = await DoctorService.getById(doctorId)
+        if (item.hospital) {
+          selectedDoctor.ref_hospital = this.getHospitalId(item.hospital)
+        }
 
-      return UserService.getById(selectedDoctor.ref_user)
+        await DoctorService.update(selectedDoctor)
+      }
+
+      if (selectedUser) {
+        selectedUser.name = item.name
+        selectedUser.email = item.email as string
+
+        await UserService.update(selectedUser)
+      }
+
+      item = await TableService.getDoctorById(item.id)
+
+      return item
     },
 
     // Dialog Methods -------------------------
@@ -400,13 +363,13 @@ export default defineComponent({
     },
     async save () {
       if (this.doctorId > -1) {
-        const doctorTable: DoctorTable = await this.updateDoctorFromTable(this.editedItem)
+        const doctorTable: DoctorTable = await this.updateDoctor(this.editedItem)
 
         Object.assign(this.doctors[this.doctorTableId], doctorTable)
 
         this.close()
       } else {
-        const doctorTable = await this.createDoctorFromTable(this.editedItem)
+        const doctorTable = await this.createDoctor(this.editedItem)
 
         if (doctorTable) {
           this.doctors.push(doctorTable)
@@ -427,13 +390,7 @@ export default defineComponent({
       this.dialogDelete = true
     },
     async deleteItemConfirm() {
-      DoctorService.delete(this.doctorId)
-
-      const user: User = await this.getDoctorUser(this.doctorId)
-
-      if (user.id) {
-        UserService.delete(user.id)
-      }
+      await DoctorService.delete(this.doctorId)
 
       this.doctors.splice(this.doctorTableId, 1)
 
