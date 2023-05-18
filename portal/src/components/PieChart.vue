@@ -8,12 +8,16 @@ import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js'
 import { Pie } from 'vue-chartjs'
 import { mapState } from 'pinia'
 import { useStatisticStore } from '@/stores'
+import { Statistic } from '../models'
 
 ChartJS.register(ArcElement, Tooltip, Legend)
 
 type Data = {
-  labels: any[]
-  datasets: any[]
+  labels: string[]
+  datasets: {
+    backgroundColor: string[];
+    data: number[];
+  }[]
 }
 
 export default defineComponent ({
@@ -35,7 +39,7 @@ export default defineComponent ({
       let names: string[] = []
       let totals: number[] = []
 
-      statistics.forEach((s) => {
+      statistics.forEach((s: Statistic) => {
         names.push(s.name)
         totals.push(s.total)
       })
