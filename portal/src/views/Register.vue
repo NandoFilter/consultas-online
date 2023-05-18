@@ -118,7 +118,7 @@
           icon="$error"
           color="error"
           title="Erro ao efetuar cadastro"
-          text="Reveja os valores preenchidos nos campos e tente novamente"
+          :text="errorText"
           v-model="showError"
           closable
         />
@@ -128,13 +128,13 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
 import { Header } from '@/components';
-import { Deficiency, Dependency, Patient, User } from '../models';
-import { UserService, PatientService, DeficiencyService, DependencyService } from '../services'
-import rules from '@/utils/rules'
-import { mapState } from 'pinia';
 import { useFieldStore } from '@/stores';
+import rules from '@/utils/rules';
+import { mapState } from 'pinia';
+import { defineComponent } from 'vue';
+import { Deficiency, Dependency, Patient, User } from '../models';
+import { DeficiencyService, DependencyService, PatientService, UserService } from '../services';
 
 export default defineComponent({
   components: {
@@ -158,6 +158,7 @@ export default defineComponent({
     hasDependency: false,
     deficiency: '',
     dependency: '',
+    errorText: 'Reveja os valores preenchidos nos campos e tente novamente',
 
     deficiencies: [] as Deficiency[],
     dependencies: [] as Dependency[],
@@ -185,14 +186,27 @@ export default defineComponent({
 
       return dependency && this.hasDependency ? dependency.id : null
     },
-    async generateUser() {
+    async createUser() {
       const user: User = {
         name: this.name,
         email: this.email,
         password: this.password
       }
 
-      if (user.password) {
+      const users = await UserService.getAll()
+
+      const existedUser = users.find((u) => {
+        return u.email == user.email
+      })
+
+      const isValidPass = user.password && user.password.length >= 8
+
+      if (existedUser) {
+        this.showError = true
+        this.errorText = 'E-mail já cadastrado. Tente novamente'
+      }
+
+      if ( isValidPass && !existedUser) {
         return UserService.add(user);
       }
     },
@@ -200,7 +214,7 @@ export default defineComponent({
       this.loading = true
       this.showError = false
 
-      const newUser: User | undefined = await this.generateUser();
+      const newUser: User | undefined = await this.createUser();
 
       if (newUser) {
         const patient: Patient = {
@@ -221,7 +235,7 @@ export default defineComponent({
         this.showError = true
       }
 
-      setTimeout(() => (this.loading = false), 2000)
+      setTimeout(() => (this.loading = false), 1000)
     }
   }
 })
