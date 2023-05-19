@@ -1,7 +1,7 @@
-import app from './app'
+import socket from './app'
 
-const port = 3333
+const port = process.env.PORT || socket.PORT
 
-app.listen(port, () => {
+socket.app.listen(port, () => {
   console.log(`Listening on port ${port}`)
 })
