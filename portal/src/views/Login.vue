@@ -63,7 +63,7 @@ import { User } from '../models'
 import { Header } from '@/components'
 import SessionService from '../services/sessionService'
 import { mapActions } from 'pinia'
-import { useSessionStore } from '@/stores'
+import { useSessionStore, useSocketStore } from '@/stores'
 import rules from '@/utils/rules'
 
 export default defineComponent({
@@ -78,7 +78,8 @@ export default defineComponent({
     rules
   }),
   methods: {
-    ...mapActions(useSessionStore, ['setToken']),
+    ...mapActions(useSessionStore, ['setToken', 'setActualUser']),
+    ...mapActions(useSocketStore, ['connect']),
     onLogin() {
       this.loading = true
       this.showError = false
@@ -93,6 +94,8 @@ export default defineComponent({
 
         SessionService.login(user).then((result) => {
           this.setToken(result.token)
+          this.setActualUser()
+          this.connect()
 
           this.$router.push('/home')
         }).catch((err) => {

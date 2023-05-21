@@ -1,6 +1,11 @@
+interface Payload {
+  id: number
+  exp: number
+}
+
 interface Token {
   header: object
-  payload: object
+  payload: Payload
   signature: string
   expires: number
 }

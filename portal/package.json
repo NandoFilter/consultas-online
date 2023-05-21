@@ -15,6 +15,7 @@
     "jspdf-autotable": "^3.5.28",
     "pinia": "^2.0.34",
     "roboto-fontface": "*",
+    "socket.io-client": "^4.6.1",
     "vue": "^3.2.13",
     "vue-chartjs": "^5.2.0",
     "vue-router": "^4.0.3",

@@ -3,13 +3,11 @@ import express from 'express'
 import cors from 'cors'
 import routes from './routes'
 import database from './helper/database'
-
-import { createServer, Server } from 'http'
 import SocketIO from 'socket.io'
+import { User } from './models'
 
 class App {
   public app: express.Application
-  public server: Server | undefined
   private io: SocketIO.Server | undefined
   public PORT: number = 3333
 
@@ -23,8 +21,15 @@ class App {
   }
 
   private sockets(): void {
-    this.server = createServer(this.app)
-    this.io = new SocketIO.Server(this.server)
+    const server = this.app.listen(this.PORT, () => {
+      console.log(`Server running on port ${this.PORT}`)
+    })
+
+    this.io = require('socket.io')(server, {
+      cors: {
+        origin: '*'
+      }
+    })
   }
 
   private routes(): void {
@@ -35,16 +40,44 @@ class App {
 
   private listen(): void {
     if (this.io) {
-      this.io.on('connection', (socket: any) => {
-        console.log('a user connected')
+      const io = this.io
 
-        socket.on('chat message', (msg: string) => {
-          console.log('message: ' + msg)
-        })
+      io.on('connection', (socket: any) => {
+        console.log('[CONNECTED] User ID: ' + socket.id)
 
         socket.on('disconnect', () => {
-          console.log('user disconnected')
+          console.log('[DISCONNECTED] User ID: ' + socket.id)
         })
+
+        if (socket.connected) {
+          socket.on('chat-message', (msg: string) => {
+            io.emit('chat-message', msg)
+          })
+
+          socket.on('typing', (data: any) => {
+            io.emit('typing', data)
+          })
+
+          socket.on('stopTyping', () => {
+            io.emit('stopTyping')
+          })
+
+          socket.on('joined', async (user: User) => {
+            let messageData = null
+
+            if (user) {
+              console.log('[CHAT] User joined: ' + user.name)
+              // Get User Messages
+              // messageData = await db.fetchUserMessages(user);
+            }
+
+            io.emit('joined', messageData)
+          })
+
+          socket.on('leave', (data: any) => {
+            io.emit('leave', data)
+          })
+        }
       })
     }
   }

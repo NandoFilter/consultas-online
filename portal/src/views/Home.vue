@@ -2,24 +2,26 @@
   <div>
     <Navigation />
     <div class="main">
-      <h1>Converse com um profissional</h1>
+      <Chat class="chat" />
+      <!-- <h1>Converse com um profissional</h1>
       <div class="items">
         <div class="card" v-for="item in items" :key="item.id">
           <v-icon :icon="item.icon" />
           <span>{{ item.title }}</span>
         </div>  
-      </div>
+      </div> -->
     </div>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import { Navigation } from '@/components';
+import { Navigation, Chat } from '@/components';
 
 export default defineComponent({
   components: {
-    Navigation
+    Navigation,
+    Chat
   },
   data: () => ({
     items: [
@@ -35,47 +37,49 @@ export default defineComponent({
 <style lang="scss" scoped>
 .main {
   margin-left: 75px;
+  height: 100vh;
 
   display: flex;
   flex-direction: column;
-  align-items: center;
-}
-
-.items {
-  display: flex;
-  flex-direction: row;
-}
-
-.card {
-  width: 18vh;
-  height: 12vh;
-
-  margin: 10px;
-
-  border-radius: 15px;
-
-  color: #000;
-  font-size: 20px;
-  
-  box-shadow: 0px 1px 3px gray;
-
-  transition: box-shadow 0.5s ease;
-  transition: color 0.5s ease;
-
-  display: flex;
-  align-items: center;
   justify-content: center;
-  flex-direction: column;
+  align-items: center;
 }
 
-.card:hover {
-  cursor: pointer;
+// .items {
+//   display: flex;
+//   flex-direction: row;
+// }
 
-  transition: box-shadow 0.5s ease;
-  transition: color 0.5s ease;
+// .card {
+//   width: 18vh;
+//   height: 12vh;
 
-  color: $primary-color;
+//   margin: 10px;
 
-  box-shadow: 0px 1px 3px $primary-color;
-}
+//   border-radius: 15px;
+
+//   color: #000;
+//   font-size: 20px;
+  
+//   box-shadow: 0px 1px 3px gray;
+
+//   transition: box-shadow 0.5s ease;
+//   transition: color 0.5s ease;
+
+//   display: flex;
+//   align-items: center;
+//   justify-content: center;
+//   flex-direction: column;
+// }
+
+// .card:hover {
+//   cursor: pointer;
+
+//   transition: box-shadow 0.5s ease;
+//   transition: color 0.5s ease;
+
+//   color: $primary-color;
+
+//   box-shadow: 0px 1px 3px $primary-color;
+// }
 </style>
