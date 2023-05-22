@@ -42,10 +42,11 @@
         </ul>
 
         <div>
-          <form @submit.prevent="sendMessage">
+          <form class="message" @submit.prevent="sendMessage">
             <div>
-              <input type="text" v-model="newMessage" placeholder="Enter message here" />
+              <input class="message_input" type="text" v-model="newMessage" placeholder="Message" />
             </div>
+            <v-btn @click="sendMessage" icon="mdi-send" />
           </form>
         </div>
       </div>
@@ -107,9 +108,24 @@ export default defineComponent({
 })
 </script>
 
-<style>
+<style scoped lang="scss">
 .chat {
   width: 500px;
   padding: 20px;
+}
+
+.message {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  &_input {
+    padding: 10px;
+    border-radius: 50px;
+    box-shadow: 0px 1px 3px gray;
+    width: 400px;
+
+    outline: none;
+  }
 }
 </style>
