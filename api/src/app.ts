@@ -4,7 +4,7 @@ import cors from 'cors'
 import routes from './routes'
 import database from './helper/database'
 import SocketIO from 'socket.io'
-import { User } from './models'
+import { Message, User } from './models'
 
 class App {
   public app: express.Application
@@ -50,7 +50,7 @@ class App {
         })
 
         if (socket.connected) {
-          socket.on('chat-message', (msg: string) => {
+          socket.on('chat-message', (msg: Message) => {
             io.emit('chat-message', msg)
           })
 
