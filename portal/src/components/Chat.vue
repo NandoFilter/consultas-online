@@ -4,7 +4,7 @@
     <v-card v-else class="chat">
       <div>
         <ul class="messages">
-          <small v-if="typing">{{ username }} está digitando...</small>
+          <small v-if="typing">{{ typing }} está digitando...</small>
           <li v-for="(message, i) in messages" :key="i">
             <span :class="`messages_box_${message.type}`">
               {{ message.message }}
@@ -78,11 +78,9 @@ export default defineComponent({
       this.newMessage = ''
     },
     startTyping() {
-      this.typing = true
       this.getSocket.emit("typing", this.username)
     },
     stopTyping() {
-      this.typing = false
       this.getSocket.emit("stopTyping")
     }
   },
@@ -90,7 +88,15 @@ export default defineComponent({
     this.getSocket.on('update', (data: any) => {
       this.messages = [...this.messages, data];
       // you can also do this.messages.push(data)
-    });
+    })
+
+    this.getSocket.on('typing', (data: any) => {
+      this.typing = data
+    })
+
+    this.getSocket.on('stopTyping', () => {
+      this.typing = false
+    })
   }
 })
 </script>
