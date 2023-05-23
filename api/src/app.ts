@@ -16,11 +16,11 @@ class App {
     database.createConnection()
     this.app = express()
     this.routes()
+    this.start()
     this.sockets()
-    this.listen()
   }
 
-  private sockets(): void {
+  private start(): void {
     const server = this.app.listen(this.PORT, () => {
       console.log(`Server running on port ${this.PORT}`)
     })
@@ -38,11 +38,11 @@ class App {
     this.app.use(routes)
   }
 
-  private listen(): void {
+  private sockets(): void {
     if (this.io) {
       const io = this.io
 
-      io.on('connection', (socket: any) => {
+      io.on('connection', (socket: SocketIO.Socket) => {
         console.log('[CONNECTED] User ID: ' + socket.id)
 
         socket.on('disconnect', () => {
@@ -51,7 +51,7 @@ class App {
 
         if (socket.connected) {
           socket.on('chat-message', (msg: Message) => {
-            io.emit('chat-message', msg)
+            io.emit('update', msg)
           })
 
           socket.on('typing', (data: any) => {

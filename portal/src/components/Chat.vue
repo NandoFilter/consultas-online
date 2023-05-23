@@ -6,7 +6,7 @@
         <ul class="messages">
           <small v-if="typing">{{ username }} está digitando...</small>
           <li v-for="(message, i) in messages" :key="i">
-            <span>
+            <span :class="`messages_box_${message.type}`">
               {{ message.message }}
               <small>:{{ message.username }}</small>
             </span>
@@ -64,11 +64,11 @@ export default defineComponent({
     sendMessage(e: any) {
       e.preventDefault();
 
-      this.messages.push({
-        username: "Me",
-        type: 0,
-        message: this.newMessage,
-      });
+      // this.messages.push({
+      //   username: "Me",
+      //   type: 0,
+      //   message: this.newMessage,
+      // });
       
       this.getSocket.emit('chat-message', {
         username: this.username,
@@ -87,8 +87,8 @@ export default defineComponent({
     }
   },
   mounted() {
-    this.getSocket.on('chat-message', (data: any) => {
-      // this.messages = [...this.messages, data];
+    this.getSocket.on('update', (data: any) => {
+      this.messages = [...this.messages, data];
       // you can also do this.messages.push(data)
     });
   }
@@ -106,14 +106,19 @@ export default defineComponent({
 
 .messages {
   height: 85%;
+
   border-radius: 15px;
-  background: white;
   box-shadow: 0px 1px 3px gray;
 
   list-style: none;
-
+  
   margin: 20px 0;
-}
+  padding: 15px;
+
+  &_box_0 {
+    color: red;
+  }
+ }
 
 .input {
   display: flex;
