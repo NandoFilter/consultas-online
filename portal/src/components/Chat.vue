@@ -8,7 +8,6 @@
           <li v-for="(message, i) in messages" :key="i">
             <span :class="`messages_box_${message.type}`">
               {{ message.message }}
-              <small>:{{ message.username }}</small>
             </span>
           </li>
         </ul>
@@ -64,16 +63,16 @@ export default defineComponent({
     sendMessage(e: any) {
       e.preventDefault();
 
-      // this.messages.push({
-      //   username: "Me",
-      //   type: 0,
-      //   message: this.newMessage,
-      // });
+      this.messages.push({
+        message: this.newMessage,
+        type: 0,
+        username: 'Me',
+      });
       
       this.getSocket.emit('chat-message', {
-        username: this.username,
-        message: this.newMessage
-      });
+        message: this.newMessage,
+        username: this.username
+      })
 
       this.newMessage = ''
     },
@@ -86,8 +85,13 @@ export default defineComponent({
   },
   mounted() {
     this.getSocket.on('update', (data: any) => {
-      this.messages = [...this.messages, data];
-      // you can also do this.messages.push(data)
+      if (data.username != this.getActualUser?.name) {
+        this.messages.push({
+          message: data.message,
+          type: 1,
+          username: data.username,
+        });
+      }
     })
 
     this.getSocket.on('typing', (data: any) => {
@@ -113,8 +117,8 @@ export default defineComponent({
 .messages {
   height: 85%;
 
+  border: 2px solid lightgray;
   border-radius: 15px;
-  box-shadow: 0px 1px 3px gray;
 
   list-style: none;
   
@@ -122,7 +126,37 @@ export default defineComponent({
   padding: 15px;
 
   &_box_0 {
-    color: red;
+    display: flex;
+    justify-content: right;
+    align-items: end;
+    float: right;
+
+    background: $primary-color;
+    border-radius: 10px;
+
+    width: 50%;
+
+    margin: 5px;
+    padding: 5px 15px;
+
+    color: #fff;
+  }
+
+  &_box_1 {
+    display: flex;
+    justify-content: left;
+    align-items: end;
+    float: left;
+
+    background: gray;
+    border-radius: 10px;
+
+    width: 50%;
+
+    margin: 5px;
+    padding: 5px 15px;
+
+    color: #fff;
   }
  }
 
@@ -133,10 +167,12 @@ export default defineComponent({
 
   &_field {
     padding: 10px;
-    border-radius: 50px;
-    box-shadow: 0px 1px 3px gray;
-    width: 380px;
     margin-right: 20px;
+
+    border: 2px solid lightgray;
+    border-radius: 50px;
+
+    width: 380px;
 
     outline: none;
   }
