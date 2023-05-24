@@ -207,9 +207,9 @@ import { Navigation } from '@/components'
 import { ExportButton } from '@/components/tables'
 import { Patient, PatientTable, User } from '@/models'
 import { PatientService, TableService, UserService } from '@/services'
-import { useFieldStore } from '@/stores'
+import { useFieldStore, useStatisticStore } from '@/stores'
 import rules from '@/utils/rules'
-import { mapState } from 'pinia'
+import { mapActions, mapState } from 'pinia'
 import { defineComponent } from 'vue'
 
 export default defineComponent({
@@ -285,6 +285,8 @@ export default defineComponent({
     hasDependency: false,
   }),
   methods: {
+    ...mapActions(useStatisticStore, ['fetchAll']),
+
     getDeficiencyId(name: string): number | null {
       const deficiency = this.getDeficiencies.find((deficiency) => {
         if (deficiency.name == name) {
@@ -404,6 +406,8 @@ export default defineComponent({
           this.close()
         }
       }
+
+      this.fetchAll()
     },
     close () {
       this.dialog = false
