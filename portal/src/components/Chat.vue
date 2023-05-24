@@ -60,19 +60,21 @@ export default defineComponent({
         this.connected = true
       }
     },
-    sendMessage(e: any) {
+    sendMessage(e: Event) {
       e.preventDefault();
 
-      this.messages.push({
-        message: this.newMessage,
-        type: 0,
-        username: 'Me',
-      });
-      
-      this.getSocket.emit('chat-message', {
-        message: this.newMessage,
-        username: this.username
-      })
+      if (this.newMessage != '') {
+        this.messages.push({
+          message: this.newMessage,
+          type: 0,
+          username: 'Me',
+        });
+        
+        this.getSocket.emit('chat-message', {
+          message: this.newMessage,
+          username: this.username
+        })
+      }
 
       this.newMessage = ''
     },
@@ -84,7 +86,7 @@ export default defineComponent({
     }
   },
   mounted() {
-    this.getSocket.on('update', (data: any) => {
+    this.getSocket.on('update', (data: Message) => {
       if (data.username != this.getActualUser?.name) {
         this.messages.push({
           message: data.message,
@@ -121,9 +123,11 @@ export default defineComponent({
   border-radius: 15px;
 
   list-style: none;
-  
+
   margin: 20px 0;
   padding: 15px;
+
+  overflow-y: auto;
 
   &_box_0 {
     display: flex;
@@ -158,7 +162,29 @@ export default defineComponent({
 
     color: #fff;
   }
- }
+
+  /* Scrollbar */
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  &::-webkit-scrollbar-button {
+    height: 30px;
+  }
+
+  &::-webkit-scrollbar-track {
+    border-radius: 10px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: $primary-color;
+    border-radius: 10px;
+
+    &:hover {
+      background: $secondary-color;
+    }
+  }
+}
 
 .input {
   display: flex;
