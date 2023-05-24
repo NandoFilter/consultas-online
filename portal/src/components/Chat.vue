@@ -124,6 +124,9 @@ export default defineComponent({
 
   list-style: none;
 
+  display: flex;
+  flex-direction: column;
+
   margin: 20px 0;
   padding: 15px;
 
@@ -138,7 +141,7 @@ export default defineComponent({
     background: $primary-color;
     border-radius: 10px;
 
-    width: 50%;
+    width: auto;
 
     margin: 5px;
     padding: 5px 15px;
@@ -155,7 +158,7 @@ export default defineComponent({
     background: gray;
     border-radius: 10px;
 
-    width: 50%;
+    width: auto;
 
     margin: 5px;
     padding: 5px 15px;
