@@ -426,6 +426,8 @@ export default defineComponent({
 
       this.patients.splice(this.patientTableId, 1)
 
+      this.fetchAll()
+
       this.closeDelete()
     },
     closeDelete() {
