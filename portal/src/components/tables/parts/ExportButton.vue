@@ -9,7 +9,6 @@
 import { defineComponent, PropType } from 'vue'
 import { jsPDF } from "jspdf";
 import autoTable from 'jspdf-autotable'
-import { DoctorTable, PatientTable } from '@/models';
 
 type Header = {
   title: string
@@ -22,7 +21,11 @@ export default defineComponent({
       required: true
     },
     items: {
-      type: Array as PropType<DoctorTable[] | PatientTable[]>,
+      type: Array as PropType<any[]>,
+      required: true
+    },
+    title: {
+      type: String,
       required: true
     }
   },
@@ -61,10 +64,7 @@ export default defineComponent({
       // Document
       const doc = new jsPDF({ putOnlyUsedFonts: true, orientation: "portrait" })
 
-      doc.addFont('Inter-Regular.ttf', 'Inter-Regular', 'normal')
-      doc.setFont('Inter-Regular')
-
-      doc.text('Cadastros', 15, 10)
+      doc.text(this.title, 15, 10)
 
       autoTable(doc, {
         head: [ this.generateHeader() ],
