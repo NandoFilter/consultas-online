@@ -59,7 +59,10 @@ export default defineComponent({
       values.forEach( (value) => body.push( Object.values(value) ) )
 
       // Document
-      const doc = new jsPDF({ putOnlyUsedFonts: true, orientation: "landscape" })
+      const doc = new jsPDF({ putOnlyUsedFonts: true, orientation: "portrait" })
+
+      doc.addFont('Inter-Regular.ttf', 'Inter-Regular', 'normal')
+      doc.setFont('Inter-Regular')
 
       doc.text('Cadastros', 15, 10)
 
