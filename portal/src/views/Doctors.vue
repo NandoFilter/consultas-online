@@ -4,7 +4,12 @@
     <div class="main">
       <div class="content">
         <div class="header">
-          <ExportButton :headers="headers" :items="doctors" title="Médicos cadastrados" class="header_btn" />
+          <ExportButton
+            :headers="headers"
+            :items="filteredItems"
+            title="Médicos cadastrados"
+            class="header_btn"
+          />
   
           <v-dialog v-model="dialog" max-width="700px">
             <!-- eslint-disable-next-line vue/valid-v-slot -->
