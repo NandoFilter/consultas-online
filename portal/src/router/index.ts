@@ -130,21 +130,21 @@ router.beforeEach((to, from, next) => {
 
   const isTokenValid = jwt.isTokenValid(session.token)
 
-  // if (to.matched.some((record) => record.meta.requiresAuth)) {
-  //   if (!isTokenValid) {
-  //     next({ path: '/login' })
-  //   } else {
-  //     next()
-  //   }
-  // } else if (to.matched.some((record) => record.meta.onlyGuests)) {
-  //   if (isTokenValid) {
-  //     next({ path: '/home' })
-  //   } else {
-  //     next()
-  //   }
-  // } else {
-  next()
-  // }
+  if (to.matched.some((record) => record.meta.requiresAuth)) {
+    if (!isTokenValid) {
+      next({ path: '/login' })
+    } else {
+      next()
+    }
+  } else if (to.matched.some((record) => record.meta.onlyGuests)) {
+    if (isTokenValid) {
+      next({ path: '/home' })
+    } else {
+      next()
+    }
+  } else {
+    next()
+  }
 })
 
 export default router

@@ -29,7 +29,8 @@ import autoTable from 'jspdf-autotable'
 import { ExportToCsv } from 'export-to-csv'
 
 type Header = {
-  title: string
+  title: string,
+  key: string
 }
 
 export default defineComponent({
@@ -77,8 +78,6 @@ export default defineComponent({
         body
       })
 
-      console.log(this.items);
-
       doc.save(`report_pdf_${this.getTodayDate()}.pdf`);
     },
     generateCSV() {
@@ -113,7 +112,7 @@ export default defineComponent({
 
       this.headers.forEach((header: Header) => {
         // Don't get Actions column
-        if (this.headers[this.headers.length - 1] != header) {
+        if (header.key != 'actions') {
           titles.push(header.title)
         }
       })

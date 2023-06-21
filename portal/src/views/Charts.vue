@@ -40,9 +40,8 @@ export default defineComponent({
   },
   data: () => ({
     headers: [
-      { title: 'Nome',         key: 'id' },
-      { title: 'Total',       key: 'name' },
-      { title: 'teste', key: 'teste' },
+      { title: 'Nome',  key: 'id'   },
+      { title: 'Total', key: 'name' },
     ],
     deficiencies: [] as Deficiency[],
     tableValues: [] as StatisticsTable[]
