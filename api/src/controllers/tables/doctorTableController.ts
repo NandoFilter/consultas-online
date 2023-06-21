@@ -22,8 +22,8 @@ class DoctorTableController {
         id: doctor.id as number,
         name: user?.name,
         email: user?.email,
-        hospital: hospital?.name,
         occupation: occupation?.name,
+        hospital: hospital?.name,
         academy: doctor.acad_education
       }
 
@@ -53,8 +53,8 @@ class DoctorTableController {
           id: doctor.id as number,
           name: user?.name,
           email: user?.email,
-          hospital: hospital?.name,
           occupation: occupation?.name,
+          hospital: hospital?.name,
           academy: doctor.acad_education
         }
       }

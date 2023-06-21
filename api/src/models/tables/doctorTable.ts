@@ -2,8 +2,8 @@ interface DoctorTable {
   id: number
   name?: string
   email?: string
-  hospital?: string
   occupation?: string
+  hospital?: string
   academy?: string
 }
 

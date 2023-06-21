@@ -267,11 +267,11 @@ export default defineComponent({
 
     headers: [
       { title: 'ID',          align: 'start', key: 'id',         sortable: false },
-      { title: 'Nome',        align: 'start', key: 'name',       sortable: true },
+      { title: 'Nome',        align: 'start', key: 'name',       sortable: true  },
       { title: 'E-mail',      align: 'start', key: 'email',      sortable: false },
-      { title: 'Cidade',      align: 'start', key: 'city',       sortable: true },
-      { title: 'Deficiência', align: 'start', key: 'deficiency', sortable: true },
-      { title: 'Dependência', align: 'start', key: 'dependency', sortable: true },
+      { title: 'Cidade',      align: 'start', key: 'city',       sortable: true  },
+      { title: 'Deficiência', align: 'start', key: 'deficiency', sortable: true  },
+      { title: 'Dependência', align: 'start', key: 'dependency', sortable: true  },
       { title: 'Ações',       align: 'start', key: 'actions',    sortable: false },
     ],
 

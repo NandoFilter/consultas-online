@@ -203,7 +203,7 @@ export default defineComponent({
   },
   computed: {
     ...mapState(useFieldStore, ['getHospitals', 'getOccupations', 'getHospitalNames', 'getOccupationNames']),
-    formTitle () {
+    formTitle() {
       return this.doctorId === -1 ? 'Novo Médico' : 'Editar Médico'
     },
     filteredItems() {
@@ -245,11 +245,11 @@ export default defineComponent({
 
     headers: [
       { title: 'ID',       align: 'start', key: 'id',         sortable: false },
-      { title: 'Nome',     align: 'start', key: 'name',       sortable: true },
+      { title: 'Nome',     align: 'start', key: 'name',       sortable: true  },
       { title: 'E-mail',   align: 'start', key: 'email',      sortable: false },
-      { title: 'Ocupação', align: 'start', key: 'occupation', sortable: true },
-      { title: 'Hospital', align: 'start', key: 'hospital',   sortable: true },
-      { title: 'Formação', align: 'start', key: 'academy',    sortable: true },
+      { title: 'Ocupação', align: 'start', key: 'occupation', sortable: true  },
+      { title: 'Hospital', align: 'start', key: 'hospital',   sortable: true  },
+      { title: 'Formação', align: 'start', key: 'academy',    sortable: true  },
       { title: 'Ações',    align: 'start', key: 'actions',    sortable: false },
     ],
 
@@ -259,8 +259,8 @@ export default defineComponent({
       id: -1,
       name: '',
       email: '',
-      hospital: '',
       occupation: '',
+      hospital: '',
       academy: ''
     } as DoctorTable,
   }),
