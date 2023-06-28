@@ -43,22 +43,29 @@ export default defineComponent({
   },
   methods: {
     locatorButtonPressed() {
-      this.zoom = 14
-
       navigator.geolocation.getCurrentPosition(
         position => {
-          this.lat = position.coords.latitude;
-          this.lng = position.coords.longitude;
+          this.lat = position.coords.latitude
+          this.lng = position.coords.longitude
+          this.zoom = 14
+          this.getMarkers()
         },
       );
-
-      this.getMarkers()
     },
     getMarkers() {
       this.markers = [
-        { name: 'Nova FUNDEF', position: { lat: -29.43499678946232, lng: -51.95022894654883 } },
-        { name: 'Hospital Bruno Born', position: { lat: -29.463003227165693, lng: -51.96652135591914 } },
-        { name: 'Farmácia São João', position: { lat: -29.45376755277209, lng: -51.96682270004708 } }
+        { 
+          name: 'Nova FUNDEF',
+          position: { lat: -29.43499678946232, lng: -51.95022894654883 }
+        },
+        { 
+          name: 'Hospital Bruno Born',
+          position: { lat: -29.463003227165693, lng: -51.96652135591914 }
+        },
+        { 
+          name: 'Farmácia São João',
+          position: { lat: -29.45376755277209, lng: -51.96682270004708 }
+        }
       ]
     }
   }
