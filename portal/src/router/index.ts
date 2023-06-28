@@ -10,6 +10,7 @@ import {
   History,
   Doctors,
   Patients,
+  Maps,
   Profile,
   Reports,
   Charts,
@@ -69,6 +70,14 @@ const routes: Array<RouteRecordRaw> = [
     path: '/patients',
     name: 'Pacientes',
     component: Patients,
+    meta: {
+      requiresAuth: true,
+    },
+  },
+  {
+    path: '/maps',
+    name: 'Mapa de Hospitais',
+    component: Maps,
     meta: {
       requiresAuth: true,
     },

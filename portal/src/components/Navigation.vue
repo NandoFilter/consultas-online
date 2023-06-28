@@ -66,6 +66,7 @@ export default defineComponent({
       // { title: 'Histórico', icon: 'mdi-history', value: '/history' },
       { title: 'Médicos', icon: 'mdi-stethoscope', value: '/doctors' },
       { title: 'Pacientes', icon: 'mdi-account-group', value: '/patients' },
+      { title: 'Mapa', icon: 'mdi-map-marker', value: '/maps' },
     ],
     botItems: [
       // { title: 'Perfil', icon: 'mdi-account', value: '/profile' },
