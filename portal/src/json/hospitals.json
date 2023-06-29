@@ -1,0 +1,26 @@
+[
+  { 
+    "name": "Nova FUNDEF",
+    "position": { "lat": -29.43499678946232, "lng": -51.95022894654883 }
+  },
+  { 
+    "name": "Hospital Bruno Born",
+    "position": { "lat": -29.463003227165693, "lng": -51.96652135591914 }
+  },
+  { 
+    "name": "Unidade Central de Promocao da Saude",
+    "position": { "lat": -29.46640195268515, "lng": -51.96473792063775 }
+  },
+  { 
+    "name": "PREVENTIS",
+    "position": { "lat": -29.462029729046243, "lng": -51.96417983081062 }
+  },
+  { 
+    "name": "Centro de Saúde São Cristóvão",
+    "position": { "lat": -29.444350043047262, "lng": -51.96347693347103 }
+  },
+  { 
+    "name": "UPA",
+    "position": { "lat": -29.460080226437118, "lng": -51.99682390874806 }
+  }
+]

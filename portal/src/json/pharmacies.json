@@ -1,0 +1,34 @@
+[
+  { 
+    "name": "Farmácia São João",
+    "position": { "lat": -29.45376755277209, "lng": -51.96682270004708 }
+  },
+  { 
+    "name": "Farmácia São João",
+    "position": { "lat": -29.464310819224647, "lng": -51.96463643824713 }
+  },
+  { 
+    "name": "Farmácia São João",
+    "position": { "lat": -29.465565854003472, "lng": -51.96424186888516 }
+  },
+  { 
+    "name": "Farmácia São João",
+    "position": { "lat": -29.45616018585906, "lng": -51.97358778836792 }
+  },
+  { 
+    "name": "Panvel Farmácias",
+    "position": { "lat": -29.44685509045731, "lng": -51.963674813445685 }
+  },
+  { 
+    "name": "Panvel Farmácias",
+    "position": { "lat": -29.4575801322568, "lng": -51.9720427172203 }
+  },
+  { 
+    "name": "Droga Raia",
+    "position": { "lat": -29.46004607066914, "lng": -51.96581940817612 }
+  },
+  { 
+    "name": "Maxxi Econômica",
+    "position": { "lat": -29.463180450733162, "lng": -51.96499174549721 }
+  }
+]
