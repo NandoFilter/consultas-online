@@ -114,30 +114,14 @@
             </v-card>
           </v-dialog>
   
-          <!-- Filtro -->
-          <div class="header_filter">
-            <v-select
-              :items="['Nome', 'Ocupação', 'Hospital', 'Formação']"
-              v-model="filter"
-              color="primary"
-              prepend-inner-icon="mdi-filter"
-              variant="underlined"
-              label="Filtro"
-              single-line
-              hide-details
-              clearable
-            />
-          </div>
-
           <div class="header_txt">
             <v-text-field
               v-model="search"
-              prepend-icon="mdi-magnify"
-              variant="underlined"
+              prepend-inner-icon="mdi-magnify"
+              variant="solo"
               label="Pesquisar"
               single-line
               hide-details
-              clearable
             />
           </div>
         </div>
@@ -180,6 +164,35 @@
             </v-icon>
           </template>
         </v-data-table>
+
+        <!-- Filtros -->
+        <div class="bottom">
+          <div class="bottom_filters">
+            <v-select
+              class="bottom_filters_occupation"
+              :items="getOccupationNames"
+              v-model="filterOccupation"
+              prepend-inner-icon="mdi-stethoscope"
+              variant="solo"
+              label="Ocupação"
+              single-line
+              hide-details
+              clearable
+            />
+  
+            <v-select
+              class="bottom_filters_hospital"
+              :items="getHospitalNames"
+              v-model="filterHospital"
+              prepend-inner-icon="mdi-hospital-building"
+              variant="solo"
+              label="Hospital"
+              single-line
+              hide-details
+              clearable
+            />
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -207,27 +220,30 @@ export default defineComponent({
       return this.doctorId === -1 ? 'Novo Médico' : 'Editar Médico'
     },
     filteredItems() {
-      const search = this.search.toLowerCase()
+      const searchFilter = (d: DoctorTable) => {
+        const search = this.search.toLowerCase()
 
-      return this.doctors.filter((d: DoctorTable) => {
-        if (this.filter === 'Nome') {
-          return d.name?.toLowerCase().includes(search)
-        }
+        return d.name?.toLowerCase().includes(search) ||
+               d.academy?.toLowerCase().includes(search)
+      }
 
-        if (this.filter === 'Ocupação') {
-          return d.occupation?.toLowerCase().includes(search)
-        }
-
-        if (this.filter === 'Hospital') {
-          return d.hospital?.toLowerCase().includes(search)
-        }
-
-        if (this.filter === 'Formação') {
-          return d.academy?.toLowerCase().includes(search)
+      const occupationFilter = (d: DoctorTable) => {
+        if (this.filterOccupation) {
+          return d.occupation?.includes(this.filterOccupation)
         }
 
         return true
-      })
+      }
+ 
+      const hospitalFilter = (d: DoctorTable) => {
+        if (this.filterHospital) {
+          return d.hospital?.includes(this.filterHospital)
+        }
+
+        return true
+      }
+
+      return this.doctors.filter(searchFilter).filter(occupationFilter).filter(hospitalFilter)
     },
   },
   async created() {
@@ -235,7 +251,9 @@ export default defineComponent({
   },
   data: () => ({
     search: '',
-    filter: null,
+    filterHospital: null,
+    filterOccupation: null,
+
     dialog: false,
     dialogDelete: false,
     doctorId: -1,
@@ -447,10 +465,6 @@ export default defineComponent({
     margin: 10px 5px;
   }
 
-  &_filter {
-    width: 12vw;
-  }
-
   &_txt {
     width: 25vw;
     margin-left: 10px;
@@ -467,5 +481,28 @@ export default defineComponent({
   display: flex;
   align-items: center;
   padding: 5px 0;
+}
+
+.bottom {
+  display: flex;
+  justify-content: center;
+
+  &_filters {
+    display: flex;
+    flex-direction: row;
+
+    width: 50%;
+
+    margin-top: 15px;
+    gap: 15px;
+
+    &_occupation {
+      width: 250px;
+    }
+
+    &_hospital {
+      width: 400px;
+    }
+  }
 }
 </style>

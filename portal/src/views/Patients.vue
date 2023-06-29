@@ -135,31 +135,15 @@
             </v-card>
           </v-dialog>
   
-          <!-- Filtro -->
-          <div class="header_filter">
-            <v-select
-              :items="['Nome', 'Cidade', 'Deficiência', 'Dependência']"
-              v-model="filter"
-              color="primary"
-              prepend-inner-icon="mdi-filter"
-              variant="underlined"
-              label="Filtro"
-              single-line
-              hide-details
-              clearable
-            />
-          </div>
-
           <div class="header_txt">
             <v-text-field
               v-model="search"
               color="primary"
-              prepend-icon="mdi-magnify"
-              variant="underlined"
+              prepend-inner-icon="mdi-magnify"
+              variant="solo"
               label="Pesquisar"
               single-line
               hide-details
-              clearable
             />
           </div>
         </div>
@@ -202,6 +186,35 @@
             </v-icon>
           </template>
         </v-data-table>
+
+        <!-- Filtros -->
+        <div class="bottom">
+          <div class="bottom_filters">
+            <v-select
+              class="bottom_filters_filter"
+              :items="getDeficiencyNames"
+              v-model="filterDeficiency"
+              prepend-inner-icon="mdi-wheelchair"
+              variant="solo"
+              label="Deficiência"
+              single-line
+              hide-details
+              clearable
+            />
+  
+            <v-select
+              class="bottom_filters_filter"
+              :items="getDependencyNames"
+              v-model="filterDependency"
+              prepend-inner-icon="mdi-pill"
+              variant="solo"
+              label="Dependência"
+              single-line
+              hide-details
+              clearable
+            />
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -229,27 +242,30 @@ export default defineComponent({
       return this.patientId === -1 ? 'Novo Paciente' : 'Editar Paciente'
     },
     filteredItems() {
-      const search = this.search.toLowerCase()
+      const searchFilter = (p: PatientTable) => {
+        const search = this.search.toLowerCase()
 
-      return this.patients.filter((p: PatientTable) => {
-        if (this.filter === 'Nome') {
-          return p.name?.toLowerCase().includes(search)
-        }
+        return p.name?.toLowerCase().includes(search) ||
+               p.city?.toLowerCase().includes(search)
+      }
 
-        if (this.filter === 'Cidade') {
-          return p.city?.toLowerCase().includes(search)
-        }
-
-        if (this.filter === 'Deficiência') {
-          return p.deficiency?.toLowerCase().includes(search)
-        }
-
-        if (this.filter === 'Dependência') {
-          return p.dependency?.toLowerCase().includes(search)
+      const deficiencyFilter = (p: PatientTable) => {
+        if (this.filterDeficiency) {
+          return p.deficiency?.includes(this.filterDeficiency)
         }
 
         return true
-      })
+      }
+ 
+      const dependencyFilter = (p: PatientTable) => {
+        if (this.filterDependency) {
+          return p.dependency?.includes(this.filterDependency)
+        }
+
+        return true
+      }
+
+      return this.patients.filter(searchFilter).filter(deficiencyFilter).filter(dependencyFilter)
     },
   },
   async created() {
@@ -257,7 +273,9 @@ export default defineComponent({
   },
   data: () => ({
     search: '',
-    filter: null,
+    filterDeficiency: null,
+    filterDependency: null,
+
     dialog: false,
     dialogDelete: false,
     patientId: -1,
@@ -502,5 +520,24 @@ export default defineComponent({
   display: flex;
   align-items: center;
   padding: 5px 0;
+}
+
+.bottom {
+  display: flex;
+  justify-content: center;
+
+  &_filters {
+    display: flex;
+    flex-direction: row;
+
+    width: 50%;
+
+    margin-top: 15px;
+    gap: 15px;
+
+    &_filter {
+      width: 200px;
+    }
+  }
 }
 </style>

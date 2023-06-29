@@ -6,7 +6,9 @@
           class="lowercase-text"
           prepend-icon="mdi-export-variant"
           v-bind="props"
-        >Exportar</v-btn>
+        >
+          Exportar
+        </v-btn>
       </template>
       <v-list class="list">
         <v-list-item
@@ -129,6 +131,6 @@ export default defineComponent({
 }
 
 .list {
-  border-radius: 15px !important;
+  border-radius: 10px !important;
 }
 </style>
