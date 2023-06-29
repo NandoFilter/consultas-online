@@ -9,7 +9,7 @@
           :options="{ position: h.position, anchorPoint: 'BOTTOM_CENTER' }"
         >
           <div style="text-align: center">
-            <div class="mark_name">{{ h.name  }}</div>
+            <div class="mark_name">{{ h.name }}</div>
             <img class="mark_img" :src="require('@/assets/img/hospital_pin.svg')" />
           </div>
         </CustomMarker>
@@ -20,18 +20,18 @@
           :options="{ position: p.position, anchorPoint: 'BOTTOM_CENTER' }"
         >
           <div style="text-align: center">
-            <div class="mark_name">{{ p.name  }}</div>
+            <div class="mark_name">{{ p.name }}</div>
             <img class="mark_img" :src="require('@/assets/img/pharmacy_pin.svg')" />
           </div>
         </CustomMarker>
-      </GoogleMap>
 
-      <v-btn
-        @click="locatorButtonPressed"
-        prepend-icon="mdi-crosshairs-gps"
-      >
-        Localizar
-      </v-btn>
+        <v-btn
+          @click="locatorButtonPressed"
+          icon="mdi-crosshairs-gps"
+          color="red"
+          class="locator_button"
+        />
+      </GoogleMap>
     </div>
   </div>
 </template>
@@ -52,8 +52,8 @@ type Mark = {
 export default defineComponent({
   components: { Navigation, GoogleMap, CustomMarker },
   data: () => ({
-    lat: -10.760147,
-    lng: -55.003977,
+    lat: 0,
+    lng: 0,
     zoom: 3,
     key: process.env.VUE_APP_GOOGLE_API_KEY,
     
@@ -67,8 +67,8 @@ export default defineComponent({
   },
   methods: {
     reset() {
-      this.lat = -10.760147
-      this.lng = -55.003977
+      this.lat = 0
+      this.lng = 0
       this.zoom = 3
     },
     locatorButtonPressed() {
@@ -93,19 +93,17 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .main {
-  margin-left: 75px;
+  margin-left: 55px;
 
   display: flex;
-  flex-direction: column;
-  align-items: center;
   justify-content: center;
 }
 
 .map {
-  width: 90%;
-  height: 800px;
+  width: 100vw;
+  height: 100vh;
 
-  margin: 15px;
+  position: relative;
 }
 
 .mark_name {
@@ -122,5 +120,12 @@ export default defineComponent({
   height: 45px;
 
   margin-top: 8px;
+}
+
+.locator_button {
+  position: absolute;
+  bottom: 0;
+
+  margin: 45px 15px;
 }
 </style>
